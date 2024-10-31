@@ -435,7 +435,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     `;
 
                     ChatMessage.create({
-                        roll: toHitRoll,
+                        rolls: [toHitRoll],
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
@@ -454,7 +454,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 ${chatStunts}`;
 
                 ChatMessage.create({
-                    roll: toHitRoll,
+                    rolls: [toHitRoll],
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                     flavor: label,
                     content: rollCard,
@@ -517,7 +517,7 @@ export class ExpanseActorSheet extends ActorSheet {
             `
 
             ChatMessage.create({
-                roll: damageRoll,
+                rolls: [damageRoll],
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label,
                 content: rollCard,
@@ -556,7 +556,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 `
 
                     ChatMessage.create({
-                        roll: r,
+                        rolls: [r],
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
@@ -624,7 +624,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        roll: incomeRoll,
+                        rolls: [incomeRoll],
                         content: rollCard,
                         sound: CONFIG.sounds.dice
                     });
@@ -634,7 +634,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ChatMessage.create({
                             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                             flavor: label,
-                            roll: incomeRoll,
+                            rolls: [incomeRoll],
                             content: rollCard,
                             sound: CONFIG.sounds.dice
                         });
@@ -643,7 +643,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ChatMessage.create({
                             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                             flavor: label,
-                            roll: incomeRoll,
+                            rolls: [incomeRoll],
                             content: rollCard,
                             sound: CONFIG.sounds.dice
                         });
@@ -653,7 +653,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        roll: incomeRoll,
+                        rolls: [incomeRoll],
                         content: rollCard,
                         sound: CONFIG.sounds.dice
                     });
@@ -662,7 +662,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        roll: incomeRoll,
+                        rolls: [incomeRoll],
                         content: diceRollDialogue,
                         sound: CONFIG.sounds.dice
                     });
@@ -673,7 +673,7 @@ export class ExpanseActorSheet extends ActorSheet {
             ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label,
-                roll: incomeRoll,
+                rolls: [incomeRoll],
                 content: rollCard,
                 sound: CONFIG.sounds.dice
             });
@@ -801,7 +801,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ${chatStunts}
                     `
                     ChatMessage.create({
-                        roll: roll,
+                        rolls: [roll],
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
@@ -821,7 +821,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 ${chatStunts}`
 
                 ChatMessage.create({
-                    roll: roll,
+                    rolls: [roll],
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                     flavor: label,
                     content: rollCard,
