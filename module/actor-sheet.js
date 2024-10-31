@@ -403,6 +403,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 chatFocus = `<b>Focus:</b> 2</br>`;
             } else (chatFocus = ``);
 
+            let unmodRoll = `<b>Unmodified Roll</b>: ${die1 + die2 + die3}</br>`;
             let chatMod = `<b>Ability Rating</b>: ${abilityMod}</br>`;
 
             resultsSum = die1 + die2 + die3 + useFocus + useFocusPlus + abilityMod + condMod;
@@ -424,6 +425,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
                         <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        ${unmodRoll}
                         ${chatMod}
                         ${chatAddMod}
                         ${chatFocus}
@@ -444,6 +446,7 @@ export class ExpanseActorSheet extends ActorSheet {
             } else {
                 rollCard = `
                 <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                ${unmodRoll}
                 ${chatMod}
                 ${chatFocus}
                 ${condModWarning}
@@ -759,6 +762,8 @@ export class ExpanseActorSheet extends ActorSheet {
                 chatFocus = `<b>Focus:</b> 2</br>`;
             } else (chatFocus = ``);
 
+            let unmodRoll = `<b>Unmodified Roll</b>: ${die1 + die2 + die3}</br>`;
+
             let chatMod = `<b>Ability Rating</b>: ${abilityMod}</br>`;
 
             resultsSum = die1 + die2 + die3 + useFocus + useFocusPlus + abilityMod + condMod - armorPenalty;
@@ -781,6 +786,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
                         <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        ${unmodRoll}
                         ${chatMod}
                         ${chatAddMod}
                         ${chatFocus}
@@ -801,6 +807,7 @@ export class ExpanseActorSheet extends ActorSheet {
             } else {
                 rollCard = `
                 <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                ${unmodRoll}
                 ${chatMod}
                 ${chatFocus}
                 ${condModWarning}
