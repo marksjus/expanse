@@ -247,7 +247,7 @@ blockquote {
 /* New CSS */
 
 .sheet-header {
-    overflow: hidden;
+    --overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -1704,4 +1704,20 @@ a.content-link, a.inline-roll {
     display: flex;
     align-items: baseline;
     justify-content: space-around;
+}
+
+:root {
+    --color-shadow-primary: #088afc;
+    --color-border-highlight-alt: #088afc;
+    --color-border-highlight: #3a9bee;
+    --color-shadow-highlight: #3a9bee;
+    --color-text-hyperlink: #3a9bee;   
+}
+
+body {
+    --color-scrollbar: #153e61;
+}
+
+#logo {
+    content:url('../ui/logo-scifi.png');
 }
