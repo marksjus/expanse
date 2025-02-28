@@ -1261,7 +1261,7 @@ input[type=checkbox] {
 .notes-box {
     display: flex;
     flex-direction: column;
-    text-align: center;
+    text-align: left;
     width: 100%;
     min-height: 100px;
     margin: 0px 5px 10px 5px;
