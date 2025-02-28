@@ -326,6 +326,32 @@
                 "stat": "",
                 "modValue": 0,
                 "name": ""
+            },
+            "losses":{
+                "collateral": {
+                    "value": 0,
+                    "max": 6
+                },
+                "hull": {
+                    "value": 0,
+                    "max": 6
+                },
+                "maneuverability": {
+                    "value": 0,
+                    "max": 6
+                },
+                "sensors": {
+                    "value": 0,
+                    "max": 6
+                },
+                "weapons": {
+                    "value": 0,
+                    "max": 6
+                }
+            },
+            "seriouslosses":{
+                "reactoroffline": false,
+                "weaponoffline": false
             }
         }
     },

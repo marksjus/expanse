@@ -86,6 +86,59 @@
                 </div>
             </div>
 
+            <div class="ship-losses">
+                <div class="box-header">
+                    <span>{{localize "EXPANSE.Losses.header" }}</span>
+                </div>
+                <div class="ship-losses-row">
+                    <div class="ship-losses-column">
+                        <div class="box-header losses-header">
+                            <span>{{localize "EXPANSE.Losses.simplelosses" }}</span>
+                        </div>
+                        {{#each conditions as |condition key|}}
+                        <div class="ship-row ship-input losses-checkbox">
+                            <label class="info-label" for="{{key}}">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                            <div name="{{key}}" class="losses-checkbox-group">
+                                {{#each condition as |loss key|}}
+                                <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
+                                {{/each}}
+                            </div>
+                        </div> 
+                        {{/each}}
+                        <!--{{#each actor.system.losses as |loss key|}}
+                        <div class="ship-row ship-input">
+                            <label class="info-label" for="system.losses.{{key}}" class="info-label" title="{{localize (concat "EXPANSE.Losses.tooltip." key) }}">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                            <input class="info-input" type="number" placeholder="0" name="system.losses.{{key}}.value"
+                                value="{{value}}" />
+                        </div>
+                        {{/each}}  -->
+                        <div class="box-header losses-header">
+                            <span>{{localize "EXPANSE.Losses.seriouslosses" }}</span>
+                        </div>
+                        {{#each actor.system.seriouslosses as |loss key|}}
+                        <div class="ship-row ship-input losses-checkbox">
+                            <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label" title="{{localize (concat "EXPANSE.Losses.tooltip." key) }}">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                            <input class="info-input" name="system.seriouslosses.{{key}}.value" type="checkbox" {{checked value}} />
+                        </div>
+                        {{/each}}
+                    </div> 
+                    <div class="ship-losses-button-column">
+                        <div class="ship-row rowReversed">
+                            <div class="ship-losses-btn simple-loss" data-roll="1d6" data-label="single-loss">{{localize "EXPANSE.Losses.ApplySingleLoss"}}</div>
+                        </div>
+                        <div class="ship-row rowReversed">
+                            <div class="ship-losses-btn simple-loss" data-roll="2d6" data-label="double-loss">{{localize "EXPANSE.Losses.ApplyDoubleLoss"}}</div>
+                        </div>
+                        <div class="ship-row rowReversed">
+                            <div class="ship-losses-btn serious-loss" data-roll="2d6" data-label="serious-loss">{{localize "EXPANSE.Losses.ApplySeriousLoss"}}</div>
+                        </div>
+                        <div class="ship-row rowReversed">
+                            <div class="ship-losses-btn reset-loss" data-label="reset-loss">{{localize "EXPANSE.Losses.ResetLosses"}}</div>
+                        </div>
+                    </div>  
+                </div> 
+            </div>
+
             <div class="crew-box">
                 <div class="box-header">
                     <span class="stunt-header-title">{{localize "EXPANSE.CrewRole" }}</span>

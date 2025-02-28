@@ -62,7 +62,21 @@
     white-space: nowrap;
     padding: 5px;
 }
-  
+
+.losses-header {
+    margin: 5px 0px;
+}
+
+.losses-checkbox input[type=checkbox]{
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+}
+
+.losses-checkbox input[type=checkbox]:checked{
+    accent-color: red;
+}
+.ship-losses input[type=number],  
 .ship .ship-row input[type=text] {
     font-weight: bold;
     text-align: start;
@@ -71,6 +85,58 @@
     height: 100%;
     padding-left: 5px;
     border-bottom-right-radius: 10px;
+}
+
+.ship-losses input[type=number] {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.ship-losses-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+} 
+
+.ship-losses-column {
+    width: 60%;
+}
+
+.ship-losses-button-column {
+    width: 40%;
+}
+
+.losses-checkbox-group {
+    display: flex;
+    flex-direction: row;
+}
+
+.rowReversed {
+    flex-direction: row-reverse !important;
+}
+
+.ship-losses-btn {
+    padding: 2px 5px 2px 5px;
+    background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
+    border: 1px solid #afafaf;
+    border-radius: 3px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.reset-loss {
+    color: red;
+}
+
+.LossConditions {
+    height: 100%;
+}
+
+.lossSelector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border: none;
 }
 
 .ship .ship-senhulcre {
@@ -128,7 +194,7 @@
     padding: 5px;
 }
 
-.ship .crew-box {
+.ship .crew-box .ship-losses{
     display: flex;
     flex-direction: column;
     text-align: center;
