@@ -1,10 +1,11 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
 
 Hooks.on('ready', () => {
-    $(document).on('click', '.collateralDamageButton', async function (data) {
+    $(document).on('click', '.collateralDamageButton', async function (event) {
         const diceData = diceRollType();
-        let roll = data.currentTarget.attributes[1].value; 
-        let actor = game.actors.get(data.currentTarget.attributes["data-actor-id"].value);       
+        const dataset = event.currentTarget.dataset;
+        const actor = game.actors.get(dataset.actorId);
+        let roll = dataset.roll;        
         let reductionText = "";
         let dieImage = "";
         let damage = 0;
@@ -26,11 +27,10 @@ Hooks.on('ready', () => {
         for (let i = 0; i<dies.length; i++) {
             reductionText += "</br><b>"+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+": "+dies[i]+"</b>";
         }
-
         ChatMessage.create({
             rolls: [collateralRoll],
             speaker: ChatMessage.getSpeaker({ actor: actor }),
-            flavor: "Collateral Damage Roll",
+            flavor: game.i18n.localize("EXPANSE.Losses.CollateralDamageRoll"),
             content: reductionText,
             sound: CONFIG.sounds.dice
         }); 
