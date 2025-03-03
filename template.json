@@ -287,10 +287,26 @@
                 "1": "",
                 "2": ""
             },
-            "weapon1": "",
-            "weapon2": "",
-            "weapon3": "",
-            "weapon4": "",
+            "weapon1": {
+                "type": "",
+                "description": "",
+                "damage": ""
+            },
+            "weapon2": {
+                "type": "",
+                "description": "",
+                "damage": ""
+            },
+            "weapon3": {
+                "type": "",
+                "description": "",
+                "damage": ""
+            },
+            "weapon4": {
+                "type": "",
+                "description": "",
+                "damage": ""
+            },
             "crew1": {
                 "role": "",
                 "stat": "",

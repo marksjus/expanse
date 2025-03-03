@@ -6,7 +6,7 @@ Hooks.on('ready', () => {
         const dataset = event.currentTarget.dataset;
         const actor = game.actors.get(dataset.actorId);
         let roll = dataset.roll;        
-        let reductionText = "";
+        let text = "";
         let dieImage = "";
         let damage = 0;
         // dice-so-nice
@@ -22,16 +22,16 @@ Hooks.on('ready', () => {
             dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
             damage += dies[i];
         }
-        reductionText += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+        text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
 
         for (let i = 0; i<dies.length; i++) {
-            reductionText += "</br><b>"+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+": "+dies[i]+"</b>";
+            text += "</br><b>"+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+": "+dies[i]+"</b>";
         }
         ChatMessage.create({
             rolls: [collateralRoll],
             speaker: ChatMessage.getSpeaker({ actor: actor }),
             flavor: game.i18n.localize("EXPANSE.Losses.CollateralDamageRoll"),
-            content: reductionText,
+            content: text,
             sound: CONFIG.sounds.dice
         }); 
         
@@ -257,7 +257,7 @@ export class ExpanseShipSheet extends ActorSheet {
         const element = event.currentTarget;
         const dataset = element.dataset;
         const data = super.getData();
-        const seriousFlag = (event.currentTarget.dataset.label == "serious-loss");
+        const seriousFlag = (dataset.label == "serious-loss");
         let losses;
         if (seriousFlag) {
             losses = data.actor.system.seriouslosses;
@@ -481,43 +481,54 @@ export class ExpanseShipSheet extends ActorSheet {
         return ic;
     }
 
-    _onRoll(event) {
+    async _onRoll (event) {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        if (dataset.roll) {
-            let roll = new Roll(dataset.roll, this.actor.data.data);
-
-            let rollCard;
-            let die1 = 0; let die2 = 0; let die3 = 0;
-            let useFocus = roll.data.abilities[dataset.label].useFocus ? 2 : 0;
-            let abilityMod = roll.data.abilities[dataset.label].rating;
-
-            [die1, die2, die3] = roll.roll().terms[0].results.map(i => i.result);
-
-            let label = useFocus ? `<b> Rolling ${dataset.label} with focus </b>` : `Rolling ${dataset.label}`;
-            let results = [die1, die2, die3];
-            let resultsSum = die1 + die2 + die3 + useFocus + abilityMod;
-
-            if (die1 == die2 || die1 == die3 || die2 == die3) {
-                rollCard = `
-              <b>Dice Roll:</b> ${results} <br>
-              <b>Ability Test Results:</b> ${resultsSum} <br>
-              <b>${die3} Stunt Points have been generated!</b>
-              `
-            } else {
-                rollCard = `
-              <b>Dice Roll:</b> ${results} <br>
-              <b>Ability Test Results:</b> ${resultsSum}
-              `
-            }
-
-            ChatMessage.create({
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                flavor: label,
-                content: rollCard
-            });
+        const data = super.getData();
+        const actorData = data.actor.system;
+        console.log(dataset);
+        const diceData = diceRollType();
+        let roll = dataset.roll;        
+        let text = "";
+        let flavor = "";
+        let dieImage = "";
+        let damage = 0;
+        // dice-so-nice
+        if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+            roll = roll.substring(0, 2) + diceData.nice[0];
         }
+
+        let collateralRoll = new Roll(roll);
+        await collateralRoll.evaluate();
+        let dies = collateralRoll.terms[0].results.map(i => i.result);
+
+        for (let i = 0; i < dies.length; i++) {
+            dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
+            damage += dies[i];
+        }
+        text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+        
+        switch (dataset.label) {
+            case "hull-roll":
+                flavor = "<b>"+game.i18n.localize("EXPANSE.ShipHullRoll")+"</b>",
+                text += "</br>"+game.i18n.format("EXPANSE.HullScore",{damage:damage});
+                break;
+            case "weapon-roll":
+                let weapon = actorData[dataset.weapon].type;
+                flavor = "<b>"+game.i18n.localize("EXPANSE.ShipDamageRoll")+weapon+"</b>",
+                text += "</br>"+game.i18n.format("EXPANSE.DealDamage",{damage:damage});
+                break;
+            default:
+        }
+
+        ChatMessage.create({
+            rolls: [collateralRoll],
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            flavor: flavor,
+            content: text,
+            sound: CONFIG.sounds.dice
+        });   
     }
 
     TargetNumber() {

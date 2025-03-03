@@ -98,7 +98,7 @@
     flex-direction: row;
 } 
 
-.ship-losses-column {
+.ship-column {
     width: 60%;
 }
 
@@ -140,30 +140,71 @@
 }
 
 .ship .ship-senhulcre {
+    width: calc(33.3% - 3px);
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    width: 26%;
-    height: 100px;
+}
+
+.ship-hull input[type=text]{
+    width: calc(100% - 68px);
+}
+
+.ship-weapon-damage-roll-button,
+.ship-hull-roll-button {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    border-radius: 5px;
+    background-color: #f3f3f3;
+    background-image: url("../ui/earth-5.png");
+    background-size: cover;
+    background-repeat: none;
+    background-position: center;
+    cursor: pointer;
+}
+
+.ship-weapon-damage-roll-button {
+    width: 25px;
+    height: 25px;
 }
 
 .ship .ship-weapons {
     display: flex;
     flex-direction: row;
-    padding-left: 5px;
     width: 100%;
-    height: 100px;
+    height: 123px;
 }
 
 .ship .weapon-inputs {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
 }
 
-.ship .weapon-inputs > input[type=text] {
+.ship .weapon-inputs .ship-column > input[type=text] {
     height: 25px;
-    margin-bottom: 2px;
+}
+
+.ship-weapon-type,
+.ship-weapon-description,
+.ship-weapon-damage,
+.ship-weapon-damage-roll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 16%;
+}
+
+.ship-weapon-damage-roll {
+    width: 6%;
+}
+.ship-weapon-type {
+    width: 30%;
+}
+
+.ship-weapon-description {
+    width: 50%;
 }
 
 .ship .ship-notes-box {
