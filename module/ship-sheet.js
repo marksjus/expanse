@@ -487,48 +487,52 @@ export class ExpanseShipSheet extends ActorSheet {
         const dataset = element.dataset;
         const data = super.getData();
         const actorData = data.actor.system;
-        console.log(dataset);
         const diceData = diceRollType();
         let roll = dataset.roll;        
         let text = "";
         let flavor = "";
         let dieImage = "";
         let damage = 0;
-        // dice-so-nice
-        if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-            roll = roll.substring(0, 2) + diceData.nice[0];
-        }
 
-        let collateralRoll = new Roll(roll);
-        await collateralRoll.evaluate();
-        let dies = collateralRoll.terms[0].results.map(i => i.result);
-
-        for (let i = 0; i < dies.length; i++) {
-            dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
-            damage += dies[i];
-        }
-        text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+        const pattern = new RegExp("[0-9]+d6", "g");
+        if(dataset.roll.match(pattern)) {
         
-        switch (dataset.label) {
-            case "hull-roll":
-                flavor = "<b>"+game.i18n.localize("EXPANSE.ShipHullRoll")+"</b>",
-                text += "</br>"+game.i18n.format("EXPANSE.HullScore",{damage:damage});
-                break;
-            case "weapon-roll":
-                let weapon = actorData[dataset.weapon].type;
-                flavor = "<b>"+game.i18n.localize("EXPANSE.ShipDamageRoll")+weapon+"</b>",
-                text += "</br>"+game.i18n.format("EXPANSE.DealDamage",{damage:damage});
-                break;
-            default:
-        }
+            // dice-so-nice
+            if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+                roll = roll.substring(0, 2) + diceData.nice[0];
+            }
 
-        ChatMessage.create({
-            rolls: [collateralRoll],
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            flavor: flavor,
-            content: text,
-            sound: CONFIG.sounds.dice
-        });   
+            let collateralRoll = new Roll(roll);
+            await collateralRoll.evaluate();
+            let dies = collateralRoll.terms[0].results.map(i => i.result);
+
+            for (let i = 0; i < dies.length; i++) {
+                dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
+                damage += dies[i];
+            }
+            text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+            
+            switch (dataset.label) {
+                case "hull-roll":
+                    flavor = "<b>"+game.i18n.localize("EXPANSE.ShipHullRoll")+"</b>",
+                    text += "</br>"+game.i18n.format("EXPANSE.HullScore",{damage:damage});
+                    break;
+                case "weapon-roll":
+                    let weapon = actorData[dataset.weapon].type;
+                    flavor = "<b>"+game.i18n.localize("EXPANSE.ShipDamageRoll")+weapon+"</b>",
+                    text += "</br>"+game.i18n.format("EXPANSE.DealDamage",{damage:damage});
+                    break;
+                default:
+            }
+
+            ChatMessage.create({
+                rolls: [collateralRoll],
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                flavor: flavor,
+                content: text,
+                sound: CONFIG.sounds.dice
+            });  
+        } 
     }
 
     TargetNumber() {
