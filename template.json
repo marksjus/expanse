@@ -278,7 +278,7 @@
             "drive": "",
             "sensors": "",
             "hull": "",
-            "crew": "",
+            "crewCount": "",
             "quality": "",
             "flaw": "",
             "description": "",
@@ -307,41 +307,43 @@
                 "description": "",
                 "damage": ""
             },
-            "crew1": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
-            },
-            "crew2": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
-            },
-            "crew3": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
-            },
-            "crew4": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
-            },
-            "crew5": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
-            },
-            "crew6": {
-                "role": "",
-                "stat": "",
-                "modValue": 0,
-                "name": ""
+            "crew": {
+                "crew1": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                },
+                "crew2": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                },
+                "crew3": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                },
+                "crew4": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                },
+                "crew5": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                },
+                "crew6": {
+                    "role": "",
+                    "stat": "",
+                    "modValue": 0,
+                    "name": ""
+                }
             },
             "losses":{
                 "collateral": {

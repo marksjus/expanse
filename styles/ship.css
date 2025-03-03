@@ -63,6 +63,67 @@
     padding: 5px;
 }
 
+.crew-box .box-header {
+    justify-content: space-between;
+}
+
+.ship .crew-header-name,
+.ship .crew-header-role,
+.ship .crew-header-stat,
+.ship .crew-header-roll {
+    width: 23%;
+}
+
+.ship .crew-header-mod {
+    width: 10%;
+}
+
+.ship .crew-header-roll {
+    width: 5%;
+}
+
+.ship .ship-crew-name,
+.ship .ship-crew-role,
+.ship .ship-crew-stat,
+.ship .ship-crew-mod {
+    width: 23%;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    background-color: #f3f3f3;
+}
+
+.ship .crew-header-stat,
+.ship .ship-crew-stat,
+.ship .crew-header-name,
+.ship .ship-crew-name {
+    width: 30%;
+}
+.ship .ship-crew-name {
+    text-align: left;
+    padding-left: 5px;
+}
+
+.ship .crew-header-mod,
+.ship .ship-crew-mod {
+    width: 10%;
+}
+
+.ship .ship-crew-role {
+    background-color: transparent;
+}
+
+.ship .crew-header-role,
+.ship .ship-crew-role {
+    width: 20%;
+}
+
+.ship .ship-crew-role > select {
+    width: 100%;
+    height: 25px;
+    background-color: #f3f3f3;
+}
+
 .losses-header {
     margin: 5px 0px;
 }
@@ -150,6 +211,7 @@
 }
 
 .ship-weapon-damage-roll-button,
+.ship-crew-roll-button,
 .ship-hull-roll-button {
     width: 30px;
     height: 30px;
@@ -163,9 +225,14 @@
     cursor: pointer;
 }
 
+.ship-crew-roll-button,
 .ship-weapon-damage-roll-button {
     width: 25px;
     height: 25px;
+}
+
+.ship-crew-roll-button {
+    margin: 0;
 }
 
 .ship .ship-weapons {
@@ -247,34 +314,6 @@
     flex-direction: row;
     flex-wrap: nowrap;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: space-between;
     margin: 5px 0;
-}
-
-.ship .ship-crewrole {
-    display: flex;
-    width: 23%;
-    background-color: transparent;
-    justify-content: center;
-}
-
-.ship .ship-crewstat {
-    display: flex;
-    width: 23%;
-    border: none;
-    background-color: rgba(0, 0, 0, .05);
-}
-
-.ship .ship-crewmod {
-    display: flex;
-    width: 23%;
-    border: none;
-    background-color: rgba(0, 0, 0, .05);
-}
-
-.ship .ship-crewname {
-    display: flex;
-    width: 23%;
-    border: none;
-    background-color: rgba(0, 0, 0, .05);
 }
