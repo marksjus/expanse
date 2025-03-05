@@ -1,4 +1,5 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
+import { RollModifier} from "./rolling/modifiers.js";
 
 Hooks.on('ready', () => {
     $(document).on('click', '.collateralDamageButton', async function (event) {
@@ -138,6 +139,8 @@ export class ExpanseShipSheet extends ActorSheet {
 
         html.find('.rollable').click(this._onRoll.bind(this));
 
+        html.find('.crew-roll').click(this._onCrewRoll.bind(this));
+
         html.find('.simple-loss').click(this._onRollSimpleLoss.bind(this));
 
         html.find('.serious-loss').click(this._onRollSimpleLoss.bind(this));
@@ -275,7 +278,6 @@ export class ExpanseShipSheet extends ActorSheet {
             totalLosses += parseInt(Number(loss.value));
             if (!seriousFlag) {maxLosses += loss.max};     
         }
-        console.log(losses);
         
         if (dataset.roll) {
             const diceData = diceRollType();
@@ -514,13 +516,13 @@ export class ExpanseShipSheet extends ActorSheet {
             
             switch (dataset.label) {
                 case "hull-roll":
-                    flavor = "<b>"+game.i18n.localize("EXPANSE.ShipHullRoll")+"</b>",
-                    text += "</br>"+game.i18n.format("EXPANSE.HullScore",{damage:damage});
+                    flavor = `<b>${game.i18n.localize("EXPANSE.ShipHullRoll")}</b>`,
+                    text += `</br>${game.i18n.format("EXPANSE.HullScore",{damage:damage})}`;
                     break;
                 case "weapon-roll":
                     let weapon = actorData[dataset.weapon].type;
-                    flavor = "<b>"+game.i18n.localize("EXPANSE.ShipDamageRoll")+weapon+"</b>",
-                    text += "</br>"+game.i18n.format("EXPANSE.DealDamage",{damage:damage});
+                    flavor = `<b>${game.i18n.localize("EXPANSE.ShipDamageRoll")}${weapon}</b>`,
+                    text += `</br>${game.i18n.format("EXPANSE.DealDamage",{damage:damage})}`;
                     break;
                 default:
             }
@@ -535,28 +537,194 @@ export class ExpanseShipSheet extends ActorSheet {
         } 
     }
 
-    TargetNumber() {
-        let tn = new Promise((resolve) => {
-            renderTemplate("/systems/expanse/templates/dialog/target-number.html").then(dlg => {
-                new Dialog({
-                    title: game.i18n.localize("EXPANSE.TargetNumber"),
-                    content: dlg,
-                    buttons: {
-                        roll: {
-                            label: game.i18n.localize("EXPANSE.Roll"),
-                            callback: html => {
-                                resolve(html.find(`[name="targetInput"]`).val());
-                            }
-                        }
+    async _onCrewRoll(event) {
+        
+        event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+        const data = super.getData();
+        const actorData = data.actor;
+        const crewData = actorData.system.crew[dataset.crew];
+        console.log(crewData);
+        let testData;
+
+        if (dataset.roll) {
+            const diceData = diceRollType();
+            const combatData = data.actor.system.combat;
+            let die1 = 0; let die2 = 0; let die3 = 0;
+            let d2; let d1;
+            let rollCard = "";
+            let chatFocus = "";
+            let chatStunts = "";
+            let TN = 0;
+            let SP = 0;
+            let chatTN = "";
+            let sensors = 0;
+            let chatSensors = "";
+            let loss = 0;
+            let chatLoss = "";
+            let condModWarning;
+            let resultsSum;
+            // need to conditionally set d2 d1. if game.module for dsn is true, use the dice data, if not use 6;
+            if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+                d2 = diceData.nice[0];
+                d1 = diceData.nice[1];
+            } else {
+                d2 = 6;
+                d1 = 6;
+            }
+
+            let roll = new Roll(`2d${d2} + 1d${d1} + @modValue`, crewData);
+            await roll.evaluate();
+
+            let useFocus = crewData.focus ? 2 : 0;
+
+            let abilityMod = crewData.modValue;
+            [die1, die2] = roll.terms[0].results.map(i => i.result);
+            [die3] = roll.terms[2].results.map(i => i.result);
+
+            let label = "";
+            switch (crewData.role) {
+                case "captain":
+                    label = game.i18n.localize("EXPANSE.CrewCommandTest");
+                    TN=11;
+                    SP=1;
+                    break;
+                case "pilot":
+                    label = game.i18n.localize("EXPANSE.CrewPilotTest");
+                    loss = Number(actorData.system.losses.maneuverability.value);
+                    if (loss>0) {
+                        chatLoss = `<b>${game.i18n.localize("EXPANSE.chatManeuverabilityLoss")}:</b> -${loss}</br>`;
                     }
-                }).render(true);
-            });
-        })
-        return tn;
+                    break;
+                case "sensors":
+                    label = game.i18n.localize("EXPANSE.CrewElectronicWarfareTest");
+                    TN=11;
+                    sensors = Number(actorData.system.sensors);
+                    chatSensors = `<b>${game.i18n.localize("EXPANSE.Sensors")}:</b> ${sensors}</br>`;
+                    loss = Number(actorData.system.losses.sensors.value);
+                    if (loss>0) {
+                        chatLoss = `<b>${game.i18n.localize("EXPANSE.chatSensorsLoss")}:</b> -${loss}</br>`;
+                    }
+                    break;
+                case "gunnary":
+                    label = game.i18n.localize("EXPANSE.CrewGunnaryTest");
+                    TN=15;
+                    break;
+                case "engineer":
+                    label = game.i18n.localize("EXPANSE.DamageControlTest");
+                    TN=11; 
+                    break;              
+                default:
+            }
+
+            if (useFocus) {
+                label += " "+game.i18n.localize("EXPANSE.WithFocus");
+                chatFocus = `<b>${game.i18n.localize("EXPANSE.Focus")}:</b> ${useFocus}</br>`;
+            }
+
+            if (TN>0) {
+                chatTN = `<b>${game.i18n.localize("EXPANSE.TargetNumber")}:</b> ${TN}</br></br>`;
+            }
+
+            const dieImage = `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die1}-${diceData.style}.png" />
+            <img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die2}-${diceData.style}.png" />
+            <img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die3}-${diceData.stunt}.png" />`
+
+            let unmodRoll = `<b>${game.i18n.localize("EXPANSE.UnmodifiedRoll")}:</b> ${die1 + die2 + die3}</br>`;
+
+            let ability =  TN ? `<b>${crewData.stat}</b></br>` : `<b>${crewData.stat}</b></br></br>` ;
+
+            let chatMod = `<b>${game.i18n.localize("EXPANSE.AbilityRating")}:</b> ${abilityMod}</br>`;
+
+            if (TN==0) {
+                if (die1 == die2 || die1 == die3 || die2 == die3 ) {
+                    SP += die3;
+                    chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
+                }
+            }
+
+            if (crewData.role == "gunnary"){
+                sensors = die3-3; 
+                chatSensors = `<b>${game.i18n.localize("EXPANSE.SensorsGunnery")}:</b> ${sensors}</br>`; 
+            }
+
+            resultsSum = die1 + die2 + die3 + abilityMod + useFocus + sensors - loss;
+
+            if (TN>0 && resultsSum >= TN) {
+                // Stunt Points Generation  
+                if (die1 == die2 || die1 == die3 || die2 == die3 || crewData.role == "captain") {
+                    if (die1 == die2 || die1 == die3 || die2 == die3) {
+                        SP += die3;
+                    }
+                    chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
+                    if(crewData.role == "captain") {                        
+                        combatData.commandPoints = SP;                      
+                    }                    
+                }
+                if(crewData.role == "engineer") {                   
+                    combatData.engineerPoints += die3;
+                }
+            }
+
+            if (TN>0 && resultsSum < TN) {
+                chatStunts = `<b class="test-failure">${game.i18n.localize("EXPANSE.TestFailure")}</b>`;
+            }
+
+            if (event.shiftKey) {
+                RollModifier().then(r => {
+                    testData = r;
+
+                    resultsSum += testData;
+                    let chatAddMod = `<b>${game.i18n.localize("EXPANSE.AdditionalModifier")}:</b> ${testData}</br>`
+                    rollCard = `
+                        ${ability}
+                        ${chatTN}
+                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        ${unmodRoll}
+                        ${chatSensors}
+                        ${chatLoss}
+                        ${chatMod}
+                        ${chatAddMod}
+                        ${chatFocus}
+                        <b>${game.i18n.localize("EXPANSE.AbilityTestResults")}:</b> ${resultsSum} <br>
+                        ${chatStunts}
+                    `
+                    ChatMessage.create({
+                        rolls: [roll],
+                        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                        flavor: label,
+                        content: rollCard,
+                        sound: CONFIG.sounds.dice
+                    });
+                    this.actor.update({ system: { combat:  combatData} });
+                })
+
+            } else {
+                rollCard = `
+                ${ability}
+                ${chatTN}
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                ${unmodRoll}
+                ${chatSensors}
+                ${chatLoss}
+                ${chatMod}
+                ${chatFocus}
+                <b>${game.i18n.localize("EXPANSE.AbilityTestResults")}:</b> ${resultsSum} <br>
+                ${chatStunts}`
+
+                ChatMessage.create({
+                    rolls: [roll],
+                    speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                    flavor: label,
+                    content: rollCard,
+                    sound: CONFIG.sounds.dice
+                });
+                this.actor.update({ system: { combat:  combatData} });
+            }
+        }
     }
 
-    AttackDamage() {
 
-    }
 
 }

@@ -70,22 +70,20 @@
 .ship .crew-header-name,
 .ship .crew-header-role,
 .ship .crew-header-stat,
+.ship .crew-header-focus,
 .ship .crew-header-roll {
     width: 23%;
 }
 
-.ship .crew-header-mod {
-    width: 10%;
-}
-
 .ship .crew-header-roll {
-    width: 5%;
+    width: 25px;
 }
 
 .ship .ship-crew-name,
 .ship .ship-crew-role,
 .ship .ship-crew-stat,
-.ship .ship-crew-mod {
+.ship .ship-crew-mod,
+.ship .ship-crew-focus {
     width: 23%;
     height: 25px;
     display: flex;
@@ -93,20 +91,27 @@
     background-color: #f3f3f3;
 }
 
-.ship .crew-header-stat,
-.ship .ship-crew-stat,
 .ship .crew-header-name,
 .ship .ship-crew-name {
-    width: 30%;
+    width: 28%;
 }
+
+.ship .crew-header-stat,
+.ship .ship-crew-stat {
+    width: 35%;
+    text-align: left;
+}
+
 .ship .ship-crew-name {
     text-align: left;
     padding-left: 5px;
 }
 
 .ship .crew-header-mod,
-.ship .ship-crew-mod {
-    width: 10%;
+.ship .ship-crew-mod,
+.ship .crew-header-focus,
+.ship .ship-crew-focus {
+    width: 5%;
 }
 
 .ship .ship-crew-role {
@@ -115,7 +120,7 @@
 
 .ship .crew-header-role,
 .ship .ship-crew-role {
-    width: 20%;
+    width: 17%;
 }
 
 .ship .ship-crew-role > select {
@@ -134,11 +139,16 @@
     width: 20px;
 }
 
+.test-failure {
+    color: red;
+}
+
 .losses-checkbox input[type=checkbox]:checked{
     accent-color: red;
 }
 .ship-losses input[type=number],  
-.ship .ship-row input[type=text] {
+.ship .ship-row input[type=text],
+.ship .ship-row input[type=number] {
     font-weight: bold;
     text-align: start;
     border: none;
@@ -167,6 +177,15 @@
     width: 40%;
 }
 
+.ship-combat-row{
+    margin-top: 5px;
+}
+
+.ship-combat-row input[type=number] {
+    width: 50px;
+    text-align: center !important;
+}
+
 .losses-checkbox-group {
     display: flex;
     flex-direction: row;
@@ -176,6 +195,7 @@
     flex-direction: row-reverse !important;
 }
 
+.ship-defense-btn,
 .ship-losses-btn {
     padding: 2px 5px 2px 5px;
     background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
@@ -316,4 +336,5 @@
     width: 100%;
     justify-content: space-between;
     margin: 5px 0;
+    align-items: center;
 }

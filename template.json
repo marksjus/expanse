@@ -276,7 +276,7 @@
             "name": "",
             "type": "",
             "drive": "",
-            "sensors": "",
+            "sensors": 0,
             "hull": "",
             "crewCount": "",
             "quality": "",
@@ -312,36 +312,42 @@
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 },
                 "crew2": {
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 },
                 "crew3": {
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 },
                 "crew4": {
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 },
                 "crew5": {
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 },
                 "crew6": {
                     "role": "",
                     "stat": "",
                     "modValue": 0,
+                    "focus": false,
                     "name": ""
                 }
             },
@@ -370,6 +376,11 @@
             "seriouslosses":{
                 "reactoroffline": false,
                 "weaponoffline": false
+            },
+            "combat":{
+                "commandPoints": 0,
+                "electronicPoints": 0,
+                "engineerPoints": 0
             }
         }
     },
