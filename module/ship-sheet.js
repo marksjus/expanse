@@ -141,6 +141,8 @@ export class ExpanseShipSheet extends ActorSheet {
 
         html.find('.crew-roll').click(this._onCrewRoll.bind(this));
 
+        html.find('.defense-roll').click(this._onDefenseRoll.bind(this));
+
         html.find('.simple-loss').click(this._onRollSimpleLoss.bind(this));
 
         html.find('.serious-loss').click(this._onRollSimpleLoss.bind(this));
@@ -589,7 +591,7 @@ export class ExpanseShipSheet extends ActorSheet {
                 d1 = 6;
             }
 
-            let roll = new Roll(`2d${d2} + 1d${d1} + @modValue`, crewData);
+            let roll = new Roll(`2d${d2} + 1d${d1}`);
             await roll.evaluate();
 
             let useFocus = crewData.focus ? 2 : 0;
@@ -629,7 +631,7 @@ export class ExpanseShipSheet extends ActorSheet {
                 case "engineer":
                     label = game.i18n.localize("EXPANSE.DamageControlTest");
                     TN=11; 
-                    break;              
+                    break;             
                 default:
             }
 
@@ -736,6 +738,95 @@ export class ExpanseShipSheet extends ActorSheet {
                     sound: CONFIG.sounds.dice
                 });
                 this.actor.update({ system: { combat:  combatData} });
+            }
+        }
+    }
+
+    async _onDefenseRoll(event){
+        event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+        const data = super.getData();
+        const actorData = data.actor.system;
+        let testData;
+
+        if (dataset.roll) {
+            const diceData = diceRollType();
+            let die1 = 0; let die2 = 0; let die3 = 0;
+            let d2; let d1;
+            let rollCard = "";
+            let sensors = Number(actorData.sensors);
+            let chatSensors = `<b>${game.i18n.localize("EXPANSE.Sensors")}:</b> ${sensors}</br>`; ;
+            let loss = Number(actorData.losses.sensors.value);
+            let chatLoss = "";
+            let resultsSum;
+            const label = game.i18n.localize("EXPANSE.DefenseTest");
+
+            if (loss>0) {
+                chatLoss = `<b>${game.i18n.localize("EXPANSE.chatSensorsLoss")}:</b> -${loss}</br>`;
+            }
+            // need to conditionally set d2 d1. if game.module for dsn is true, use the dice data, if not use 6;
+            if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+                d2 = diceData.nice[0];
+                d1 = diceData.nice[1];
+            } else {
+                d2 = 6;
+                d1 = 6;
+            }
+
+            let roll = new Roll(`2d${d2} + 1d${d1}`);
+            await roll.evaluate();
+
+            [die1, die2] = roll.terms[0].results.map(i => i.result);
+            [die3] = roll.terms[2].results.map(i => i.result);
+
+            const dieImage = `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die1}-${diceData.style}.png" />
+            <img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die2}-${diceData.style}.png" />
+            <img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${die3}-${diceData.stunt}.png" />`
+
+            let unmodRoll = `<b>${game.i18n.localize("EXPANSE.UnmodifiedRoll")}:</b> ${die1 + die2 + die3}</br>`;
+
+            resultsSum = die1 + die2 + die3 + sensors - loss;
+
+            if (event.shiftKey) {
+                RollModifier().then(r => {
+                    testData = r;
+
+                    resultsSum += testData;
+                    let chatAddMod = `<b>${game.i18n.localize("EXPANSE.AdditionalModifier")}:</b> ${testData}</br>`
+                    rollCard = `
+                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        ${unmodRoll}
+                        ${chatSensors}
+                        ${chatLoss}
+                        ${chatAddMod}
+                        <b>${game.i18n.localize("EXPANSE.DefenseTestResults")}:</b> ${resultsSum} <br>
+                    `
+                    ChatMessage.create({
+                        rolls: [roll],
+                        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                        flavor: label,
+                        content: rollCard,
+                        sound: CONFIG.sounds.dice
+                    });
+                })
+
+            } else {
+                rollCard = `
+                    <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                    ${unmodRoll}
+                    ${chatSensors}
+                    ${chatLoss}
+                    <b>${game.i18n.localize("EXPANSE.DefenseTestResults")}:</b> ${resultsSum} <br>
+                `
+
+                ChatMessage.create({
+                    rolls: [roll],
+                    speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                    flavor: label,
+                    content: rollCard,
+                    sound: CONFIG.sounds.dice
+                });
             }
         }
     }

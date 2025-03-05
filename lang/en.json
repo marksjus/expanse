@@ -198,6 +198,8 @@
     "EXPANSE.UnmodifiedRoll": "Unmodified Roll",
     "EXPANSE.AbilityTestResults": "Ability Test Results",
     "EXPANSE.AdditionalModifier": "Additional Modifier",
+    "EXPANSE.DefenseTest": "Automatic Point Defense",
+    "EXPANSE.DefenseTestResults": "Point Defense Test Results",
     "SETTINGS.BeltDark": "Belter: Black dice - white stunt die.",
     "SETTINGS.BeltLight": "Belter: White dice - black stunt die.",
     "SETTINGS.DiceChoice": "Dice Style",
