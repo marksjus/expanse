@@ -490,23 +490,24 @@ export class ExpanseShipSheet extends ActorSheet {
         const data = super.getData();
         const actorData = data.actor.system;
         const diceData = diceRollType();
-        let roll = dataset.roll;        
+        let rollData = dataset.roll;        
         let text = "";
         let flavor = "";
         let dieImage = "";
         let damage = 0;
+        let loss = 0;
 
         const pattern = new RegExp("[0-9]+d6", "g");
-        if(dataset.roll.match(pattern)) {
+        if(rollData.match(pattern)) {
         
             // dice-so-nice
             if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-                roll = roll.substring(0, 2) + diceData.nice[0];
+                rollData = rollData.substring(0, 2) + diceData.nice[0];
             }
 
-            let collateralRoll = new Roll(roll);
-            await collateralRoll.evaluate();
-            let dies = collateralRoll.terms[0].results.map(i => i.result);
+            let roll = new Roll(rollData);
+            await roll.evaluate();
+            let dies = roll.terms[0].results.map(i => i.result);
 
             for (let i = 0; i < dies.length; i++) {
                 dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
@@ -516,19 +517,33 @@ export class ExpanseShipSheet extends ActorSheet {
             
             switch (dataset.label) {
                 case "hull-roll":
-                    flavor = `<b>${game.i18n.localize("EXPANSE.ShipHullRoll")}</b>`,
-                    text += `</br>${game.i18n.format("EXPANSE.HullScore",{damage:damage})}`;
+                    flavor = `<b>${game.i18n.localize("EXPANSE.ShipHullRoll")}</b>`, 
+                    loss = Number(actorData.losses.hull.value);
+                    if (loss>0) {
+                        text += `</br><b>${game.i18n.localize("EXPANSE.chatHullLoss")}:</b> -${loss}</br>`;
+                    } else {
+                        text += "</br>";
+                    }
+                    damage = (damage-loss >0) ? damage-loss : 0;
+                    text += `${game.i18n.format("EXPANSE.HullScore",{damage:damage})}`;
                     break;
                 case "weapon-roll":
                     let weapon = actorData[dataset.weapon].type;
                     flavor = `<b>${game.i18n.localize("EXPANSE.ShipDamageRoll")}${weapon}</b>`,
-                    text += `</br>${game.i18n.format("EXPANSE.DealDamage",{damage:damage})}`;
+                    loss = Number(actorData.losses.weapons.value);
+                    if (loss>0) {
+                        text += `</br><b>${game.i18n.localize("EXPANSE.chatWeaponsLoss")}:</b> -${loss}</br>`;
+                    } else {
+                        text += "</br>";
+                    }
+                    damage = (damage-loss >0) ? damage-loss : 0;
+                    text += `${game.i18n.format("EXPANSE.DealDamage",{damage:damage})}`;
                     break;
                 default:
             }
 
             ChatMessage.create({
-                rolls: [collateralRoll],
+                rolls: [roll],
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: flavor,
                 content: text,
