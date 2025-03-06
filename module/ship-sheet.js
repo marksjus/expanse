@@ -562,7 +562,6 @@ export class ExpanseShipSheet extends ActorSheet {
         const data = super.getData();
         const actorData = data.actor;
         const crewData = actorData.system.crew[dataset.crew];
-        console.log(crewData);
         let testData;
 
         if (dataset.roll) {
@@ -668,31 +667,32 @@ export class ExpanseShipSheet extends ActorSheet {
 
             resultsSum = die1 + die2 + die3 + abilityMod + useFocus + sensors - loss;
 
-            if (TN>0 && resultsSum >= TN) {
-                // Stunt Points Generation  
-                if (die1 == die2 || die1 == die3 || die2 == die3 || crewData.role == "captain") {
-                    if (die1 == die2 || die1 == die3 || die2 == die3) {
-                        SP += die3;
-                    }
-                    chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
-                    if(crewData.role == "captain") {                        
-                        combatData.commandPoints = SP;                      
-                    }                    
-                }
-                if(crewData.role == "engineer") {                   
-                    combatData.engineerPoints += die3;
-                }
-            }
-
-            if (TN>0 && resultsSum < TN) {
-                chatStunts = `<b class="test-failure">${game.i18n.localize("EXPANSE.TestFailure")}</b>`;
-            }
-
             if (event.shiftKey) {
                 RollModifier().then(r => {
                     testData = r;
 
                     resultsSum += testData;
+
+                    if (TN>0 && resultsSum >= TN) {
+                        // Stunt Points Generation  
+                        if (die1 == die2 || die1 == die3 || die2 == die3 || crewData.role == "captain") {
+                            if (die1 == die2 || die1 == die3 || die2 == die3) {
+                                SP += die3;
+                            }
+                            chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
+                            if(crewData.role == "captain") {                        
+                                combatData.commandPoints = SP;                      
+                            }                    
+                        }
+                        if(crewData.role == "engineer") {                   
+                            combatData.engineerPoints += die3;
+                        }
+                    }
+        
+                    if (TN>0 && resultsSum < TN) {
+                        chatStunts = `<b class="test-failure">${game.i18n.localize("EXPANSE.TestFailure")}</b>`;
+                    }
+
                     let chatAddMod = `<b>${game.i18n.localize("EXPANSE.AdditionalModifier")}:</b> ${testData}</br>`
                     rollCard = `
                         ${ability}
@@ -718,6 +718,27 @@ export class ExpanseShipSheet extends ActorSheet {
                 })
 
             } else {
+                
+                if (TN>0 && resultsSum >= TN) {
+                    // Stunt Points Generation  
+                    if (die1 == die2 || die1 == die3 || die2 == die3 || crewData.role == "captain") {
+                        if (die1 == die2 || die1 == die3 || die2 == die3) {
+                            SP += die3;
+                        }
+                        chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
+                        if(crewData.role == "captain") {                        
+                            combatData.commandPoints = SP;                      
+                        }                    
+                    }
+                    if(crewData.role == "engineer") {                   
+                        combatData.engineerPoints += die3;
+                    }
+                }
+    
+                if (TN>0 && resultsSum < TN) {
+                    chatStunts = `<b class="test-failure">${game.i18n.localize("EXPANSE.TestFailure")}</b>`;
+                }
+                
                 rollCard = `
                 ${ability}
                 ${chatTN}
