@@ -46,6 +46,11 @@ Hooks.on('diceSoNiceRollComplete', (messageId) => {
         const actor = game.actors.get(message.speaker.actor);
         actor.update({ system: { combat:  actor.system.combat} });
     }
+    if (message.flags.losses) {
+        const actor = game.actors.get(message.speaker.actor);
+        actor.update({ system: { losses:  actor.system.losses} });
+        actor.update({ system: { seriouslosses:  actor.system.seriouslosses} });
+    }
     
 });
 
@@ -295,9 +300,11 @@ export class ExpanseShipSheet extends ActorSheet {
             const diceData = diceRollType();
             let conditionsCount = 0;
             let flavor = "";
+            let flags = {};
             let conditionsText = "";
             let reductionText = "";
             let reductionRoll;
+            let dns = false;
             //Single loss, two conditions.
             if (dataset.roll == "1d6") {
                 flavor = "<b>"+game.i18n.localize("EXPANSE.Losses.SingleLoss")+"</b>";
@@ -335,6 +342,8 @@ export class ExpanseShipSheet extends ActorSheet {
                 // dice-so-nice
                 if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
                     roll = roll.substring(0, 2) + diceData.nice[0];
+                    dns = true;
+                    flags["losses"] = true;
                 }
 
                 reductionRoll = new Roll(roll);
@@ -361,13 +370,17 @@ export class ExpanseShipSheet extends ActorSheet {
                                     collateralDamageCount++;
                                 }
                                 losses[lossesKeys[conditionId]].value +=  1;
-                                this.actor.update({ system: { losses: losses } });
+                                if (!dns) {
+                                    this.actor.update({ system: { losses: losses } });
+                                }
                                 conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
                             };
                             if ( seriousFlag && !value) {
                                 conditionApplied = true;
                                 losses[lossesKeys[conditionId]].value = true;
-                                this.actor.update({ system: { seriouslosses: losses } });
+                                if (!dns) {
+                                    this.actor.update({ system: { seriouslosses: losses } });
+                                }
                                 conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
                             };
                         }
@@ -388,6 +401,7 @@ export class ExpanseShipSheet extends ActorSheet {
                         rolls: [reductionRoll],
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: flavor,
+                        flags: flags,
                         content: rollCard,
                         sound: CONFIG.sounds.dice
                     }); 
@@ -427,9 +441,22 @@ export class ExpanseShipSheet extends ActorSheet {
                         };
                         if (validate == conditionsCount) {
                             if (seriousFlag) {
-                                this.actor.update({ system: { seriouslosses: tmp } });
+                                if (!dns) {
+                                    this.actor.update({ system: { losses: tmp } });
+                                } else {
+                                    for (let [k, v] of Object.entries(losses)) {
+                                        v.value = tmp[k].value;
+                                    }
+                                }
                             } else {
-                                this.actor.update({ system: { losses: tmp } });
+                                if (!dns) {
+                                    this.actor.update({ system: { losses: tmp } });
+                                } else {
+                                    for (const [k, v] of Object.entries(losses)) {
+                                        v.value = tmp[k].value;
+                                    }
+                                }
+                                
                             }
                             
 
@@ -450,6 +477,7 @@ export class ExpanseShipSheet extends ActorSheet {
                                 rolls: [reductionRoll],
                                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                                 flavor: flavor,
+                                flags: flags,
                                 content: rollCard,
                                 sound: CONFIG.sounds.dice
                             }); 
@@ -730,7 +758,7 @@ export class ExpanseShipSheet extends ActorSheet {
                         flags: flags,
                         sound: CONFIG.sounds.dice
                     });
-                    
+
                     if (!dsn) {
                         this.actor.update({ system: { combat:  combatData} });
                     }
