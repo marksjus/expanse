@@ -589,7 +589,13 @@ export class ExpanseShipSheet extends ActorSheet {
                 content: text,
                 sound: CONFIG.sounds.dice
             });  
-        } 
+        } else {
+            ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                flavor: game.i18n.localize("EXPANSE.Error"),
+                content: `<b>${game.i18n.localize("EXPANSE.IncorrectRollDataValue")}<b>`
+            }); 
+        }
     }
 
     async _onCrewRoll(event) {
