@@ -39,6 +39,16 @@ Hooks.on('ready', () => {
     });
 });
 
+Hooks.on('diceSoNiceRollComplete', (messageId) => {
+    
+    const message = ChatMessage.get(messageId);    
+    if (message.flags.commandTest || message.flags.engineerTest) {
+        const actor = game.actors.get(message.speaker.actor);
+        actor.update({ system: { combat:  actor.system.combat} });
+    }
+    
+});
+
 export class ExpanseShipSheet extends ActorSheet {
 
     static get defaultOptions() {
@@ -581,10 +591,13 @@ export class ExpanseShipSheet extends ActorSheet {
             let chatLoss = "";
             let condModWarning;
             let resultsSum;
+            let flags = {};
+            let dsn = false;
             // need to conditionally set d2 d1. if game.module for dsn is true, use the dice data, if not use 6;
             if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
                 d2 = diceData.nice[0];
                 d1 = diceData.nice[1];
+                dsn = true;
             } else {
                 d2 = 6;
                 d1 = 6;
@@ -681,11 +694,13 @@ export class ExpanseShipSheet extends ActorSheet {
                             }
                             chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
                             if(crewData.role == "captain") {                        
-                                combatData.commandPoints = SP;                      
+                                combatData.commandPoints = SP;
+                                flags["commandTest"] = 1;                      
                             }                    
                         }
                         if(crewData.role == "engineer") {                   
                             combatData.engineerPoints += die3;
+                            flags["engineerTest"] = 1; 
                         }
                     }
         
@@ -712,9 +727,13 @@ export class ExpanseShipSheet extends ActorSheet {
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
+                        flags: flags,
                         sound: CONFIG.sounds.dice
                     });
-                    this.actor.update({ system: { combat:  combatData} });
+                    
+                    if (!dsn) {
+                        this.actor.update({ system: { combat:  combatData} });
+                    }
                 })
 
             } else {
@@ -727,16 +746,22 @@ export class ExpanseShipSheet extends ActorSheet {
                         }
                         chatStunts = `<b>${game.i18n.format("EXPANSE.ChatStunts",{SP:SP})}</b>`;
                         if(crewData.role == "captain") {                        
-                            combatData.commandPoints = SP;                      
+                            combatData.commandPoints = SP; 
+                            flags["commandTest"] = 1;                       
                         }                    
                     }
                     if(crewData.role == "engineer") {                   
                         combatData.engineerPoints += die3;
+                        flags["engineerTest"] = 1;  
                     }
                 }
     
                 if (TN>0 && resultsSum < TN) {
                     chatStunts = `<b class="test-failure">${game.i18n.localize("EXPANSE.TestFailure")}</b>`;
+                    if(crewData.role == "captain") {                        
+                        combatData.commandPoints = 0; 
+                        flags["commandTest"] = 1;                       
+                    } 
                 }
                 
                 rollCard = `
@@ -756,9 +781,13 @@ export class ExpanseShipSheet extends ActorSheet {
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                     flavor: label,
                     content: rollCard,
+                    flags: flags,
                     sound: CONFIG.sounds.dice
                 });
-                this.actor.update({ system: { combat:  combatData} });
+
+                if (!dsn) {
+                    this.actor.update({ system: { combat:  combatData} });
+                }
             }
         }
     }
