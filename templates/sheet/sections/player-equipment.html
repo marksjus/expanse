@@ -11,6 +11,7 @@
             <span>{{localize "EXPANSE.Name" }}</span>
             <span>{{localize "EXPANSE.Damage" }}</span>
             <span>{{localize "EXPANSE.AttackBonus" }}</span>
+            <span>{{localize "EXPANSE.Range" }}</span>
             <span>{{localize "EXPANSE.MaxRange" }}</span>
             <span>{{localize "EXPANSE.Focus" }}</span>
             <span>{{localize "EXPANSE.Hit" }}</span>
@@ -33,6 +34,10 @@
                         <!-- route bonus through prepData pick up bonus used in mod + if relavant focus is checked-->
                         <div class="weapon-list-item">
                             {{weapon.system.attack}}
+                        </div>
+
+                        <div class="weapon-list-item">
+                            {{weapon.system.rangemin}}
                         </div>
 
                         <div class="weapon-list-item">
