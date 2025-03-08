@@ -424,7 +424,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     resultsSum += testData;
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
-                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        <div class="chat-dice-box">${dieImage}</div><br>
                         ${unmodRoll}
                         ${chatMod}
                         ${chatAddMod}
@@ -445,7 +445,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
             } else {
                 rollCard = `
-                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                <div class="chat-dice-box">${dieImage}</div><br>
                 ${unmodRoll}
                 ${chatMod}
                 ${chatFocus}
@@ -510,7 +510,7 @@ export class ExpanseActorSheet extends ActorSheet {
             let chatDamageTotal = `You do <b>${totalDamage}</b> points of damage.</br></br>
             Subtract the enemies Toughness and Armor for total damage received`;
 
-            let rollCard = `<div style="display: flex; flex-direction: row; justify-content: space-around;">${diceImageArray}</div></br>
+            let rollCard = `<div class="chat-dice-box">${diceImageArray}</div></br>
                 ${chatDamage}
                 ${chatBonusDamage}
                 ${chatDamageTotal}
@@ -548,7 +548,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     let chatDamageTotal = `You do <b>${totalDamage}</b> points of damage.</br></br>
                         Subtract the enemies Toughness and Armor for total damage received`;
 
-                    let rollCard = `<div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">${diceImageArray}</div></br>
+                    let rollCard = `<div class="chat-dice-box">${diceImageArray}</div></br>
                         ${chatDamage}
                         ${chatBonusDamage}
                         ${chatExtraDamage}
@@ -602,7 +602,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
         let rollCard;
 
-        const chatDice = `<div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">${diceImageArray}</div></br>`
+        const chatDice = `<div class="chat-dice-box">${diceImageArray}</div></br>`
         const chatIncome = `<b>Income:</b> ${income}</br>`
         const chatResult = `<b>Result:</b> ${incomeResult}</br>`
         const incomeSuccess = `</br><i>You are able to successfully secure the item or service.</i>`;
@@ -790,7 +790,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     resultsSum += testData;
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
-                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        <div class="chat-dice-box">${dieImage}</div><br>
                         ${unmodRoll}
                         ${chatMod}
                         ${chatAddMod}
@@ -811,7 +811,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
             } else {
                 rollCard = `
-                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                <div class="chat-dice-box">${dieImage}</div><br>
                 ${unmodRoll}
                 ${chatMod}
                 ${chatFocus}
