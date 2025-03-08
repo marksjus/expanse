@@ -185,6 +185,7 @@
     "EXPANSE.WeaponType": "Type",
     "EXPANSE.WeaponDescription": "Description",
     "EXPANSE.WeaponDamage": "DMG",
+    "EXPANSE.DamageRoll": "Damage Roll",
     "EXPANSE.DealDamage": "Deal <b>{damage}</b> points of damage.",
     "EXPANSE.ShipDamageRoll": "Attacking with ",
     "EXPANSE.ShipHullRoll": "Hull Score",
