@@ -201,6 +201,8 @@
     "EXPANSE.DamageControlTest": "Damage Control Test",
     "EXPANSE.DefenseTest": "Automatic Point Defense",
     "EXPANSE.DefenseTestResults": "Point Defense Test Results",
+    "EXPANSE.Error": "Error",
+    "EXPANSE.IncorrectRollDataValue": "Incorrect Roll Data Value!",
     "SETTINGS.BeltDark": "Belter: Black dice - white stunt die.",
     "SETTINGS.BeltLight": "Belter: White dice - black stunt die.",
     "SETTINGS.DiceChoice": "Dice Style",
