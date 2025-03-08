@@ -313,6 +313,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 },
                 "crew2": {
@@ -320,6 +321,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 },
                 "crew3": {
@@ -327,6 +329,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 },
                 "crew4": {
@@ -334,6 +337,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 },
                 "crew5": {
@@ -341,6 +345,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 },
                 "crew6": {
@@ -348,6 +353,7 @@
                     "stat": "",
                     "modValue": 0,
                     "focus": false,
+                    "buttonTitle": "",
                     "name": ""
                 }
             },

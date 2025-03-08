@@ -152,6 +152,8 @@ export class ExpanseShipSheet extends ActorSheet {
             }
         });
 
+        html.find('.crew-type-selector').change(this._onCrewTypeSelect.bind(this));
+
         html.find('.rollable').click(this._onRoll.bind(this));
 
         html.find('.crew-roll').click(this._onCrewRoll.bind(this));
@@ -231,6 +233,35 @@ export class ExpanseShipSheet extends ActorSheet {
                 });
             }
         });
+    }
+
+    async _onCrewTypeSelect(event){
+        const data = super.getData();
+        const role = event.currentTarget.value;
+        const crewName = event.currentTarget.dataset.crew
+        const crewData = data.actor.system.crew;
+
+        const ability = {
+            "captain" : `${game.i18n.localize("EXPANSE.Communication")} (${game.i18n.localize("EXPANSE.Leadership")})`,
+            "pilot" : `${game.i18n.localize("EXPANSE.Dexterity")} (${game.i18n.localize("EXPANSE.Piloting")})`,
+            "sensors" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Technology")})`,
+            "gunnary" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
+            "engineer" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Engineering")})`,
+            "other" : ""
+        }   
+        
+        const buttonTitle = {
+            "captain" : game.i18n.localize("EXPANSE.CrewCommandTest"),
+            "pilot" : game.i18n.localize("EXPANSE.CrewPilotTest"),
+            "sensors" : game.i18n.localize("EXPANSE.CrewElectronicWarfareTest"),
+            "gunnary" : game.i18n.localize("EXPANSE.CrewGunnaryTest"),
+            "engineer" : game.i18n.localize("EXPANSE.CrewDamageControlTest"),
+            "other" : ""
+        } 
+
+        crewData[crewName].stat = ability[role];
+        crewData[crewName].buttonTitle = buttonTitle[role];
+        this.actor.update({ system: { crew: crewData} });
     }
 
     async _onConditionChange(event) {
@@ -675,7 +706,7 @@ export class ExpanseShipSheet extends ActorSheet {
                     TN=15;
                     break;
                 case "engineer":
-                    label = game.i18n.localize("EXPANSE.DamageControlTest");
+                    label = game.i18n.localize("EXPANSE.CrewDamageControlTest");
                     TN=11; 
                     break;             
                 default:

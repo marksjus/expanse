@@ -139,7 +139,7 @@
                     value="{{name}}" />
 
                     <div class="ship-crew-role">
-                        <select type="text" name="system.crew.{{key}}.role" data-dtype="String">
+                        <select class="crew-type-selector" type="text" name="system.crew.{{key}}.role" data-crew="{{key}}" data-dtype="String">
                             {{#select role}}
                             <option value="" selected></option>
                             <option value="captain">{{localize "EXPANSE.ship.captain" }}</option>
@@ -159,7 +159,7 @@
 
                     <input class="ship-crew-focus" type="checkbox" name="system.crew.{{key}}.focus" {{checked focus}}>
 
-                    <div class="ability-btn crew-roll ship-crew-roll-button crew-header-roll" data-crew="{{key}}" data-roll="3d6" data-label="crew-roll"></div>
+                    <div class="ability-btn crew-roll ship-crew-roll-button crew-header-roll" data-crew="{{key}}" data-roll="3d6" data-label="crew-roll" title="{{buttonTitle}}"></div>
                 </div>
                 {{/each}}
             </div>
