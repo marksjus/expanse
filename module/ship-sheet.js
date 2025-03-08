@@ -12,7 +12,8 @@ Hooks.on('ready', () => {
         let damage = 0;
         // dice-so-nice
         if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-            roll = roll.substring(0, 2) + diceData.nice[0];
+            const dsnFormat = "d"+diceData.nice[0];
+            roll = roll.replace("d6",dsnFormat);
         }
 
         let collateralRoll = new Roll(roll);
@@ -23,7 +24,7 @@ Hooks.on('ready', () => {
             dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
             damage += dies[i];
         }
-        text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+        text += `<div class="chat-dice-box">${dieImage}</div>`;
 
         for (let i = 0; i<dies.length; i++) {
             text += "</br><b>"+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+": "+dies[i]+"</b>";
@@ -372,7 +373,8 @@ export class ExpanseShipSheet extends ActorSheet {
                 let roll = dataset.roll; 
                 // dice-so-nice
                 if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-                    roll = roll.substring(0, 2) + diceData.nice[0];
+                    const dsnFormat = "d"+diceData.nice[0];
+                    roll = roll.replace("d6",dsnFormat);
                     dns = true;
                     flags["losses"] = true;
                 }
@@ -385,7 +387,7 @@ export class ExpanseShipSheet extends ActorSheet {
                     dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
                     damage += dies[i];
                 }
-                reductionText += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+                reductionText += `<div class="chat-dice-box">${dieImage}</div>`;
 
                 reductionText += "</br><b>"+game.i18n.localize("EXPANSE.Losses.DamageReduce")+damage+"</b>";
 
@@ -573,7 +575,8 @@ export class ExpanseShipSheet extends ActorSheet {
         
             // dice-so-nice
             if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-                rollData = rollData.substring(0, 2) + diceData.nice[0];
+                const dsnFormat = "d"+diceData.nice[0];
+                rollData = rollData.replace("d6",dsnFormat);
             }
 
             let roll = new Roll(rollData);
@@ -584,7 +587,7 @@ export class ExpanseShipSheet extends ActorSheet {
                 dieImage += `<img height="75px" width="75px" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${dies[i]}-${diceData.style}.png" />`;
                 damage += dies[i];
             }
-            text += `<div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div>`;
+            text += `<div class="chat-dice-box">${dieImage}</div>`;
             
             switch (dataset.label) {
                 case "hull-roll":
@@ -777,7 +780,7 @@ export class ExpanseShipSheet extends ActorSheet {
                     rollCard = `
                         ${ability}
                         ${chatTN}
-                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        <div class="chat-dice-box">${dieImage}</div><br>
                         ${unmodRoll}
                         ${chatSensors}
                         ${chatLoss}
@@ -832,7 +835,7 @@ export class ExpanseShipSheet extends ActorSheet {
                 rollCard = `
                 ${ability}
                 ${chatTN}
-                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                <div class="chat-dice-box">${dieImage}</div><br>
                 ${unmodRoll}
                 ${chatSensors}
                 ${chatLoss}
@@ -910,7 +913,7 @@ export class ExpanseShipSheet extends ActorSheet {
                     resultsSum += testData;
                     let chatAddMod = `<b>${game.i18n.localize("EXPANSE.AdditionalModifier")}:</b> ${testData}</br>`
                     rollCard = `
-                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                        <div class="chat-dice-box">${dieImage}</div><br>
                         ${unmodRoll}
                         ${chatSensors}
                         ${chatLoss}
@@ -928,7 +931,7 @@ export class ExpanseShipSheet extends ActorSheet {
 
             } else {
                 rollCard = `
-                    <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
+                    <div class="chat-dice-box">${dieImage}</div><br>
                     ${unmodRoll}
                     ${chatSensors}
                     ${chatLoss}
