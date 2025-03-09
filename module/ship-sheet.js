@@ -1,5 +1,6 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier} from "./rolling/modifiers.js";
+import { migrateShipData } from "./shipDataMigration.js";
 
 Hooks.on('ready', () => {
     $(document).on('click', '.collateralDamageButton', async function (event) {
@@ -75,6 +76,7 @@ export class ExpanseShipSheet extends ActorSheet {
 
     async getData() {
         const sheetData = super.getData();
+        migrateShipData(this.actor);
 
         sheetData.dtypes = ["String", "Number", "Boolean"];
 
