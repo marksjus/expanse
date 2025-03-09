@@ -457,13 +457,17 @@ blockquote {
     width: 15px;
 }
 
+.ability-modifiers{
+    display: flex;
+    flex-direction: row;
+}
+
 .ability-penalty-box {
     display: flex;
     flex-direction: row;
     width: 100%;
     align-items: center;
     justify-content: flex-end;
-    padding: 0px 0px 0px 50px;
 }
 
 .ability-penalty-box > span {
@@ -475,9 +479,9 @@ blockquote {
 .ability-focus-box {
     display: flex;
     flex-direction: row;
-    width: 50%;
     align-items: center;
     justify-content: flex-end;
+    margin-left: 5px;
 }
 
 .ability-focus-box>span {
