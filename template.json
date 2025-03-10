@@ -276,7 +276,7 @@
             "name": "",
             "type": "",
             "drive": "",
-            "sensors": "",
+            "sensors": 0,
             "hull": "",
             "crewCount": "",
             "quality": "",
