@@ -31,7 +31,7 @@
                             <span class="margin-l-5">{{localize "EXPANSE.Requirements" }}:</span>
                         </div>
                         <div class="talents-requirements">
-                            {{editor enrichment.system.requirements target="system.requirements" button=true owner=owner
+                            {{editor enrichment.system.requirements target="system.requirements" engine="prosemirror" button=true owner=owner
                             editable=true}}
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                             <span class="margin-l-5">{{localize "EXPANSE.Description" }}:</span>
                         </div>
                         <div class="talents-requirements">
-                            {{editor enrichment.system.description target="system.description" button=true owner=owner
+                            {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner
                             editable=true}}
                         </div>
                     </div>
@@ -60,7 +60,7 @@
 
                         </div>
                         <div class="talents-effect">
-                            {{editor enrichment.system.ranks.novice.effect target="system.ranks.novice.effect" button=true
+                            {{editor enrichment.system.ranks.novice.effect target="system.ranks.novice.effect" engine="prosemirror" button=true
                             owner=owner editable=true}}
                         </div>
                     </div>
@@ -76,7 +76,7 @@
 
                         </div>
                         <div class="talents-effect">
-                            {{editor enrichment.system.ranks.expert.effect target="system.ranks.expert.effect" button=true
+                            {{editor enrichment.system.ranks.expert.effect target="system.ranks.expert.effect" engine="prosemirror" button=true
                             owner=owner editable=true}}
                         </div>
                     </div>
@@ -92,7 +92,7 @@
 
                         </div>
                         <div class="talents-effect">
-                            {{editor enrichment.system.ranks.master.effect target="system.ranks.master.effect" button=true
+                            {{editor enrichment.system.ranks.master.effect target="system.ranks.master.effect" engine="prosemirror" button=true
                             owner=owner editable=true}}
                         </div>
                     </div>
