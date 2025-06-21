@@ -193,10 +193,6 @@ img {
     flex: none;
 }
 
-.sheet>* {
-    flex: unset;
-}
-
 .sheet {
     font-family: 'Anton', sans-serif;
 }
