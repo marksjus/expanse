@@ -1,4 +1,4 @@
-export class ExpanseItemSheet extends ItemSheet {
+export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
 
     constructor(...args) {
         super(...args);

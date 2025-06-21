@@ -56,7 +56,7 @@ Hooks.on('diceSoNiceRollComplete', (messageId) => {
     
 });
 
-export class ExpanseShipSheet extends ActorSheet {
+export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {

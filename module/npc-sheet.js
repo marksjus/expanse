@@ -1,7 +1,7 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier, RollDamageModifier } from "./rolling/modifiers.js"
 
-export class ExpanseNPCSheet extends ActorSheet {
+export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
 
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {

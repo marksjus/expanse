@@ -2,7 +2,7 @@ import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier, RollDamageModifier } from "./rolling/modifiers.js";
 import { migrateFocus } from "./focusMigration.js";
 
-export class ExpanseActorSheet extends ActorSheet {
+export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {

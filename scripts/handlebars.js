@@ -13,7 +13,7 @@ function preloadHandlebarsTemplates() {
         "systems/expanse/templates/sheet/sections/player-biography.html",
         "systems/expanse/templates/sheet/sections/player-notes.html",
     ];
-    return loadTemplates(templatePaths);
+    return foundry.applications.handlebars.loadTemplates(templatePaths);
 }
 
 function registerHandlebarsHelpers() {
