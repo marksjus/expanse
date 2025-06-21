@@ -144,10 +144,10 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     async _enrichBio() {
         let enrichment = {};
-        enrichment[`system.bio.notes`] = await TextEditor.enrichHTML(this.actor.system.bio.notes, { relativeTo: this.actor });
-        enrichment[`system.bio.appearance`] = await TextEditor.enrichHTML(this.actor.system.bio.appearance, { relativeTo: this.actor });
-        enrichment[`system.bio.relationships`] = await TextEditor.enrichHTML(this.actor.system.bio.relationships, { relativeTo: this.actor });
-        enrichment[`system.bio.goals`] = await TextEditor.enrichHTML(this.actor.system.bio.goals, { relativeTo: this.actor });
+        enrichment[`system.bio.notes`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.notes, { relativeTo: this.actor });
+        enrichment[`system.bio.appearance`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.appearance, { relativeTo: this.actor });
+        enrichment[`system.bio.relationships`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.relationships, { relativeTo: this.actor });
+        enrichment[`system.bio.goals`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.goals, { relativeTo: this.actor });
         return foundry.utils.expandObject(enrichment);
     }
 
@@ -155,7 +155,7 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
         super.activateListeners(html);
         let tabs = html.find('tabs');
         let initial = this._sheetTab;
-        new Tabs(tabs, {
+        new foundry.applications.ux.Tabs(tabs, {
             initial: initial,
             callback: clicked => this._sheetTab = clicked.data("tab")
         });

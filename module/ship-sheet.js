@@ -105,7 +105,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     async _enrichBio() {
         let enrichment = {};
-        enrichment[`system.notes`] = await TextEditor.enrichHTML(this.actor.system.notes, { relativeTo: this.actor });
+        enrichment[`system.notes`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.notes, { relativeTo: this.actor });
         return foundry.utils.expandObject(enrichment);
     }
 
@@ -113,7 +113,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         super.activateListeners(html);
         let tabs = html.find('tabs');
         let initial = this._sheetTab;
-        new Tabs(tabs, {
+        new foundry.applications.ux.Tabs(tabs, {
             initial: initial,
             callback: clicked => this._sheetTab = clicked.data("tab")
         });

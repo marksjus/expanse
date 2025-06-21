@@ -84,12 +84,12 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
 
     async _enrichItem() {
         let enrichment = {};
-        enrichment[`system.description`] = await TextEditor.enrichHTML(this.item.system.description, { relativeTo: this.actor });
+        enrichment[`system.description`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.description, { relativeTo: this.actor });
         if (this.item.type === "talent") {
-            enrichment[`system.requirements`] = await TextEditor.enrichHTML(this.item.system.requirements, { relativeTo: this.actor });
-            enrichment[`system.ranks.novice.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.novice.effect, { relativeTo: this.actor });
-            enrichment[`system.ranks.expert.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.expert.effect, { relativeTo: this.actor });
-            enrichment[`system.ranks.master.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.master.effect, { relativeTo: this.actor });
+            enrichment[`system.requirements`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.requirements, { relativeTo: this.actor });
+            enrichment[`system.ranks.novice.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.novice.effect, { relativeTo: this.actor });
+            enrichment[`system.ranks.expert.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.expert.effect, { relativeTo: this.actor });
+            enrichment[`system.ranks.master.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.master.effect, { relativeTo: this.actor });
         }
 
         return foundry.utils.expandObject(enrichment);
@@ -99,7 +99,7 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
         super.activateListeners(html);
         let tabs = html.find('tabs');
         let initial = this._sheetTab;
-        new Tabs(tabs, {
+        new foundry.applications.ux.Tabs(tabs, {
             initial: initial,
             callback: clicked => this._sheetTab = clicked.data("tab")
         });
