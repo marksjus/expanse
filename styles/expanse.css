@@ -1035,7 +1035,6 @@ input[type=checkbox] {
 
 .sheet .weapon-list-item {
     display: flex;
-    width: 100%;
     justify-content: center;
 }
 
@@ -1044,9 +1043,19 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: center;
 }
+.sheet .weapon-list .box-header>span,
+.sheet .weapon .weapon-list-item {
+    width: 10%;
+}
 
-.sheet .weapon-row a:first-child {
-    margin-right: 5px;
+.sheet .weapon-list .box-header>span.weapon-name,
+.sheet .weapon .weapon-name {
+    width: 20%;
+    text-align: right;
+}
+
+.sheet .weapon-list .box-header {
+    padding: 0 10px;
 }
 
 
