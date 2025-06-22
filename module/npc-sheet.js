@@ -58,11 +58,11 @@ export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
         for (let [k, v] of Object.entries(sheetData.weapon)) {
             if (v.type === "weapon") {
                 const weapon = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", v.id));
-                let modifierStat = v.system.modifier
+                let modifierStat = weapon.system.modifier
                 let bonusDamage = 0; // get stat from actorData
-                let useFocus = v.system.usefocus;
+                let useFocus = weapon.system.usefocus;
                 let focusBonus = useFocus ? 2 : 0;
-                let toHitMod = v.system.type;
+                let toHitMod = weapon.system.type;
                 let modType = "";
                 switch (modifierStat) {
                     case 'Dexterity':
@@ -79,12 +79,12 @@ export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
                         break;
                 }
                 if (bonusDamage !== 0) {
-                    v.system.hasBonusDamage = true;
+                    weapon.system.hasBonusDamage = true;
                 } else {
-                    v.system.hasBonusDamage = false;
+                    weapon.system.hasBonusDamage = false;
                 }
 
-                v.system.bonusDamage = bonusDamage;
+                weapon.system.bonusDamage = bonusDamage;
 
                 switch (toHitMod) {
                     case "unarmed":
@@ -92,22 +92,22 @@ export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
                     case "light_melee":
                     case "heavy_melee":
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                     case "pistol":
                     case "rifle":
                         modType = "accuracy";
-                        v.system.attack = actorData.system.abilities.accuracy.rating;
+                        weapon.system.attack = actorData.system.abilities.accuracy.rating;
                         break;
                     default:
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                 }
-                v.system.tohitabil = modType;
-                v.system.attack += focusBonus;
+                weapon.system.tohitabil = modType;
+                weapon.system.attack += focusBonus;
 
-                this.actor.updateEmbeddedDocuments("Item", [v])
+                this.actor.updateEmbeddedDocuments("Item", [weapon])
             }
         }
         return sheetData;

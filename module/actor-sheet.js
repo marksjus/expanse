@@ -61,20 +61,22 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
         });
 
         for (let [f, v] of Object.entries(sheetData.focuses)) {
-            v.system.name = v.name;
-            this.actor.updateEmbeddedDocuments("Item", [v])
+            const focus = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", v.id));
+            focus.system.name = v.name;
+            this.actor.updateEmbeddedDocuments("Item", [focus])
         }
 
         for (let [k, v] of Object.entries(sheetData.weapon)) {
             if (v.type === "weapon") {
-                let modifierStat = v.system.modifier
+                const weapon = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", v.id));
+                let modifierStat = weapon.system.modifier
                 let bonusDamage = 0; // get stat from actorData
-                let useFocus = v.system.usefocus;
-                let useFocusPlus = v.system.usefocusplus;
+                let useFocus = weapon.system.usefocus;
+                let useFocusPlus = weapon.system.usefocusplus;
                 let focusBonus = useFocus ? 2 : 0;
                 let focusPlusBonus = useFocusPlus ? 1 : 0;
                 const totalFocusBonus = focusBonus + focusPlusBonus;
-                let toHitMod = v.system.type;
+                let toHitMod = weapon.system.type;
                 let modType = "";
 
                 switch (modifierStat) {
@@ -90,12 +92,12 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
                 }
 
                 if (bonusDamage !== 0) {
-                    v.system.hasBonusDamage = true;
+                    weapon.system.hasBonusDamage = true;
                 } else {
-                    v.system.hasBonusDamage = false;
+                    weapon.system.hasBonusDamage = false;
                 }
 
-                v.system.bonusDamage = bonusDamage;
+                weapon.system.bonusDamage = bonusDamage;
 
                 switch (toHitMod) {
                     case "unarmed":
@@ -103,21 +105,21 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
                     case "light_melee":
                     case "heavy_melee":
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                     case "pistol":
                     case "rifle":
                         modType = "accuracy";
-                        v.system.attack = actorData.system.abilities.accuracy.rating;
+                        weapon.system.attack = actorData.system.abilities.accuracy.rating;
                         break;
                     default:
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                 }
-                v.system.tohitabil = modType;
-                v.system.attack += totalFocusBonus;
-                this.actor.updateEmbeddedDocuments("Item", [v])
+                weapon.system.tohitabil = modType;
+                weapon.system.attack += totalFocusBonus;
+                this.actor.updateEmbeddedDocuments("Item", [weapon])
             }
         }
 

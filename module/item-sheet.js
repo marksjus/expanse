@@ -106,7 +106,7 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
 
         html.find(".learn-specialization").click(async e => {
             const data = super.getData()
-            const item = data.item;
+            const item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", data.item.id));
             item.system.specialization = !item.system.specialization;
             if (this.item.isOwned) {
                 await this.actor.updateEmbeddedDocuments("Item", [item])
@@ -117,7 +117,7 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
 
         html.find(".learn-talent").click(async e => {
             const data = super.getData()
-            const item = data.item;
+            const item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", data.item.id));
             let talentRank = e.currentTarget.getAttribute("data-rank");
             let learnedRank = talentRank === "novice" ?
                 item.system.ranks.novice.active : talentRank === "expert" ?
