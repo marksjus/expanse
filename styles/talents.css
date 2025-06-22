@@ -14,6 +14,17 @@
     background-color: #f3f3f3;
 }
 
+.sheet .talent-stunt .talent-box {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 40%;
+    margin: 0px 5px 10px 5px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .6);
+    border-bottom-right-radius: 10px;
+    background-color: #f3f3f3;
+}
+
 .sheet .talent-stunt {
     display: flex;
     flex-direction: row;
