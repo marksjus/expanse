@@ -9,28 +9,28 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
                 // this.options.width = this.position.width = "350";
                 break;
             case "talent":
-                this.options.width = this.position.width = "600";
+                this.options.width = this.position.width = "650";
                 this.options.height = this.position.height = "660";
                 break;
             case "stunt":
-                // this.options.width = this.position.width = "400";
+                this.options.width = this.position.width = "670";
                 this.options.height = this.position.height = "265";
                 break;
             case "weapon":
-                this.options.width = this.position.width = "680";
+                this.options.width = this.position.width = "670";
                 this.options.height = this.position.height = "360";
                 break;
             case "armor":
-                this.options.width = this.position.width = "470";
-                this.options.height = this.position.height = "305";
+                this.options.width = this.position.width = "580";
+                this.options.height = this.position.height = "320";
                 break;
             case "shield":
-                this.options.width = this.position.width = "480";
+                this.options.width = this.position.width = "580";
                 this.options.height = this.position.height = "305";
                 break;
             case "focus":
                 this.options.width = this.position.width = "400";
-                this.options.height = this.position.height = "200";
+                this.options.height = this.position.height = "140";
             default:
                 break;
         };
