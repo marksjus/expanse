@@ -1736,15 +1736,12 @@ body {
     --color-light-4: #789ed3;
     --color-light-5: #526fa4;
     --color-light-6: #415b77;
-}
-
-body.game .app {
+    --color-scrollbar: #153e61;
     --color-shadow-primary: #088afc;
     --color-border-highlight-alt: #088afc;
     --color-border-highlight: #3a9bee;
     --color-shadow-highlight: #3a9bee;
     --color-text-hyperlink: #3a9bee; 
-    --color-scrollbar: #153e61;  
 }
 
 .themed.theme-dark .ui-control {
