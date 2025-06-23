@@ -1727,17 +1727,17 @@ a.content-link, a.inline-roll {
 
 body {
     --color-warm-1: #088afc;
-    --color-warm-2: #3f6bc9;
-    --color-warm-3: #14305d;
-    --color-cool-3: #4a5875;
-    --color-cool-4: #282c31;
-    --color-cool-5: #0b0a13;
-    --color-light-1: #bde3fd;
-    --color-light-2: #b2d1ee;
-    --color-light-3: #87b5e6;
-    --color-light-4: #789ed3;
-    --color-light-5: #526fa4;
-    --color-light-6: #415b77;
+    --color-warm-2: #3f86c9;
+    --color-warm-3: #14455d;
+    --color-cool-3: #4a6675;
+    --color-cool-4: #282e31;
+    --color-cool-5: #0a1013;
+    --color-light-1: #bdeafd;
+    --color-light-2: #b2deee;
+    --color-light-3: #87cbe6;
+    --color-light-4: #78bcd3;
+    --color-light-5: #5289a4;
+    --color-light-6: #416977;
     --color-scrollbar: #153e61;
     --color-shadow-primary: #088afc;
     --color-border-highlight-alt: #088afc;
