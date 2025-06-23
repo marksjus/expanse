@@ -310,12 +310,13 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     }
 
+    
     _itemCreate(event) {
         event.preventDefault();
         const header = event.currentTarget;
         const type = header.dataset.type;
         const itemData = {
-            name: game.i18n.format("ITEM.ItemNew", { type: game.i18n.localize(`ITEM.ItemType${type.capitalize()}`) }),
+            name: game.i18n.localize(`TYPES.Item.${type}`),
             type: type,
             data: foundry.utils.deepClone(header.dataset)
         };
