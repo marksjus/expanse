@@ -1043,6 +1043,7 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: center;
 }
+
 .sheet .weapon-list .box-header>span,
 .sheet .weapon .weapon-list-item {
     width: 10%;
@@ -1051,7 +1052,6 @@ input[type=checkbox] {
 .sheet .weapon-list .box-header>span.weapon-name,
 .sheet .weapon .weapon-name {
     width: 20%;
-    text-align: right;
 }
 
 .sheet .weapon-list .box-header {
@@ -1119,8 +1119,21 @@ input[type=checkbox] {
     justify-content: center;
 }
 
-.sheet .armor-row a:first-child {
-    margin-right: 5px;
+.sheet .armor-list .box-header>span,
+.sheet .armor .armor-list-item {
+    width: 15%;
+}
+
+.sheet .armor-list .box-header>span.armor-name,
+.sheet .armor .armor-name,
+.sheet .armor-list .box-header>span.armor-type,
+.sheet .armor .armor-type {
+    width: 20%;
+}
+
+.sheet .weapon-list .box-header,
+.sheet .armor-list .box-header {
+    padding: 0 10px;
 }
 
 /* INCOME / ITEMS*/
