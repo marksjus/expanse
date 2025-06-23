@@ -1723,16 +1723,33 @@ a.content-link, a.inline-roll {
     justify-content: space-around;
 }
 
-:root {
+body {
+    --color-warm-1: #088afc;
+    --color-warm-2: #3f6bc9;
+    --color-warm-3: #14305d;
+    --color-cool-3: #4a5875;
+    --color-cool-4: #282c31;
+    --color-cool-5: #0b0a13;
+    --color-light-1: #bde3fd;
+    --color-light-2: #b2d1ee;
+    --color-light-3: #87b5e6;
+    --color-light-4: #789ed3;
+    --color-light-5: #526fa4;
+    --color-light-6: #415b77;
+}
+
+body.game .app {
     --color-shadow-primary: #088afc;
     --color-border-highlight-alt: #088afc;
     --color-border-highlight: #3a9bee;
     --color-shadow-highlight: #3a9bee;
-    --color-text-hyperlink: #3a9bee;   
+    --color-text-hyperlink: #3a9bee; 
+    --color-scrollbar: #153e61;  
 }
 
-body {
-    --color-scrollbar: #153e61;
+.themed.theme-dark .ui-control {
+    --control-active-border-color: #088afc;
+    --control-hover-border-color: #5b9cd5;
 }
 
 #logo {
