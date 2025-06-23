@@ -1118,6 +1118,10 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: center;
 }
+.sheet .weapon-row a:first-child,
+.sheet .armor-row a:first-child {
+    margin-right: 5px;
+}
 
 .sheet .armor-list .box-header>span,
 .sheet .armor .armor-list-item {
@@ -1132,9 +1136,30 @@ input[type=checkbox] {
 }
 
 .sheet .weapon-list .box-header,
-.sheet .armor-list .box-header {
+.sheet .armor-list .box-header,
+.sheet .shield-list .box-header {
     padding: 0 10px;
 }
+
+/* SHIELD */
+
+.sheet .shield-list-item {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.sheet .shield-list .box-header>span,
+.sheet .armor .shield-list-item {
+    width: 20%;
+}
+
+.sheet .shield-list .box-header>span.armor-name,
+.sheet .shield-list .box-header>span.armor-type {
+    width: 20%;
+}
+
+
 
 /* INCOME / ITEMS*/
 
