@@ -79,6 +79,10 @@
     width: 23%;
 }
 
+.weapons .weapons-attribute select {
+    width: 100%;
+}
+
 .weapons .weapons-attribute-input {
     width: 25%;
     margin: 0 5px 0 5px;
