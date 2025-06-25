@@ -1777,3 +1777,7 @@ table.stunt_table tbody tr:nth-child(odd) {
 table.stunt_table tbody tr:nth-child(even) {
     background-color:#b3d1dc;
 }
+
+.prosemirror .fa-fw {
+    width: 1em;
+}
