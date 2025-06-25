@@ -1812,6 +1812,10 @@ table.stunt_table tbody tr:nth-child(even) {
     gap: 1px;
 }
 
-menu.editor-menu li {
+.prosemirror menu.editor-menu li {
     padding: 2px 2px !important;
+}
+
+.prosemirror .fa-fw {
+    width: 1em;
 }
