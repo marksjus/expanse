@@ -74,7 +74,7 @@ export class ExpanseActor extends Actor {
       }
 
       if (actorData.conditions.injured.active === true) {
-        actorData.conditions.fatigued.active = !actorData.conditions.fatigued.active;
+        actorData.conditions.fatigued.active = true;
       }
       if (actorData.conditions.hindered.active === true) {
         actorData.attributes.move.modified = actorData.attributes.move.modified / 2;
