@@ -141,6 +141,72 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
             talent.system.highest = highest;
             this.actor.updateEmbeddedDocuments("Item", [talent]);
         }
+
+        // Handle external overrides of attributes and conditions.
+        let overrides = null;
+        if (typeof this?.object?.overrides?.system !== 'undefined') {
+            overrides = this.object.overrides.system;
+            
+            // defense
+            if (typeof overrides?.attributes?.defense?.modified !== 'undefined') {
+                sheetData.attributes.defense.modified = Number(overrides.attributes.defense.modified);
+            }
+
+            // injured
+            if (typeof overrides?.conditions?.injured?.active !== 'undefined') {
+                if (overrides.conditions.injured.active) {                   
+                    sheetData.conditions.fatigued.active = true;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // hindered
+            if (typeof overrides?.conditions?.hindered?.active !== 'undefined') {
+                if (overrides.conditions.hindered.active) {                   
+                    sheetData.attributes.move.modified = sheetData.attributes.move.modified / 2;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // exhausted
+            if (typeof overrides?.conditions?.exhausted?.active !== 'undefined') {
+                if (overrides.conditions.exhausted.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // prone
+            if (typeof overrides?.conditions?.prone?.active !== 'undefined') {
+                if (overrides.conditions.prone.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // fatigued
+            if (typeof overrides?.conditions?.fatigued?.active !== 'undefined') {
+                if (overrides.conditions.fatigued.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // helpless
+            if (typeof overrides?.conditions?.helpless?.active !== 'undefined') {
+                if (overrides.conditions.helpless.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                    sheetData.attributes.move.modified = 0;
+                }
+            }  
+            // restrained
+            if (typeof overrides?.conditions?.restrained?.active !== 'undefined') {
+                if (overrides.conditions.restrained.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                    sheetData.attributes.move.modified = 0;
+                }
+            }
+            // unconscious
+            if (typeof overrides?.conditions?.unconscious?.active !== 'undefined') {
+                if (overrides.conditions.unconscious.active) {                   
+                    sheetData.conditions.prone.active = true;
+                    sheetData.attributes.move.modified = 0;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }                                   
+        }
         return sheetData;
     }
 
