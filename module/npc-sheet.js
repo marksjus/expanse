@@ -1,5 +1,6 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier, RollDamageModifier } from "./rolling/modifiers.js"
+import { migrateNpcData } from "./npcDataMigration.js";
 
 export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
 
@@ -20,6 +21,7 @@ export class ExpanseNPCSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     async getData() {
+        await migrateNpcData(this.actor);
         const sheetData = super.getData();
 
         sheetData.system = sheetData.data.system;

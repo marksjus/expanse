@@ -47,7 +47,7 @@
             <div class="npc-attributes-box">
                 {{#each attributes as |attribute key|}}
                 <div class="npc-attribute-value">
-                    <input type="text" name="system.attributes.{{key}}.value" value="{{value}}" data-dtype="Number" />
+                    <input type="text" name="system.attributes.{{key}}.modified" value="{{modified}}" data-dtype="Number" />
                 </div>
                 {{#ifCond key '==' 'fortune'}}
                 <div class="npc-attribute-value">
