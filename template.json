@@ -3,7 +3,8 @@
         "types": [
             "character",
             "npc",
-            "ship"
+            "ship",
+            "encounter"
         ],
         "character": {
             "info": {
@@ -388,6 +389,9 @@
                 "electronicPoints": 0,
                 "engineerPoints": 0
             }
+        },
+        "Encounters": {
+            "type": ""
         }
     },
     "Item": {

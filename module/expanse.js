@@ -4,6 +4,7 @@ import { ExpanseItem } from "./item.js";
 import { ExpanseActor } from "./actor.js";
 import { ExpanseNPCSheet } from "./npc-sheet.js";
 import { ExpanseShipSheet } from "./ship-sheet.js";
+import { ExpanseEncounterSheet } from "./encounter-sheet.js";
 import { initializeHandlebars } from "../scripts/handlebars.js";
 import { registerDiceSoNice } from "./hooks/dice-so-nice.js";
 import { TheExpanseEarthDark } from "./dice-so-nice/expanse-earth-dark-die.js";
@@ -48,6 +49,10 @@ Hooks.once("init", async function () {
   });
   actors.registerSheet("expanse", ExpanseShipSheet, {
     types: ["ship"],
+    makeDefault: true
+  });
+  actors.registerSheet("expanse", ExpanseEncounterSheet, {
+    types: ["encounter"],
     makeDefault: true
   })
 
