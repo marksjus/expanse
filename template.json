@@ -390,7 +390,7 @@
                 "engineerPoints": 0
             }
         },
-        "Challenges": {
+        "challenge": {
             "type": "",
             "difficulty": "",
             "successThreshold": "",
