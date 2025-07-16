@@ -4,7 +4,7 @@
             "character",
             "npc",
             "ship",
-            "encounter"
+            "challenge"
         ],
         "character": {
             "info": {
@@ -390,8 +390,14 @@
                 "engineerPoints": 0
             }
         },
-        "Encounters": {
-            "type": ""
+        "Challenges": {
+            "type": "",
+            "difficulty": "",
+            "successThreshold": "",
+            "timePerTest": "",
+            "applicableAbilities": [],
+            "description": "",
+            "stunts": ""
         }
     },
     "Item": {

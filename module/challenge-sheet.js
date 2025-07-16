@@ -1,8 +1,8 @@
-export class ExpanseEncounterSheet extends foundry.appv1.sheets.ActorSheet {
+export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
   static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["sheet", "actor", "expanse-encounter"],
+            classes: ["sheet", "actor", "expanse-challenge"],
             width: 730,
             height: 750,
             tabs: [],

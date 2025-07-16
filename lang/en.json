@@ -231,7 +231,7 @@
     "TYPES.Actor.character": "Player Character",
     "TYPES.Actor.npc": "Non-Player Character",
     "TYPES.Actor.ship": "Spaceship",
-    "TYPES.Actor.encounter": "Encounter",
+    "TYPES.Actor.challenge": "Challenge",
     "TYPES.Item.armor": "Armor",
     "TYPES.Item.focus": "Focus",
     "TYPES.Item.shield": "Shield",
