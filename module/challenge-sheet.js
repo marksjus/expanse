@@ -23,12 +23,13 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         sheetData.enrichment = await this._enrichment();
         sheetData.system = sheetData.data.system;
 
+        
         //remove unsupported items
-        sheetData.unsupported = sheetData.items.filter(i => i.type !== "focus");
+        sheetData.unsupported = sheetData.items.filter(i => i.type !== "focus" && i.type !== "consequence");
         for (let [k, v] of Object.entries(sheetData.unsupported)) {
             this.actor.deleteEmbeddedDocuments("Item", [v._id]);
         }
-
+        
         //fetch applicable abilities
         sheetData.focuses = sheetData.items.filter(i => i.type === "focus");
         sheetData.applicableAbilities = [];
@@ -42,7 +43,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             sheetData.applicableAbilities.push(ability);
         }
 
-        console.log(sheetData.unsupported);
+        //fetch consequences
+        sheetData.consequences = sheetData.items.filter(i => i.type === "consequence");
+        sheetData.ActiveConsequences = sheetData.items.filter(i => i.type === "consequence" && i.system.active == true);
+        console.log(sheetData.ActiveConsequences);
         return sheetData;
     }
 
@@ -75,6 +79,26 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
         // Create Item
         html.find(".item-create").click(this._itemCreate.bind(this));
+
+        
+        html.find(".item-update-checkbox").click((ev) => {
+            let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
+            let target = $(ev.currentTarget).attr("data-item-checkbox");
+            const item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", itemId));
+        
+            switch (target) {
+                    case 'active':
+                        item.system.active = !item.system.active;
+                        break;
+                    case 'resolved':
+                        item.system.resolved = !item.system.resolved;
+                        break;
+                    default:
+                        return                    
+            };
+            this.actor.updateEmbeddedDocuments("Item", [item])
+        });
+        
     }
 
     _itemCreate(event) {

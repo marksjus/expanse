@@ -489,7 +489,7 @@
         "consequence": {
             "active": false,
             "resolved": false,
-            "severity": "",
+            "severity": "minor",
             "description": ""
         }
     }
