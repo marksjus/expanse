@@ -1,0 +1,48 @@
+<form class="{{cssClass}} item" autocomplete="off">
+
+  <div class="weapons-box">
+    <div class="weapons-header-box">
+      <div class="weapons-header-block">
+        <input name="name" type="text" value="{{item.name}}" data-dtype="String" />
+      </div>
+    </div>
+
+    <div class="weapons-desc-block">
+      <div class="box-header">
+        <span class="">Description</span>
+      </div>
+      <div class="weapons-desc-box">
+        {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner
+        editable=true}}
+      </div>
+    </div>
+
+    <div class="weapons-desc-block">
+      <div class="box-header">
+        <span class="">Flags</span>
+      </div>
+      <div class="weapons-desc-box">
+        <div class="npc-ability-usefocus">
+          <span>{{localize "EXPANSE.Active"}}:</span>
+          <input type="checkbox" class="expanse-checkbox" name="system.active" {{checked system.active}}>
+        </div>
+        <div class="npc-ability-usefocus">
+          <span>{{localize "EXPANSE.Resolved"}}:</span>
+          <input type="checkbox" class="expanse-checkbox" name="system.resolved" {{checked system.resolved}}>
+        </div>
+        <div class="">{{localize "EXPANSE.Severity"}}:
+          <select class="challenge-type-selector" type="text" name="system.severity" data-dtype="String">
+            {{#select system.severity}}
+            <option value="" selected></option>
+            <option value="minor">{{localize "EXPANSE.challenge.Minor" }}</option>
+            <option value="moderate">{{localize "EXPANSE.challenge.Moderate" }}</option>
+            <option value="major">{{localize "EXPANSE.challenge.Major" }}</option>
+            {{/select}}
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</form>

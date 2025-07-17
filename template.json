@@ -407,7 +407,7 @@
             "stunt",
             "talent",
             "weapon",
-            "complication"
+            "consequence"
         ],
         "talent": {
             "description": "",

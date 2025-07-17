@@ -31,6 +31,11 @@ export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
             case "focus":
                 this.options.width = this.position.width = "400";
                 this.options.height = this.position.height = "140";
+                break;
+            case "consequence":
+                this.options.width = this.position.width = "600";
+                this.options.height = this.position.height = "400";
+                break;
             default:
                 break;
         };
