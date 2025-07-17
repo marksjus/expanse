@@ -486,9 +486,10 @@
             "attribute": "",
             "description": ""
         },
-        "complication": {
+        "consequence": {
             "active": false,
             "resolved": false,
+            "severity": "",
             "description": ""
         }
     }

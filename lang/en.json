@@ -237,5 +237,6 @@
     "TYPES.Item.shield": "Shield",
     "TYPES.Item.stunt": "Stunt",
     "TYPES.Item.talent": "Talent",
-    "TYPES.Item.weapon": "Weapon"
+    "TYPES.Item.weapon": "Weapon",
+    "TYPES.Item.consequence": "Consequence"
 }
