@@ -395,7 +395,6 @@
             "difficulty": "",
             "successThreshold": "",
             "timePerTest": "",
-            "applicableAbilities": [],
             "description": "",
             "stunts": ""
         }
@@ -407,7 +406,8 @@
             "shield",
             "stunt",
             "talent",
-            "weapon"
+            "weapon",
+            "complication"
         ],
         "talent": {
             "description": "",
@@ -484,6 +484,11 @@
         "focus": {
             "name": "",
             "attribute": "",
+            "description": ""
+        },
+        "complication": {
+            "active": false,
+            "resolved": false,
             "description": ""
         }
     }
