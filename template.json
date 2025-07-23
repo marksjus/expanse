@@ -392,11 +392,12 @@
         },
         "challenge": {
             "type": "",
-            "difficulty": "",
-            "successThreshold": "",
+            "difficulty": 0,
+            "successThreshold": 0,
             "timePerTest": "",
             "description": "",
-            "stunts": ""
+            "stunts": "",
+            "participants": []
         }
     },
     "Item": {
