@@ -23,6 +23,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         sheetData.enrichment = await this._enrichment();
         sheetData.system = sheetData.data.system;
 
+        if (sheetData.system.successThreshold < 1) {
+            sheetData.system.successThreshold = 1;
+            await this.actor.update({ system: sheetData.system });
+        }
         
         //remove unsupported items
         sheetData.unsupported = sheetData.items.filter(i => i.type !== "focus" && i.type !== "consequence");
@@ -46,7 +50,16 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         //fetch consequences
         sheetData.consequences = sheetData.items.filter(i => i.type === "consequence");
         sheetData.ActiveConsequences = sheetData.items.filter(i => i.type === "consequence" && i.system.active == true);
-        
+
+        //get selected participant
+        let selectedParticipant = 0;
+        const flagName = "userParticipantFlag" + this.id;
+        const userParticipantFlag = await game.user.getFlag("expanse", flagName);
+        if (!userParticipantFlag) await game.user.setFlag("expanse", flagName, selectedParticipant); else selectedParticipant = userParticipantFlag;
+
+        console.log(userParticipantFlag);
+
+
         //participants
         const passengers = sheetData.system.participants;
         let invalidPassengers = [];
@@ -63,16 +76,28 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     p.picture = pData.prototypeToken.texture.src;
                     p.speed = pData.system.attributes.speed.modified;
                     p.successThreshold = sheetData.system.successThreshold;
+                    p.selected = (pi == selectedParticipant) ? true : false;
+                    
+                    const chaseTotal = Math.abs(p.chasePosition - passengers[selectedParticipant].chasePosition);
+                    if (pi != selectedParticipant) {
+                        if (chaseTotal <= sheetData.system.closeRange) p.chaseTotal = "closeRange (" + chaseTotal + ")";
+                        if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange ) p.chaseTotal = "mediumRange (" + chaseTotal + ")";
+                        if (chaseTotal > sheetData.system.mediumRange ) p.chaseTotal = "longRange (" + chaseTotal + ")";
+                    } else p.chaseTotal = "-";
                 };
             }
         }
-        // Remove passengers whose sheets/tokens are not valid anymore
+        // Remove participants whose sheets/tokens are not valid anymore
         for (let ip = 0; ip < invalidPassengers.length; ip++) {
             const i = invalidPassengers[ip];
             passengers.splice(i, 1);
         };
+
+        //sort participants by speed
+        passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
+
+        console.log(passengers);
         
-        console.log(sheetData.system.participants);
         return sheetData;
     }
 
@@ -109,6 +134,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".participant-delete").click(this._onRemovePassenger.bind(this));
         html.find(".chase-mod").click(this._onClickChase.bind(this));
         html.find('.chase-position').change(this._onChangeChase.bind(this));
+        html.find(".selected-participant").click(this._onSelectParticipant.bind(this));
         
         html.find(".item-update-checkbox").click((ev) => {
             let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
@@ -194,10 +220,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         const participants = foundry.utils.duplicate(this.actor.system.participants);
         let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
         participantKey = Number(participantKey);
-
+        console.log(participantKey);
         (event.currentTarget.classList.contains('minus')) ? participants[participantKey].chasePosition-- : participants[participantKey].chasePosition++;
-        if(participants[participantKey].chasePosition.chasePosition < 0) participants[participantKey].chasePosition.chasePosition = 0;
-        if(participants[participantKey].chasePosition.chasePosition > this.actor.system.successThreshold) participants[participantKey].chasePosition.chasePosition = this.actor.system.successThreshold;
+        if(participants[participantKey].chasePosition < 0) participants[participantKey].chasePosition = 0;
+        if(participants[participantKey].chasePosition > this.actor.system.successThreshold) participants[participantKey].chasePosition = this.actor.system.successThreshold;
 
         await this.actor.update({ system: { participants: participants } });
     }
@@ -212,5 +238,16 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         participants[participantKey].chasePosition = value;    
 
         await this.actor.update({ system: { participants: participants } });
+    }
+
+    async _onSelectParticipant(event) {
+        event.preventDefault();
+        let participantKey = $(event.currentTarget).parents(".item").attr ("data-item-key");
+        participantKey = Number(participantKey);
+
+        const flagName = "userParticipantFlag" + this.id;
+        await game.user.setFlag("expanse", flagName, participantKey);
+        this.actor.render();
+        console.log(participantKey);
     }
 }

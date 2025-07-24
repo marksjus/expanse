@@ -392,8 +392,10 @@
         },
         "challenge": {
             "type": "",
-            "difficulty": 0,
-            "successThreshold": 0,
+            "difficulty": 1,
+            "successThreshold": 10,
+            "closeRange": 1,
+            "mediumRange": 5,
             "timePerTest": "",
             "description": "",
             "stunts": "",

@@ -21,6 +21,10 @@
           name="system.successThreshold" value="{{actor.system.successThreshold}}" /></div>
       <div>{{localize "EXPANSE.timePerTest"}}: <input class="challenge-timePerTest" type="text"
           name="system.timePerTest" value="{{actor.system.timePerTest}}" /></div>
+      <div>{{localize "EXPANSE.closeRange"}}: <input class="challenge-closeRange" type="text"
+          name="system.closeRange" value="{{actor.system.closeRange}}" /></div>
+      <div>{{localize "EXPANSE.mediumRange"}}: <input class="challenge-mediumRange" type="text"
+          name="system.mediumRange" value="{{actor.system.mediumRange}}" /></div>
 
       <div class="weapon-box">
 
@@ -62,12 +66,20 @@
           {{#each system.participants as |participant key|}}
           <li class="item weapon" data-item-key="{{key}}">
             <div class="weapon-row">
+              <div class="weapon-list-item">
+                <input class="selected-participant" type="radio" name="selected-participant" {{checked selected}}>
+              </div>
+
               <div class="item-controls weapon-list-item">
                 <a class="item-control participant-delete" title="Delete Participant"><i class="fas fa-trash"></i></a>
               </div>
 
               <div class="weapon-list-item">
                 {{name}}
+              </div>
+
+              <div class="weapon-list-item">
+                {{chaseTotal}}
               </div>
 
               <div class="weapon-list-item">
