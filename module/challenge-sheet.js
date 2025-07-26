@@ -65,41 +65,13 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         //participants
         const participants = sheetData.system.participants;
         if (participants.length) {
-            
-            //Check for invalid participants
-            let invalidParticipants = [];
-            for (let pi = 0; pi < participants.length; pi++) {
-                const p = participants[pi];
-                if (!game.actors) {
-                    game.postReadyPrepare.push(this);
-                } else {
-                    const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
-                    if (!pData) {
-                        invalidParticipants.push(pi);
-                        game.users.map(x => {
-                            const flag = x.getFlag("expanse", flagName);
-                            if (flag == pi) {
-                                x.setFlag("expanse", flagName, 0);
-                                if (x == game.user) selectedParticipant = 0;
-                            }                                   
-                        }); 
-                    }                 
-                }
-            }
-            // Remove participants whose sheets/tokens are not valid anymore
-            for (let ip = 0; ip < invalidParticipants.length; ip++) {
-                const i = invalidParticipants[ip];
-                participants.splice(i, 1);
-            };
-
-            this.actor.update({ system: { participants: participants } });
 
             if (selectedParticipant > participants.length - 1) {
-                selectedParticipant = participants.length - 1; 
+                selectedParticipant = participants.length - 1;
                 await game.user.setFlag("expanse", flagName, selectedParticipant);
             }
 
-            
+
             for (let pi = 0; pi < participants.length; pi++) {
                 const p = participants[pi];
                 const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
@@ -118,7 +90,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     if (chaseTotal > sheetData.system.mediumRange) p.chaseTotal = "longRange (" + chaseTotal + ")";
                 } else p.chaseTotal = "-";
             }
-
             //sort participants by speed
             //passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
         }

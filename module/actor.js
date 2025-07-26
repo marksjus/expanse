@@ -49,6 +49,24 @@ export class ExpanseActor extends Actor {
       });
       console.log("Flag: " + flagName + " has been deleted.")
     }
+    
+  }
+
+  _onDelete(){
+    if (this.type === "character" || this.type === "ship") {
+      const challenges = game.actors.filter(i => i.type === "challenge");
+      console.log(challenges);
+      challenges.map(x => {
+        const participants = x.system.participants;
+        for (let pi = 0; pi < participants.length; pi++) {
+          if (participants[pi].id == this.id) {
+            participants.splice(pi, 1);
+            break;
+          };
+        };
+        x.update({ system: { participants: participants } });
+      });
+    }
   }
 
   prepareEmbeddedEntities() {
