@@ -40,6 +40,17 @@ export class ExpanseActor extends Actor {
     this.updateSource(createData);
   }
 
+  _preDelete() {
+    if (this.type === "challenge") {
+      const flagName = "userParticipantFlag" + this.id;
+
+      game.users.map(x => {
+          x.unsetFlag("expanse", flagName);
+      });
+      console.log("Flag: " + flagName + " has been deleted.")
+    }
+  }
+
   prepareEmbeddedEntities() {
   }
 

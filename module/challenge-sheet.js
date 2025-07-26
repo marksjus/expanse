@@ -53,50 +53,80 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
         //get selected participant
         let selectedParticipant = 0;
-        const flagName = "userParticipantFlag" + this.id;
+        const flagName = "userParticipantFlag" + this.object.id;
         const userParticipantFlag = await game.user.getFlag("expanse", flagName);
-        if (!userParticipantFlag) await game.user.setFlag("expanse", flagName, selectedParticipant); else selectedParticipant = userParticipantFlag;
+        if (!userParticipantFlag) {
+            await game.user.setFlag("expanse", flagName, selectedParticipant); 
+            console.log("Flag:" + flagName + " has been created.");
+        } else selectedParticipant = userParticipantFlag;
 
-        console.log(userParticipantFlag);
-
+        console.log(this);
 
         //participants
-        const passengers = sheetData.system.participants;
-        let invalidPassengers = [];
-        for (let pi = 0; pi < passengers.length; pi++) {
-            const p = passengers[pi];
-            if (!game.actors) {
-                game.postReadyPrepare.push(this);
-            } else {
-                const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
-                if (!pData) {
-                    invalidPassengers.push(pi);
+        const participants = sheetData.system.participants;
+        if (participants.length) {
+            
+            //Check for invalid participants
+            let invalidParticipants = [];
+            for (let pi = 0; pi < participants.length; pi++) {
+                const p = participants[pi];
+                if (!game.actors) {
+                    game.postReadyPrepare.push(this);
                 } else {
-                    p.name = pData.name;
-                    p.picture = pData.prototypeToken.texture.src;
-                    p.speed = pData.system.attributes.speed.modified;
-                    p.successThreshold = sheetData.system.successThreshold;
-                    p.selected = (pi == selectedParticipant) ? true : false;
-                    
-                    const chaseTotal = Math.abs(p.chasePosition - passengers[selectedParticipant].chasePosition);
-                    if (pi != selectedParticipant) {
-                        if (chaseTotal <= sheetData.system.closeRange) p.chaseTotal = "closeRange (" + chaseTotal + ")";
-                        if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange ) p.chaseTotal = "mediumRange (" + chaseTotal + ")";
-                        if (chaseTotal > sheetData.system.mediumRange ) p.chaseTotal = "longRange (" + chaseTotal + ")";
-                    } else p.chaseTotal = "-";
-                };
+                    const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
+                    if (!pData) {
+                        invalidParticipants.push(pi);
+                        game.users.map(x => {
+                            const flag = x.getFlag("expanse", flagName);
+                            if (flag == pi) {
+                                x.setFlag("expanse", flagName, 0);
+                                if (x == game.user) selectedParticipant = 0;
+                            }                                   
+                        }); 
+                    }                 
+                }
             }
+            // Remove participants whose sheets/tokens are not valid anymore
+            for (let ip = 0; ip < invalidParticipants.length; ip++) {
+                const i = invalidParticipants[ip];
+                participants.splice(i, 1);
+            };
+
+            this.actor.update({ system: { participants: participants } });
+
+            if (selectedParticipant > participants.length - 1) {
+                selectedParticipant = participants.length - 1; 
+                await game.user.setFlag("expanse", flagName, selectedParticipant);
+            }
+
+            
+            for (let pi = 0; pi < participants.length; pi++) {
+                const p = participants[pi];
+                const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
+
+                p.name = pData.name;
+                p.picture = pData.prototypeToken.texture.src;
+                p.speed = pData.system.attributes.speed.modified;
+                p.successThreshold = sheetData.system.successThreshold;
+                p.selected = (pi == selectedParticipant) ? true : false;
+
+
+                const chaseTotal = Math.abs(p.chasePosition - participants[selectedParticipant].chasePosition);
+                if (pi != selectedParticipant) {
+                    if (chaseTotal <= sheetData.system.closeRange) p.chaseTotal = "closeRange (" + chaseTotal + ")";
+                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) p.chaseTotal = "mediumRange (" + chaseTotal + ")";
+                    if (chaseTotal > sheetData.system.mediumRange) p.chaseTotal = "longRange (" + chaseTotal + ")";
+                } else p.chaseTotal = "-";
+            }
+
+            //sort participants by speed
+            //passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
         }
-        // Remove participants whose sheets/tokens are not valid anymore
-        for (let ip = 0; ip < invalidPassengers.length; ip++) {
-            const i = invalidPassengers[ip];
-            passengers.splice(i, 1);
-        };
+        //console.log(passengers);
 
-        //sort participants by speed
-        passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
-
-        console.log(passengers);
+        game.users.map(x => {            
+            console.log(x.flags);          
+        });
         
         return sheetData;
     }
@@ -174,12 +204,23 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     _onRemovePassenger(event) {
-        let update = {};
         let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
         participantKey = Number(participantKey);
-        const crew = this.object.system.participants;
-        crew.splice(participantKey, 1);
-        this.actor.update({...update, "system.participants": crew});
+        const participants = this.object.system.participants;
+        participants.splice(participantKey, 1);
+
+        //handle selected participant for all users
+        
+        const flagName = "userParticipantFlag" + this.object.id;
+
+        game.users.map(x => {
+            if(participants.length == 0) {
+                x.unsetFlag("expanse", flagName);
+            }         
+        });
+
+        this.actor.update({ system: { participants: participants } });
+        this.actor.render();
     };
     
     dropChar(event, vehicle) {
@@ -245,9 +286,9 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         let participantKey = $(event.currentTarget).parents(".item").attr ("data-item-key");
         participantKey = Number(participantKey);
 
-        const flagName = "userParticipantFlag" + this.id;
+        const flagName = "userParticipantFlag" + this.object.id;
         await game.user.setFlag("expanse", flagName, participantKey);
         this.actor.render();
-        console.log(participantKey);
+        //console.log(participantKey);
     }
 }
