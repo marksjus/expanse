@@ -62,6 +62,9 @@ Hooks.once("init", async function () {
     makeDefault: true
   });
 
+  // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
+  game.postReadyPrepare = [];
+
   initializeHandlebars();
 });
 
@@ -150,5 +153,10 @@ Hooks.on("ready", async () => {
         }
       }
     }).render(true)
+  }
+
+  // Prepare Actors dependent on other Actors
+  for(let e of game.postReadyPrepare){
+    e.prepareData();
   }
 })
