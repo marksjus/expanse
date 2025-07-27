@@ -94,14 +94,25 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 
                 const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
                 if (p != selectedParticipant) {
-                    if (chaseTotal <= sheetData.system.closeRange) p.chaseTotal = "closeRange (" + chaseTotal + ")";
-                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) p.chaseTotal = "mediumRange (" + chaseTotal + ")";
-                    if (chaseTotal > sheetData.system.mediumRange) p.chaseTotal = "longRange (" + chaseTotal + ")";
+                    if (chaseTotal <= sheetData.system.closeRange)                       
+                        p.chaseTotal = game.i18n.format("EXPANSE.Close", {value: chaseTotal});
+                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange)
+                        p.chaseTotal = game.i18n.format("EXPANSE.Medium", {value: chaseTotal});
+                    if (chaseTotal > sheetData.system.mediumRange)
+                        p.chaseTotal = game.i18n.format("EXPANSE.Long", {value: chaseTotal});
                 } else p.chaseTotal = "-";
                 
             }
             //sort participants by speed
-            //passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
+            participants.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
+
+            const last = participants[participants.length-1];
+            participants.map(p => {                
+                p.speedModifier = Math.floor((p.speed - last.speed)/2);
+            });
+
+            this.actor.update({ system: { participants: participants } });
+
         }
         //console.log(passengers);
 
