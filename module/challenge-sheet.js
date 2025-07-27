@@ -52,25 +52,34 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         sheetData.ActiveConsequences = sheetData.items.filter(i => i.type === "consequence" && i.system.active == true);
 
         //get selected participant
-        let selectedParticipant = 0;
+        let selectedParticipantID = "";
+        let selectedParticipant = null;
         const flagName = "userParticipantFlag" + this.object.id;
-        const userParticipantFlag = await game.user.getFlag("expanse", flagName);
-        if (!userParticipantFlag) {
-            await game.user.setFlag("expanse", flagName, selectedParticipant); 
-            console.log("Flag:" + flagName + " has been created.");
-        } else selectedParticipant = userParticipantFlag;
-
-        console.log(this);
 
         //participants
         const participants = sheetData.system.participants;
         if (participants.length) {
 
-            if (selectedParticipant > participants.length - 1) {
-                selectedParticipant = participants.length - 1;
-                await game.user.setFlag("expanse", flagName, selectedParticipant);
-            }
+            const defaultParticipant = participants[0];
+            const defaultParticipantID = defaultParticipant.id;
+            //get selected participant
+            const userParticipantFlag = await game.user.getFlag("expanse", flagName);
 
+            if (!userParticipantFlag) {
+                await game.user.setFlag("expanse", flagName, defaultParticipantID);
+                selectedParticipant = defaultParticipant;
+                console.log("Flag:" + flagName + " has been created.");
+            } else {
+                selectedParticipantID = userParticipantFlag;
+                const selected = participants.filter(i => i.id === selectedParticipantID);
+                if (!selected.length) {
+                    await game.user.setFlag("expanse", flagName, defaultParticipantID); 
+                    selectedParticipant = defaultParticipant;
+                } else {
+                    selectedParticipant = selected[0];
+                }
+            }
+            console.log(selectedParticipant);
 
             for (let pi = 0; pi < participants.length; pi++) {
                 const p = participants[pi];
@@ -80,15 +89,16 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.picture = pData.prototypeToken.texture.src;
                 p.speed = pData.system.attributes.speed.modified;
                 p.successThreshold = sheetData.system.successThreshold;
-                p.selected = (pi == selectedParticipant) ? true : false;
+                p.selected = (p == selectedParticipant) ? true : false;
 
-
-                const chaseTotal = Math.abs(p.chasePosition - participants[selectedParticipant].chasePosition);
-                if (pi != selectedParticipant) {
+                
+                const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
+                if (p != selectedParticipant) {
                     if (chaseTotal <= sheetData.system.closeRange) p.chaseTotal = "closeRange (" + chaseTotal + ")";
                     if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) p.chaseTotal = "mediumRange (" + chaseTotal + ")";
                     if (chaseTotal > sheetData.system.mediumRange) p.chaseTotal = "longRange (" + chaseTotal + ")";
                 } else p.chaseTotal = "-";
+                
             }
             //sort participants by speed
             //passengers.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
@@ -257,8 +267,11 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         let participantKey = $(event.currentTarget).parents(".item").attr ("data-item-key");
         participantKey = Number(participantKey);
 
+        const participants = this.actor.system.participants;
+        const id = participants[participantKey].id; 
+
         const flagName = "userParticipantFlag" + this.object.id;
-        await game.user.setFlag("expanse", flagName, participantKey);
+        await game.user.setFlag("expanse", flagName, id);
         this.actor.render();
         //console.log(participantKey);
     }
