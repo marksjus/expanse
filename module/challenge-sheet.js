@@ -2,7 +2,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
   static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["sheet", "actor", "expanse-challenge"],
+            classes: ["sheet", "actor", "challenge"],
             width: 730,
             height: 750,
             tabs: [],
@@ -20,6 +20,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
     async getData() {
         const sheetData = super.getData();
+        sheetData.isGM = game.user.isGM;
         sheetData.enrichment = await this._enrichment();
         sheetData.system = sheetData.data.system;
 
@@ -42,7 +43,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             let ability = {
                 id : v._id,
                 name : v.system.ability,
-                focus : v.name
+                focus : v.name,
+                isGM: sheetData.isGM
             };
             sheetData.applicableAbilities.push(ability);
         }
@@ -79,7 +81,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     selectedParticipant = selected[0];
                 }
             }
-            console.log(selectedParticipant);
 
             for (let pi = 0; pi < participants.length; pi++) {
                 const p = participants[pi];
@@ -89,7 +90,11 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.picture = pData.prototypeToken.texture.src;
                 p.speed = pData.system.attributes.speed.modified;
                 p.successThreshold = sheetData.system.successThreshold;
-                p.selected = (p == selectedParticipant) ? true : false;
+                p.selected = (p == selectedParticipant) ? "selected" : "unselected";
+                p.isGM = sheetData.isGM;
+                p.reveal = (p.visibility == "visible" || sheetData.isGM);
+                const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
+                p.slider = `left: ${sliderPosition}%; background-image: url("${pData.img}");`;
 
                 
                 const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
@@ -104,21 +109,15 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 
             }
             //sort participants by speed
-            participants.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
+            //participants.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
+            //this.actor.update({ system: { participants: participants } });
 
             const last = participants[participants.length-1];
             participants.map(p => {                
                 p.speedModifier = Math.floor((p.speed - last.speed)/2);
             });
 
-            this.actor.update({ system: { participants: participants } });
-
         }
-        //console.log(passengers);
-
-        game.users.map(x => {            
-            console.log(x.flags);          
-        });
         
         return sheetData;
     }
@@ -154,9 +153,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".item-create").click(this._itemCreate.bind(this));
 
         html.find(".participant-delete").click(this._onRemovePassenger.bind(this));
+        html.find(".participant-visibility").click(this._onToggleVisibility.bind(this));
         html.find(".chase-mod").click(this._onClickChase.bind(this));
         html.find('.chase-position').change(this._onChangeChase.bind(this));
-        html.find(".selected-participant").click(this._onSelectParticipant.bind(this));
+        html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
         
         html.find(".item-update-checkbox").click((ev) => {
             let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
@@ -223,7 +223,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 const passengerData = {
                     id : data.id,
                     isToken : data.isToken,
-                    chasePosition: 0
+                    chasePosition: 0,
+                    visibility: "not-visible"
                 };
                 const passengerList = vehicle.system.participants;
                 let alreadyOnboard = false;
@@ -253,7 +254,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         const participants = foundry.utils.duplicate(this.actor.system.participants);
         let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
         participantKey = Number(participantKey);
-        console.log(participantKey);
         (event.currentTarget.classList.contains('minus')) ? participants[participantKey].chasePosition-- : participants[participantKey].chasePosition++;
         if(participants[participantKey].chasePosition < 0) participants[participantKey].chasePosition = 0;
         if(participants[participantKey].chasePosition > this.actor.system.successThreshold) participants[participantKey].chasePosition = this.actor.system.successThreshold;
@@ -284,6 +284,20 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         const flagName = "userParticipantFlag" + this.object.id;
         await game.user.setFlag("expanse", flagName, id);
         this.actor.render();
-        //console.log(participantKey);
+    }
+
+    _onToggleVisibility(event){
+        let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
+        participantKey = Number(participantKey);
+        const participants = this.object.system.participants;
+
+        if (participants[participantKey].visibility == "visible"){
+            participants[participantKey].visibility = "not-visible";
+        } else {
+            participants[participantKey].visibility = "visible";    
+        }
+
+        this.actor.update({ system: { participants: participants } });
+        this.actor.render();    
     }
 }

@@ -26,7 +26,8 @@
     "styles/npc.css",
     "styles/weapons.css",
     "styles/armor.css",
-    "styles/ship.css"
+    "styles/ship.css",
+    "styles/challenge.css"
   ],
   "languages": [
     {
