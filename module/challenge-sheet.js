@@ -96,16 +96,23 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
                 p.slider = `left: ${sliderPosition}%; background-image: url("${pData.img}");`;
 
-                
+                p.chaseTotal = {};
                 const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
+                p.chaseTotal.value = chaseTotal;
                 if (p != selectedParticipant) {
-                    if (chaseTotal <= sheetData.system.closeRange)                       
-                        p.chaseTotal = game.i18n.format("EXPANSE.Close", {value: chaseTotal});
-                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange)
-                        p.chaseTotal = game.i18n.format("EXPANSE.Medium", {value: chaseTotal});
-                    if (chaseTotal > sheetData.system.mediumRange)
-                        p.chaseTotal = game.i18n.format("EXPANSE.Long", {value: chaseTotal});
-                } else p.chaseTotal = "-";
+                    if (chaseTotal <= sheetData.system.closeRange) {                     
+                        p.chaseTotal.indicator = "fa-wifi-weak";
+                        p.chaseTotal.title = game.i18n.localize("EXPANSE.CloseRange");
+                    };
+                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) {
+                        p.chaseTotal.indicator = "fa-wifi-fair";
+                        p.chaseTotal.title = game.i18n.localize("EXPANSE.MediumRange");
+                    };
+                    if (chaseTotal > sheetData.system.mediumRange) {
+                        p.chaseTotal.indicator = "fa-wifi";
+                        p.chaseTotal.title = game.i18n.localize("EXPANSE.LongRange");
+                    }
+                } else p.chaseTotal = "self";
                 
             }
             //sort participants by speed

@@ -183,3 +183,45 @@
 .challenge .item.visible {
   opacity: 100%;
 }
+
+.challenge .consequence-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    background: rgba(0, 0, 0, .9);
+    padding: 10px 7px;
+    border-radius: 10px; 
+    margin-top: 7px;  
+}
+
+.challenge .consequence-type span {
+  margin: 2px 0;    
+}
+
+.challenge .consequence {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.challenge .consequence-description {
+  margin-left: 10px;
+  width: -webkit-fill-available;
+}
+
+.challenge .consequence-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.challenge .consequence-row.controls {
+    justify-content: flex-end;
+}
+.challenge .consequence-row.controls a {
+    margin: 0 3px;
+}
