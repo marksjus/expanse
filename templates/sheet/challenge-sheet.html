@@ -95,17 +95,7 @@
           " data-item-id="{{_id}}">
             <div class="consequence-row">
 
-                <div class="consequence-type" title="
-                  {{#ifCond system.severity '==' "minor"}}
-                  {{localize "EXPANSE.Challenge.minor" }}
-                  {{/ifCond}}
-                  {{#ifCond system.severity '==' "moderate"}}
-                  {{localize "EXPANSE.Challenge.moderate" }}
-                  {{/ifCond}}
-                  {{#ifCond system.severity '==' "major"}}
-                  {{localize "EXPANSE.Challenge.major" }}
-                  {{/ifCond}}
-                ">
+                <div class="consequence-type" title="{{localize (concat "EXPANSE.Challenge." system.severity)}}">
                   {{#ifCond system.severity '==' "minor"}}
                   <span class="far fa-circle"></span>
                   <span class="far fa-circle"></span>
@@ -128,7 +118,7 @@
 
             <div class="consequence-row controls">
               {{#ifCond system.resolved '==' true}}
-              <span class="resolved">{{localize "EXPANSE.Challenge.Resolved" }}</span>
+              <span class="resolved">{{localize "EXPANSE.Resolved" }}</span>
               {{/ifCond}}
             </div>
           </li>
@@ -248,16 +238,33 @@
       </div> 
       {{/ifCond}} 
 
-      <div class="description-notes-container">
-        {{localize "EXPANSE.description"}}:
-        {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner
-        editable=true}}
+      <!-- Stunt Section -->
+      <div class="item-box">
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.Stunts"}}</span>
+        </div>
+        <div class="biography-container">
+          {{#ifCond isGM '==' true}}
+          {{editor enrichment.system.stunts target="system.stunts" engine="prosemirror" button=true owner=owner editable=true}}{{/ifCond}}
+          {{#ifCond isGM '!=' true}}
+          {{editor enrichment.system.stunts engine="prosemirror" button=false editable=false}}
+          {{/ifCond}}  
+        </div>
       </div>
 
-      <div class="stunts-notes-container">
-        {{localize "EXPANSE.stunts"}}:
-        {{editor enrichment.system.stunts target="system.stunts" engine="prosemirror" button=true owner=owner
-        editable=true}}
+      <!-- Description Section -->
+      <div class="item-box">
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.Description"}}</span>
+        </div>
+        <div class="biography-container">
+          {{#ifCond isGM '==' true}}
+          {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner editable=true}}
+          {{/ifCond}}
+          {{#ifCond isGM '!=' true}}
+          {{editor enrichment.system.description engine="prosemirror" button=false editable=false}}
+          {{/ifCond}}
+        </div>
       </div>
 
       <!-- GM Consequence Section -->
@@ -279,17 +286,7 @@
           " data-item-id="{{_id}}">
             <div class="consequence-row">
 
-                <div class="consequence-type" title="
-                  {{#ifCond system.severity '==' "minor"}}
-                  {{localize "EXPANSE.Challenge.minor" }}
-                  {{/ifCond}}
-                  {{#ifCond system.severity '==' "moderate"}}
-                  {{localize "EXPANSE.Challenge.moderate" }}
-                  {{/ifCond}}
-                  {{#ifCond system.severity '==' "major"}}
-                  {{localize "EXPANSE.Challenge.major" }}
-                  {{/ifCond}}
-                ">
+                <div class="consequence-type" title="{{localize (concat "EXPANSE.Challenge." system.severity)}}">
                   {{#ifCond system.severity '==' "minor"}}
                   <span class="far fa-circle"></span>
                   <span class="far fa-circle"></span>
@@ -311,15 +308,16 @@
             </div>
 
             <div class="consequence-row controls">
-              <a class="item-control item-update-checkbox" data-item-checkbox="resolved" title="{{localize " EXPANSE.Resolved" }}">
-                {{#ifCond system.resolved '==' true}}
+              {{#ifCond system.resolved '==' true}}
+              <a class="item-control item-update-checkbox" data-item-checkbox="resolved" title="{{localize "EXPANSE.Resolved" }}">                
                 <i class="fas fa-circle-exclamation-check"></i>
-                {{/ifCond}}
-                {{#ifCond system.resolved '==' false}}
+              {{/ifCond}}
+              {{#ifCond system.resolved '==' false}}
+              <a class="item-control item-update-checkbox" data-item-checkbox="resolved" title="{{localize "EXPANSE.Resolve" }}">                
                 <i class="fas fa-circle-exclamation"></i>
-                {{/ifCond}}
+              {{/ifCond}}
               </a>
-              <a class="item-control item-update-checkbox" data-item-checkbox="active" title="{{localize " EXPANSE.Visibility" }}">
+              <a class="item-control item-update-checkbox" data-item-checkbox="active" title="{{localize "EXPANSE.Visibility" }}">
                 {{#ifCond system.active '==' true}}
                 <i class="fas fa-eye"></i>
                 {{/ifCond}}
@@ -327,8 +325,8 @@
                 <i class="fas fa-eye-slash"></i>
                 {{/ifCond}}
               </a>
-              <a class="item-control item-edit" title="{{localize " EXPANSE.Edit" }}"><i class="fas fa-edit"></i></a>
-              <a class="item-control item-delete" title="{{localize " EXPANSE.Delete" }}"><i class="fas fa-trash"></i></a>
+              <a class="item-control item-edit" title="{{localize "EXPANSE.Edit" }}"><i class="fas fa-edit"></i></a>
+              <a class="item-control item-delete" title="{{localize "EXPANSE.Delete" }}"><i class="fas fa-trash"></i></a>
             </div>
           </li>
           {{/each}}
@@ -338,6 +336,18 @@
             </a>
           </li>
         </ul>
+      </div>
+      {{/ifCond}}
+
+      <!-- GM Notes Section -->
+      {{#ifCond isGM '==' true}}
+      <div class="item-box">
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.GMnotes"}}</span>
+        </div>
+        <div class="biography-container"> 
+          {{editor enrichment.system.GMnotes target="system.GMnotes" engine="prosemirror" button=true owner=owner editable=true}}
+        </div>
       </div>
       {{/ifCond}}
     </section>
