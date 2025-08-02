@@ -94,6 +94,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.successThreshold = sheetData.system.successThreshold;
                 p.selected = (p == selectedParticipant) ? "selected" : "unselected";
                 p.isGM = sheetData.isGM;
+                p.chaseType = sheetData.system.chaseType;
                 p.reveal = (p.visibility == "visible" || sheetData.isGM);
                 const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
                 p.slider = `left: ${sliderPosition}%; background-image: url("${pData.img}");`;
@@ -272,11 +273,19 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
     async _onClickChase(event){
         event.preventDefault();
         const participants = foundry.utils.duplicate(this.actor.system.participants);
+        let successThreshold = Number(this.actor.system.successThreshold);
         let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
         participantKey = Number(participantKey);
         (event.currentTarget.classList.contains('minus')) ? participants[participantKey].chasePosition-- : participants[participantKey].chasePosition++;
+        
         if(participants[participantKey].chasePosition < 0) participants[participantKey].chasePosition = 0;
-        if(participants[participantKey].chasePosition > this.actor.system.successThreshold) participants[participantKey].chasePosition = this.actor.system.successThreshold;
+        
+        if (this.actor.system.chaseType == "successThreshold"){
+            if(participants[participantKey].chasePosition > successThreshold) participants[participantKey].chasePosition = successThreshold;
+        } else {
+            if(participants[participantKey].chasePosition > (successThreshold - 1)) successThreshold = participants[participantKey].chasePosition + 1;
+            await this.actor.update({ "system.successThreshold": successThreshold });
+        }
 
         await this.actor.update({ system: { participants: participants } });
     }

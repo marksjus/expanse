@@ -25,15 +25,44 @@
                 {{/select}}
               </select>
             </div>
+            {{#ifCond system.type '==' 'chase'}}
+            <div class="information">
+              <label for="name" class="info-label">{{localize "EXPANSE.ChaseType"}}</label>
+              <select class="challenge-chase-type-selector" type="text" name="system.chaseType" data-dtype="String" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}>
+                {{#select system.chaseType}}
+                <option value="successThreshold" selected>{{localize "EXPANSE.SuccessThreshold" }}</option>
+                <option value="chaseTotal">{{localize "EXPANSE.ChaseTotal" }}</option>
+                {{/select}}
+              </select>
+            </div>
+            {{/ifCond}}
             <div class="information">
               <label for="name" class="info-label">{{localize "EXPANSE.Difficulty" }}</label>
               <input class="info-input" type="number" name="system.difficulty" value="{{actor.system.difficulty}}"
                 data-dtype="Number" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}/>
             </div>
             <div class="information">
-              <label for="name" class="info-label">{{localize "EXPANSE.SuccessThreshold" }}</label>
-              <input class="info-input" type="number" name="system.successThreshold" value="{{actor.system.successThreshold}}"
+              {{#ifCond system.type '!=' 'chase'}}
+                <label for="name" class="info-label">{{localize "EXPANSE.SuccessThreshold" }}</label>
+                <input class="info-input" type="number" name="system.successThreshold" value="{{actor.system.successThreshold}}"
                 data-dtype="Number" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}/>
+              {{/ifCond}}
+              
+              {{#ifCond system.type '==' 'chase'}}
+                {{#ifCond system.chaseType '!=' 'chaseTotal'}}
+                <label for="name" class="info-label">{{localize "EXPANSE.SuccessThreshold" }}</label>
+                <input class="info-input" type="number" name="system.successThreshold" value="{{actor.system.successThreshold}}"
+                data-dtype="Number" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}/>
+                {{/ifCond}}
+                
+                {{#ifCond system.chaseType '==' 'chaseTotal'}}
+                <label for="name" class="info-label">{{localize "EXPANSE.ChaseTotal" }}</label>
+                <input class="info-input" type="number" name="system.chaseTotal" value="{{actor.system.chaseTotal}}"
+                data-dtype="Number" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}/>
+                {{/ifCond}}
+
+              {{/ifCond}}
+              
             </div>
           </div>
 
@@ -198,7 +227,9 @@
               <span class="weapon-list-item modifier">{{localize "EXPANSE.SpeedModifier" }}</span>
               <span class="weapon-list-item modifier">{{localize "EXPANSE.ChaseTotal" }}</span>
               <span class="weapon-list-item slider"></span>
-              <span class="weapon-list-item modifier">{{localize "EXPANSE.SuccessThreshold" }}</span>
+              {{#ifCond system.chaseType '==' 'successThreshold'}}
+              <span class="weapon-list-item modifier">{{localize "EXPANSE.Progress" }}</span>
+              {{/ifCond}}
               {{#ifCond isGM '==' true}}
                 <span class="weapon-list-item delete"></span>
               {{/ifCond}}
@@ -248,9 +279,11 @@
                 </div>
               </div>
 
+              {{#ifCond chaseType '==' 'successThreshold'}}
               <div class="weapon-list-item modifier">
                 {{chasePosition}}
               </div>
+              {{/ifCond}}
 
               {{#ifCond isGM '==' true}}
                 <div class="weapon-list-item delete">

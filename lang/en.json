@@ -227,6 +227,7 @@
     "EXPANSE.Consequences": "Consequences",
     "EXPANSE.Delete": "Delete",
     "EXPANSE.SpeedModifier": "Speed Modifier",
+    "EXPANSE.ChaseType": "Chase Victory Condition",
     "EXPANSE.ChaseTotal": "Chase Total",
     "EXPANSE.Visibility": "Visibility",
     "EXPANSE.Resolved": "Resolved",
