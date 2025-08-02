@@ -312,9 +312,14 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         const participants = this.actor.system.participants;
         const id = participants[participantKey].id; 
 
-        const flagName = "userParticipantFlag" + this.object.id;
-        await game.user.setFlag("expanse", flagName, id);
-        this.actor.render();
+        if (!event.shiftKey) {
+            const flagName = "userParticipantFlag" + this.object.id;
+            await game.user.setFlag("expanse", flagName, id);
+            this.actor.render();
+        } else if(event.shiftKey){
+            const actor = Actor.get(id);
+            actor.sheet.render(true);
+        }
     }
 
     _onToggleVisibility(event){
