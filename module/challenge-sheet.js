@@ -51,8 +51,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
         //fetch consequences
         sheetData.consequences = sheetData.items.filter(i => i.type === "consequence");
-        sheetData.ActiveConsequences = sheetData.items.filter(i => i.type === "consequence" && i.system.active == true);
-
+        const activeConsequences = sheetData.items.filter(i => i.type === "consequence" && i.system.active == true);
+        sheetData.noConsequences = false;
+        if (activeConsequences.length == 0) sheetData.noConsequences = true;
+        
         //get selected participant
         let selectedParticipantID = "";
         let selectedParticipant = null;

@@ -73,11 +73,80 @@
     </header>
 
     <section class="sheet-body">
+
+      <!-- Players Consequence Section -->
+      {{#ifCond noConsequences '==' false}}
+      {{#ifCond isGM '!=' true}}
+      <div class="item-box">
+
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.Consequences" }}</span>
+        </div>
+        <ul class="items weapon-list">
+          {{#each consequences as |consequence key|}}
+          {{#ifCond system.active '==' true}}
+          <li class="item consequence 
+            {{#ifCond system.resolved '==' false}}
+              visible
+            {{/ifCond}}
+            {{#ifCond system.resolved '==' true}}
+              not-visible
+            {{/ifCond}}
+          " data-item-id="{{_id}}">
+            <div class="consequence-row">
+
+                <div class="consequence-type" title="
+                  {{#ifCond system.severity '==' "minor"}}
+                  {{localize "EXPANSE.Challenge.minor" }}
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "moderate"}}
+                  {{localize "EXPANSE.Challenge.moderate" }}
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "major"}}
+                  {{localize "EXPANSE.Challenge.major" }}
+                  {{/ifCond}}
+                ">
+                  {{#ifCond system.severity '==' "minor"}}
+                  <span class="far fa-circle"></span>
+                  <span class="far fa-circle"></span>
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "moderate"}}
+                  <span class="far fa-circle"></span>
+                  <span class="fas fa-circle"></span>
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "major"}}
+                  <span class="fas fa-circle"></span>
+                  <span class="fas fa-circle"></span>
+                  {{/ifCond}}
+                  <span class="fas fa-circle"></span>
+                </div>
+
+              <div class="consequence-description">
+                {{editor system.description engine="prosemirror" button=false owner=owner editable=false}}
+              </div>
+            </div>
+
+            <div class="consequence-row controls">
+              {{#ifCond system.resolved '==' true}}
+              <span class="resolved">{{localize "EXPANSE.Challenge.Resolved" }}</span>
+              {{/ifCond}}
+            </div>
+          </li>
+          {{/ifCond}}
+          {{/each}}
+        </ul>
+      </div>
+      {{/ifCond}}
+      {{/ifCond}}
+
+      <!-- Chase Section -->
       {{#ifCond actor.system.type '==' 'chase'}}
+      <!-- Chase Header -->
       <div class="divider-header">
         <span>{{localize "EXPANSE.Challenge.Chase" }}</span>
       </div>
 
+      <!-- Chase Parameters -->
       <div class="info-header">
         <div class="information">
           <label for="name" class="info-label">{{localize "EXPANSE.TimePerTest" }}</label>
@@ -95,8 +164,8 @@
             data-dtype="Number" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}/>
         </div>
       </div>
-      
 
+      <!-- Chase Panel -->
       <div class="item-box">
         <div class="weapon-header">
           <span>{{localize "EXPANSE.ChaseParticipants" }}</span>
@@ -115,7 +184,6 @@
               {{#ifCond isGM '==' true}}
                 <span class="weapon-list-item delete"></span>
               {{/ifCond}}
-              <span class="weapon-list-item delete"></span>
             </div>
           </li>
           {{#each system.participants as |participant key|}}
@@ -172,10 +240,6 @@
                   <a class="chase-mod"><i class="fa fa-plus"></i></a>
                 </div>
               {{/ifCond}}
-              <div class="weapon-list-item delete">
-                
-              </div>
-
             </div>
           </li>
           {{/ifCond}}
@@ -196,6 +260,8 @@
         editable=true}}
       </div>
 
+      <!-- GM Consequence Section -->
+      {{#ifCond isGM '==' true}}
       <div class="item-box">
 
         <div class="weapon-header">
@@ -213,7 +279,17 @@
           " data-item-id="{{_id}}">
             <div class="consequence-row">
 
-                <div class="consequence-type">
+                <div class="consequence-type" title="
+                  {{#ifCond system.severity '==' "minor"}}
+                  {{localize "EXPANSE.Challenge.minor" }}
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "moderate"}}
+                  {{localize "EXPANSE.Challenge.moderate" }}
+                  {{/ifCond}}
+                  {{#ifCond system.severity '==' "major"}}
+                  {{localize "EXPANSE.Challenge.major" }}
+                  {{/ifCond}}
+                ">
                   {{#ifCond system.severity '==' "minor"}}
                   <span class="far fa-circle"></span>
                   <span class="far fa-circle"></span>
@@ -263,6 +339,7 @@
           </li>
         </ul>
       </div>
+      {{/ifCond}}
     </section>
   </div>
 

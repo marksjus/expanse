@@ -238,6 +238,7 @@
     "EXPANSE.Challenge.minor": "Minor",
     "EXPANSE.Challenge.moderate": "Moderate",
     "EXPANSE.Challenge.major": "Major",
+    "EXPANSE.Challenge.Resolved": "Resolved",
     "SETTINGS.BeltDark": "Belter: Black dice - white stunt die.",
     "SETTINGS.BeltLight": "Belter: White dice - black stunt die.",
     "SETTINGS.DiceChoice": "Dice Style",
