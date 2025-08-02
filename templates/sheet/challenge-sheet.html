@@ -18,11 +18,10 @@
             <div class="information">
               <label for="name" class="info-label">{{localize "EXPANSE.Type"}}</label>
               <select class="challenge-type-selector" type="text" name="system.type" data-dtype="String" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}>
-                {{#select actor.system.type}}
-                <option value="" selected></option>
-                <option value="exploration">{{localize "EXPANSE.Challenge.Exploration" }}</option>
-                <option value="social">{{localize "EXPANSE.Challenge.Social" }}</option>
-                <option value="chase">{{localize "EXPANSE.Challenge.Chase" }}</option>
+                {{#select system.type}}
+                <option value="chase" selected>{{localize "EXPANSE.Challenge.chase" }}</option>
+                <option value="exploration">{{localize "EXPANSE.Challenge.exploration" }}</option>
+                <option value="social">{{localize "EXPANSE.Challenge.social" }}</option>
                 {{/select}}
               </select>
             </div>
@@ -129,12 +128,41 @@
       {{/ifCond}}
       {{/ifCond}}
 
-      <!-- Chase Section -->
-      {{#ifCond actor.system.type '==' 'chase'}}
-      <!-- Chase Header -->
+
+      <!-- Challenge Header -->
       <div class="divider-header">
-        <span>{{localize "EXPANSE.Challenge.Chase" }}</span>
+        <span>{{localize (concat "EXPANSE.Challenge." system.type)}}</span>
       </div>
+      
+      <!-- Progress Bar-->
+      {{#ifCond system.type '!=' 'chase'}}
+      <div class="item-box">
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.Progress" }}</span>
+        </div>
+        <div class="progress-row">
+          <div class="list-item">
+            {{#each progress as |v k|}}
+              {{#ifCond v '==' 1}}
+                <span class="fas fa-circle"></span>
+              {{/ifCond}}
+              {{#ifCond v '==' 0}}
+                <span class="far fa-circle"></span>
+              {{/ifCond}}
+            {{/each}}
+          </div>
+          {{#ifCond isGM '==' true}}
+          <div class="item-controls list-item">
+            <a class="progress-mod minus"><i class="fa fa-minus"></i></a>
+            <a class="progress-mod"><i class="fa fa-plus"></i></a> 
+          </div>
+          {{/ifCond}}
+        </div>
+      </div>
+      {{/ifCond}}
+
+      <!-- Chase Section -->
+      {{#ifCond system.type '==' 'chase'}}
 
       <!-- Chase Parameters -->
       <div class="info-header">
@@ -330,8 +358,8 @@
             </div>
           </li>
           {{/each}}
-          <li>
-            <a class="item-control item-create" data-type="consequence" title="{{localize "EXPANSE.Add" }}">
+          <li class="item-control">
+            <a class="item-create" data-type="consequence" title="{{localize "EXPANSE.Add" }}">
               <i class="fas fa-plus"></i>
             </a>
           </li>

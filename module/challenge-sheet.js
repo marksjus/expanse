@@ -126,6 +126,16 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.speedModifier = Math.floor((p.speed - last.speed)/2);
             });
 
+            //Progress bar
+            if (sheetData.system.type != "chase") {
+                sheetData.progress = [];
+                for (let i = 0; i < sheetData.system.successThreshold; i++) {
+                    if (i < sheetData.system.progress)
+                        sheetData.progress[i]=1;
+                    else
+                        sheetData.progress[i]=0;
+                }
+            }
         }
         
         return sheetData;
@@ -164,6 +174,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".participant-delete").click(this._onRemovePassenger.bind(this));
         html.find(".participant-visibility").click(this._onToggleVisibility.bind(this));
         html.find(".chase-mod").click(this._onClickChase.bind(this));
+        html.find(".progress-mod").click(this._onClickProgress.bind(this));
         html.find('.chase-position').change(this._onChangeChase.bind(this));
         html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
         
@@ -268,6 +279,17 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         if(participants[participantKey].chasePosition > this.actor.system.successThreshold) participants[participantKey].chasePosition = this.actor.system.successThreshold;
 
         await this.actor.update({ system: { participants: participants } });
+    }
+
+    async _onClickProgress(event){
+        event.preventDefault();
+        let progress = this.actor.system.progress;
+
+        (event.currentTarget.classList.contains('minus')) ? progress-- : progress++;
+        if(progress < 0) progress = 0;
+        if(progress > this.actor.system.successThreshold) progress = this.actor.system.successThreshold;
+
+        await this.actor.update({ system: { progress: progress } });
     }
 
     async _onChangeChase(event){

@@ -391,9 +391,10 @@
             }
         },
         "challenge": {
-            "type": "",
+            "type": "chase",
             "difficulty": 1,
             "successThreshold": 10,
+            "progress": 0,
             "closeRange": 1,
             "mediumRange": 5,
             "timePerTest": "",

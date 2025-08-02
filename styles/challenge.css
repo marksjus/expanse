@@ -35,7 +35,6 @@
 .challenge .item-box {
   display: flex;
   flex-direction: column;
-  text-align: center;
   margin: 0px 5px 10px 5px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .6);
   border-bottom-right-radius: 10px;
@@ -70,6 +69,17 @@
   margin-top: 5px;
 }
 
+.challenge .progress-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  padding: 5px 10px;
+}
+
+.challenge .progress-row .item-controls,
 .challenge .item-row .item-controls {
     display: flex;
     flex-direction: row;
@@ -228,4 +238,8 @@
 
 .challenge .resolved {
   text-transform: uppercase; 
+}
+
+.challenge .item-control {
+  text-align: center;
 }
