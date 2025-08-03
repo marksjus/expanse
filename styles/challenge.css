@@ -169,6 +169,7 @@
   height: 50px;
   width: 50px;
   border-radius: 5%;
+  background-color: #005971;
   background-image: url("../ui/earth-5.png");
   background-size: contain;
   box-shadow: 0 0 2px 0 #555;
