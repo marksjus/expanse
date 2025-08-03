@@ -177,6 +177,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".chase-mod").click(this._onClickChase.bind(this));
         html.find(".progress-mod").click(this._onClickProgress.bind(this));
         html.find('.chase-position').change(this._onChangeChase.bind(this));
+        html.find(".chase-reset").click(this._onResetChase.bind(this));
         html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
         
         html.find(".item-update-checkbox").click((ev) => {
@@ -312,6 +313,22 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
         await this.actor.update({ system: { participants: participants } });
     }
+
+    async _onResetChase(event){
+        event.preventDefault();
+        const systemData = foundry.utils.duplicate(this.actor.system);
+
+        if (systemData.type == "chase" && systemData.chaseType == "chaseTotal")
+            systemData.successThreshold = systemData.chaseTotal;
+
+        const participants = systemData.participants;
+
+        for (let pi = 0; pi < participants.length; pi++) {
+            participants[pi].chasePosition = 0;
+        }
+        
+        await this.actor.update({ system: systemData });
+    }    
 
     async _onSelectParticipant(event) {
         event.preventDefault();

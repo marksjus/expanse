@@ -221,7 +221,11 @@
           <li class="item weapon header">
             <div class="header-row">
               {{#ifCond isGM '==' true}}
-                <span class="weapon-list-item modifier"></span>
+                <span class="weapon-list-item modifier">
+                  <a class="chase-reset" title="{{localize "EXPANSE.Reset" }}">
+                    <i class="fas fa-recycle"></i>
+                  </a>
+                </span>
               {{/ifCond}}
               <span class="weapon-list-item name">{{localize "EXPANSE.Name" }}</span>
               <span class="weapon-list-item modifier">{{localize "EXPANSE.SpeedModifier" }}</span>
