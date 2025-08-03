@@ -183,7 +183,10 @@
           {{#ifCond isGM '==' true}}
           <div class="item-controls list-item">
             <a class="progress-mod minus"><i class="fa fa-minus"></i></a>
-            <a class="progress-mod"><i class="fa fa-plus"></i></a> 
+            <a class="progress-mod"><i class="fa fa-plus"></i></a>
+            <a class="chase-reset" title="{{localize "EXPANSE.Reset" }}">
+              <i class="fas fa-reply"></i>
+            </a>
           </div>
           {{/ifCond}}
         </div>
@@ -223,7 +226,7 @@
               {{#ifCond isGM '==' true}}
                 <span class="weapon-list-item modifier">
                   <a class="chase-reset" title="{{localize "EXPANSE.Reset" }}">
-                    <i class="fas fa-recycle"></i>
+                    <i class="fas fa-reply"></i>
                   </a>
                 </span>
               {{/ifCond}}

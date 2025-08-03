@@ -90,6 +90,10 @@
     margin-right: 5px;
 }
 
+.challenge .progress-row .item-controls a {
+  margin-left: 10px;
+}
+
 .challenge .divider-header {
   display: flex;
   flex-direction: row;

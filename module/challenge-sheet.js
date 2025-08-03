@@ -318,15 +318,18 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         event.preventDefault();
         const systemData = foundry.utils.duplicate(this.actor.system);
 
-        if (systemData.type == "chase" && systemData.chaseType == "chaseTotal")
-            systemData.successThreshold = systemData.chaseTotal;
+        if (systemData.type == "chase") {
+            if(systemData.chaseType == "chaseTotal")
+                systemData.successThreshold = systemData.chaseTotal;
 
-        const participants = systemData.participants;
+            const participants = systemData.participants;
 
-        for (let pi = 0; pi < participants.length; pi++) {
-            participants[pi].chasePosition = 0;
+            for (let pi = 0; pi < participants.length; pi++) {
+                participants[pi].chasePosition = 0;
+            }
+        } else {
+            systemData.progress = 0;
         }
-        
         await this.actor.update({ system: systemData });
     }    
 
