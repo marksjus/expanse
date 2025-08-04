@@ -55,7 +55,6 @@ export class ExpanseActor extends Actor {
   _onDelete(){
     if (this.type === "character" || this.type === "ship") {
       const challenges = game.actors.filter(i => i.type === "challenge");
-      console.log(challenges);
       challenges.map(x => {
         const participants = x.system.participants;
         for (let pi = 0; pi < participants.length; pi++) {

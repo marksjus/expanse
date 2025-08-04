@@ -1819,3 +1819,32 @@ table.stunt_table tbody tr:nth-child(even) {
 .prosemirror .fa-fw {
     width: 1em;
 }
+
+/*******************************/
+/**          Tooltip          **/
+/*******************************/
+
+.container-tooltip-text {
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  opacity: 0;
+  max-width: 400px;
+  text-align: left;
+  border-radius: 10px;
+  padding: 8px;
+  background-color: white;
+  /* Position the tooltip */
+  position: fixed;
+  z-index: 10;
+}
+
+.tooltip-container:hover .container-tooltip-text{
+  visibility: visible;
+  opacity: 0.95;
+  transition: all 0.4s ease;
+}
+
+.container-tooltip-text .editor-content {
+  text-align: justify;
+}

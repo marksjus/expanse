@@ -191,10 +191,12 @@
   border: 0;
 }
 
+.challenge .effect-img.not-visible,
 .challenge .item.not-visible {
   opacity: 50%;
 }
 
+.challenge .effect-img.visible,
 .challenge .item.visible {
   opacity: 100%;
 }
@@ -247,4 +249,43 @@
 
 .challenge .item-control {
   text-align: center;
+}
+
+.challenge .weapon-list-item.name {
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge .effects {
+  display: flex;
+  flex-direction: row;
+}
+
+.challenge .effect-img {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  margin: 4px 2px 2px 0;
+  border: solid 1px #088afc;
+  background-color: #005971;
+}
+
+.challenge .effects .tags{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.challenge .effects .duration,
+.challenge .effects .temporary{
+  background-color: #005971;
+  color: white;
+  padding: 3px 10px;
+  margin: 2px 2px 2px 0;
+  border-radius: 5px;
+}
+
+.challenge .effects .duration{
+  background-color: #088afc;
+  color: black;
 }

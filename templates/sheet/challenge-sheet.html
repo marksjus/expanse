@@ -262,7 +262,40 @@
               {{/ifCond}}
 
               <div class="weapon-list-item name">
-                {{name}}
+                <div>{{name}}</div>
+                <div class="effects">
+                {{#each effects as |v k|}}
+                  <div class="tooltip-container">
+                    <img class="effect-img {{expired}}" src="{{img}}" data-item-id="{{id}}"/>
+                    <div class="container-tooltip-text">
+                      <span><b>{{name}}</b></span>
+                      <span>
+                        {{editor description engine="prosemirror" button=false editable=false}}
+                      </span>
+                      <div class="tags">
+                        {{#ifCond isTemporary '==' true}}
+                        <span class="temporary">{{localize "EXPANSE.Temporary"}}</span>
+                        {{/ifCond}}
+                        {{#ifCond isTemporary '==' false}}
+                        <span class="temporary">{{localize "EXPANSE.Passive"}}</span>
+                        {{/ifCond}}
+                        {{#ifCond unlimited '!=' ""}}
+                        <span class="duration">{{unlimited}}</span>
+                        {{/ifCond}}
+                        {{#ifCond rounds '!=' ""}}
+                        <span class="duration">{{rounds}}</span>
+                        {{/ifCond}}
+                        {{#ifCond turns '!=' ""}}
+                        <span class="duration">{{turns}}</span>
+                        {{/ifCond}}
+                        {{#ifCond expired '==' "not-visible"}}
+                        <span class="duration">{{localize "EXPANSE.Expired"}}</span>
+                        {{/ifCond}}
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+                </div>
               </div>
 
               <div class="weapon-list-item modifier">

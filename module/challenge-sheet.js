@@ -1,3 +1,35 @@
+Hooks.on("createActiveEffect", function(document){
+    const parent = document.parent;
+
+    const challenges = game.actors.filter(i => i.type === "challenge");
+      challenges.map(x => {
+        const participants = x.system.participants;
+        for (let pi = 0; pi < participants.length; pi++) {
+          if (participants[pi].id == parent.id) {
+            participants[pi].toggleForceUpdate = !participants[pi].toggleForceUpdate;
+            break;
+          };
+        };
+        x.update({ system: { participants: participants } });
+      });
+});
+
+Hooks.on("deleteActiveEffect", function(document){
+    const parent = document.parent;
+
+    const challenges = game.actors.filter(i => i.type === "challenge");
+      challenges.map(x => {
+        const participants = x.system.participants;
+        for (let pi = 0; pi < participants.length; pi++) {
+          if (participants[pi].id == parent.id) {
+            participants[pi].toggleForceUpdate = !participants[pi].toggleForceUpdate;
+            break;
+          };
+        };
+        x.update({ system: { participants: participants } });
+      });
+});
+
 export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
 
   static get defaultOptions() {
@@ -116,6 +148,55 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                         p.chaseTotal.title = game.i18n.localize("EXPANSE.LongRange");
                     }
                 } else p.chaseTotal = "self";
+
+                //Effects
+                p.effects = [];
+                pData.effects.map(e => {
+                    const effect = {
+                        id: e.id,
+                        name: e.name,
+                        img: e.img,
+                        description: e.description,
+                        rounds: "",
+                        turns: "",
+                        unlimited: "",
+                        isTemporary: e.isTemporary,
+                        expired: ""
+                    };
+
+                    const expired = this.isEffectExpired(e);
+                    effect.expired = expired ? "not-visible" : "visible";
+
+                    const rounds = e.duration.rounds;
+                    const turns = e.duration.turns;
+                    if(!expired) {
+                        
+                        if (rounds > 0) {
+                            let duration = "";
+                            if (rounds == 1) duration = game.i18n.format("EXPANSE.Round", {value :rounds});
+                            if (rounds > 1) duration = game.i18n.format("EXPANSE.RoundsLessFive", {value :rounds});
+                            if (rounds >= 5) duration = game.i18n.format("EXPANSE.Rounds", {value :rounds});
+                            effect.rounds = duration;
+                        };
+
+                        if (turns > 0) {
+                            let duration = "";
+                            if (turns == 1) duration = game.i18n.format("EXPANSE.Turn", {value :turns});
+                            if (turns > 1) duration = game.i18n.format("EXPANSE.TurnsLessFive", {value :turns});
+                            if (turns >= 5) duration = game.i18n.format("EXPANSE.Turns", {value :turns});
+                            effect.turns = duration;
+                        };
+                    }
+
+                    if (!rounds && !turns) {
+                        effect.unlimited = game.i18n.localize("EXPANSE.Unlimited");
+                    };
+
+                    p.effects.push(effect);
+                    
+                });
+
+                console.log(p.effects);
                 
             }
             //sort participants by speed
@@ -163,10 +244,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         
         // Delete Item
         html.find(".item-delete").click((ev) => {
-            let li = $(ev.currentTarget).parents(".item"),
-                itemId = li.attr("data-item-id");
+            const itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
             this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-            li.slideUp(200, () => this.render(false));
         });
 
         // Create Item
@@ -179,6 +258,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.chase-position').change(this._onChangeChase.bind(this));
         html.find(".chase-reset").click(this._onResetChase.bind(this));
         html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
+
+        html.find(".effect-img").contextmenu(this._onClickEffect.bind(this));
         
         html.find(".item-update-checkbox").click((ev) => {
             let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
@@ -234,7 +315,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         });
 
         this.actor.update({ system: { participants: participants } });
-        this.actor.render();
     };
     
     dropChar(event, vehicle) {
@@ -246,7 +326,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     id : data.id,
                     isToken : data.isToken,
                     chasePosition: 0,
-                    visibility: "not-visible"
+                    visibility: "not-visible",
+                    toggleForceUpdate: false,
                 };
                 const passengerList = vehicle.system.participants;
                 let alreadyOnboard = false;
@@ -300,6 +381,23 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         if(progress > this.actor.system.successThreshold) progress = this.actor.system.successThreshold;
 
         await this.actor.update({ system: { progress: progress } });
+    }
+
+    async _onClickEffect(event){
+
+        if(game.user.isActiveGM) {
+            const effectID = $(event.currentTarget).attr("data-item-id");
+
+            const participants = foundry.utils.duplicate(this.actor.system.participants);
+            let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
+            participantKey = Number(participantKey);
+            const p = participants[participantKey];
+            const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
+
+            p.toggleForceUpdate = !p.toggleForceUpdate;
+            await pData.deleteEmbeddedDocuments("ActiveEffect", [effectID]);
+            await this.actor.update({ system: { participants: participants } });
+        }
     }
 
     async _onChangeChase(event){
@@ -362,7 +460,41 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             participants[participantKey].visibility = "visible";    
         }
 
-        this.actor.update({ system: { participants: participants } });
-        this.actor.render();    
+        this.actor.update({ system: { participants: participants } });    
+    }
+
+    getRoundsRemaining(duration){
+        if (duration.rounds === null) return null;
+
+        const currentRound = game.combat?.round ?? 0;
+        const endingRound = (duration.startRound || 0) + duration.rounds;
+
+        return endingRound - currentRound;
+    }
+
+    getTurnsRemaining(duration){
+        if (duration.turns === null) return null;
+
+        const currentTurn = game.combat?.turn ?? 0;
+        const endingTurn = (duration.startTurn || 0) + duration.turns;
+
+        return endingTurn - currentTurn;
+    }
+
+    isEffectExpired(effect){
+        const durationType = effect.duration.type;
+
+        if (durationType === "turns") {
+            const remainingRounds =
+                this.getRoundsRemaining(effect.duration) ?? 0;
+            const remainingTurns =
+                this.getTurnsRemaining(effect.duration) ?? 0;
+            return (
+                remainingRounds < 0 ||
+                (remainingRounds === 0 && remainingTurns <= 0)
+            );
+        }
+
+        return false;
     }
 }
