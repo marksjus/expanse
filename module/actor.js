@@ -117,6 +117,7 @@ export class ExpanseActor extends Actor {
       }
       if (actorData.conditions.unconscious.active === true) {
         actorData.conditions.prone.active = true;
+        actorData.conditions.helpless.active = true;
         actorData.attributes.move.modified = 0;
         actorData.attributes.run.modified = 0;
       }

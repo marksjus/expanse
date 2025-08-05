@@ -155,7 +155,6 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
             // injured
             if (typeof overrides?.conditions?.injured?.active !== 'undefined') {
                 if (overrides.conditions.injured.active) {                   
-                    sheetData.conditions.fatigued.active = true;
                     sheetData.attributes.run.modified = 0;
                 }
             }
@@ -201,7 +200,6 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
             // unconscious
             if (typeof overrides?.conditions?.unconscious?.active !== 'undefined') {
                 if (overrides.conditions.unconscious.active) {                   
-                    sheetData.conditions.prone.active = true;
                     sheetData.attributes.move.modified = 0;
                     sheetData.attributes.run.modified = 0;
                 }

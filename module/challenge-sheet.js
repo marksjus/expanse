@@ -1,3 +1,4 @@
+
 Hooks.on("createActiveEffect", function(document){
     const parent = document.parent;
 
@@ -28,6 +29,74 @@ Hooks.on("deleteActiveEffect", function(document){
         };
         x.update({ system: { participants: participants } });
       });
+});
+
+function hasEffectApplied (actor, name) {
+
+  const effects = actor.effects;
+
+  let hasEffectApplied = false;
+  effects.map(x => {
+    if (x.name == name) {
+      hasEffectApplied = true;
+    }
+  });
+
+  return hasEffectApplied
+}
+
+// Make all effects unique 
+Hooks.on("preCreateActiveEffect", function(document, data, options, userId) {
+
+  const name = document.name;
+  const actor = document.parent;
+
+  if (hasEffectApplied(actor, name))
+    return false;
+
+  return true
+});
+
+//Prevent dependant effect removal.
+Hooks.on("preDeleteActiveEffect", function(document, data, options, userId) {
+
+  const name = document.name;
+  const actor = document.parent;
+  let param = {name: name, inhibitor: ""};
+
+  switch (name) {
+    case "PRONE":
+        if (hasEffectApplied(actor, "UNCONSCIOUS")) {
+            param.inhibitor = "UNCONSCIOUS"
+            const warning = game.i18n.format("EXPANSE.WARNING.CannotRemoveEffect", param);
+            ui.notifications.warn(warning);
+            return false;
+        }    
+        break;
+
+    case "HELPLESS":
+        if (hasEffectApplied(actor, "UNCONSCIOUS")) {
+            param.inhibitor = "UNCONSCIOUS"
+            const warning = game.i18n.format("EXPANSE.WARNING.CannotRemoveEffect", param);
+            ui.notifications.warn(warning);
+            return false;
+        }    
+        break;
+
+    case "FATIGUED":
+        if (hasEffectApplied(actor, "INJURED")) {
+            param.inhibitor = "INJURED"
+            const warning = game.i18n.format("EXPANSE.WARNING.CannotRemoveEffect", param);
+            ui.notifications.warn(warning);
+            return false;
+        }    
+        break;
+  
+    default:
+        break;
+  }
+
+  return true
 });
 
 export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
@@ -195,9 +264,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     p.effects.push(effect);
                     
                 });
-
-                console.log(p.effects);
-                
+          
             }
             //sort participants by speed
             //participants.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
