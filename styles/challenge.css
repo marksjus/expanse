@@ -138,6 +138,11 @@
   min-width: 150px;
 }
 
+.challenge .header-row .image,
+.challenge .weapon-row .image {
+  min-width: 100px;
+}
+
 .challenge .header-row .modifier,
 .challenge .weapon-row .modifier {
   min-width: 50px;
@@ -166,7 +171,7 @@
   margin: 20px;
 }
 
-.challenge .slider .slider-thumb {
+.challenge .slider-thumb {
   position: relative;
   top: 0px;
   left: 0%;
@@ -175,6 +180,17 @@
   border-radius: 5%;
   background-color: #005971;
   background-image: url("../ui/earth-5.png");
+  background-size: contain;
+  box-shadow: 0 0 2px 0 #555;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.challenge .picture {
+  height: 50px;
+  width: 50px;
+  border-radius: 5%;
+  background-color: #005971;
   background-size: contain;
   box-shadow: 0 0 2px 0 #555;
   cursor: pointer;

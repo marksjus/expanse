@@ -193,6 +193,111 @@
       </div>
       {{/ifCond}}
 
+       <!-- Participant Section -->
+      {{#ifCond system.type '!=' 'chase'}}
+
+      <!-- Participant Panel -->
+      <div class="item-box">
+        <div class="weapon-header">
+          <span>{{localize "EXPANSE.Participants" }}</span>
+        </div>
+        <ul class="items weapon-list">
+          <li class="item weapon header">
+            <div class="header-row">
+              {{#ifCond isGM '==' true}}
+                <span class="weapon-list-item modifier"></span>
+              {{/ifCond}}
+              <span class="weapon-list-item image"></span>
+              <span class="weapon-list-item name">{{localize "EXPANSE.Name" }}</span>
+              <span class="weapon-list-item slider">{{localize "EXPANSE.Attitude" }}</span>
+            </div>
+          </li>
+          {{#each system.participants as |participant key|}}
+          {{#ifCond reveal '==' true}}
+          <li class="item weapon {{visibility}}" data-item-key="{{key}}">
+            <div class="weapon-row">
+
+              <!-- Row controls -->
+              {{#ifCond isGM '==' true}}
+                <div class="item-controls weapon-list-item modifier">
+                  <a class="item-control participant-delete" title="{{localize "EXPANSE.Delete" }}"><i class="fas fa-trash"></i></a>
+                  <a class="item-control participant-visibility" title="{{localize "EXPANSE.Visibility" }}">
+                    {{#ifCond visibility '==' 'visible'}}
+                      <i class="fas fa-eye"></i>
+                    {{/ifCond}}
+                    {{#ifCond visibility '==' 'not-visible'}}
+                      <i class="fas fa-eye-slash"></i>
+                    {{/ifCond}}
+                  </a>
+                </div>
+              {{/ifCond}}
+
+              <!-- Image -->
+              <div class="weapon-list-item image">
+              <img class="picture" src="{{picture}}"></img>
+              </div>
+
+              <!-- Name -->
+              <div class="weapon-list-item name">
+                <div>{{name}}</div>
+                <div class="effects">
+                {{#each effects as |v k|}}
+                  <div class="tooltip-container">
+                    <img class="effect-img {{expired}}" src="{{img}}" data-item-id="{{id}}"/>
+                    <div class="container-tooltip-text">
+                      <span><b>{{name}}</b></span>
+                      <span>
+                        {{editor description engine="prosemirror" button=false editable=false}}
+                      </span>
+                      <div class="tags">
+                        {{#ifCond isTemporary '==' true}}
+                        <span class="temporary">{{localize "EXPANSE.Temporary"}}</span>
+                        {{/ifCond}}
+                        {{#ifCond isTemporary '==' false}}
+                        <span class="temporary">{{localize "EXPANSE.Passive"}}</span>
+                        {{/ifCond}}
+                        {{#ifCond unlimited '!=' ""}}
+                        <span class="duration">{{unlimited}}</span>
+                        {{/ifCond}}
+                        {{#ifCond rounds '!=' ""}}
+                        <span class="duration">{{rounds}}</span>
+                        {{/ifCond}}
+                        {{#ifCond turns '!=' ""}}
+                        <span class="duration">{{turns}}</span>
+                        {{/ifCond}}
+                        {{#ifCond expired '==' "not-visible"}}
+                        <span class="duration">{{localize "EXPANSE.Expired"}}</span>
+                        {{/ifCond}}
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+                </div>
+              </div>
+              <!-- Name -->
+              <div class="weapon-list-item slider">
+              <div class="information">
+                <select class="attitude-selector" name="attitude" type="text" data-dtype="String" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}>
+                  {{#select attitude}}
+                  <option value="VeryHostile" selected>{{localize "EXPANSE.VeryHostile" }}</option>
+                  <option value="Hostile">{{localize "EXPANSE.Hostile" }}</option>
+                  <option value="Standoffish">{{localize "EXPANSE.Standoffish" }}</option>
+                  <option value="Neutral">{{localize "EXPANSE.Neutral" }}</option>
+                  <option value="Open">{{localize "EXPANSE.Open" }}</option>
+                  <option value="Friendly">{{localize "EXPANSE.Friendly" }}</option>
+                  <option value="VeryFriendly">{{localize "EXPANSE.VeryFriendly" }}</option>
+                  {{/select}}
+                </select>
+              </div>
+              </div>
+            </div>
+          </li>
+          {{/ifCond}}
+          {{/each}}
+        </ul>
+      </div> 
+      {{/ifCond}}
+
       <!-- Chase Section -->
       {{#ifCond system.type '==' 'chase'}}
 
@@ -218,7 +323,7 @@
       <!-- Chase Panel -->
       <div class="item-box">
         <div class="weapon-header">
-          <span>{{localize "EXPANSE.ChaseParticipants" }}</span>
+          <span>{{localize "EXPANSE.Participants" }}</span>
         </div>
         <ul class="items weapon-list">
           <li class="item weapon header">
@@ -338,6 +443,8 @@
         </ul>
       </div> 
       {{/ifCond}} 
+
+      
 
       <!-- Stunt Section -->
       <div class="item-box">

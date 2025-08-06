@@ -198,8 +198,9 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.chaseType = sheetData.system.chaseType;
                 p.reveal = (p.visibility == "visible" || sheetData.isGM);
                 const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
-                p.slider = `left: ${sliderPosition}%; background-image: url("${pData.img}");`;
-
+                p.slider = `left: ${sliderPosition}%; background-image: url("${p.picture}");`;
+                console.log(p.attitude);
+                //p.attitude = "hostile";
                 p.chaseTotal = {};
                 const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
                 p.chaseTotal.value = chaseTotal;
@@ -262,7 +263,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     };
 
                     p.effects.push(effect);
-                    
                 });
           
             }
@@ -322,9 +322,10 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".participant-visibility").click(this._onToggleVisibility.bind(this));
         html.find(".chase-mod").click(this._onClickChase.bind(this));
         html.find(".progress-mod").click(this._onClickProgress.bind(this));
-        html.find('.chase-position').change(this._onChangeChase.bind(this));
+        html.find('.attitude-selector').change(this._onChangeAttitude.bind(this));
         html.find(".chase-reset").click(this._onResetChase.bind(this));
         html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
+        html.find(".picture").click(this._onClickParticipant.bind(this));
 
         html.find(".effect-img").contextmenu(this._onClickEffect.bind(this));
         
@@ -394,6 +395,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                     isToken : data.isToken,
                     chasePosition: 0,
                     visibility: "not-visible",
+                    attitude: "Neutral",
                     toggleForceUpdate: false,
                 };
                 const passengerList = vehicle.system.participants;
@@ -467,15 +469,15 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         }
     }
 
-    async _onChangeChase(event){
+    async _onChangeAttitude(event){
         event.preventDefault();
         const value = event.currentTarget.value;
         const participants = foundry.utils.duplicate(this.actor.system.participants);
         let participantKey = $(event.currentTarget).parents(".item").attr("data-item-key");
         participantKey = Number(participantKey);
 
-        participants[participantKey].chasePosition = value;    
-
+        participants[participantKey].attitude = value;    
+        
         await this.actor.update({ system: { participants: participants } });
     }
 
@@ -514,6 +516,18 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             const actor = Actor.get(id);
             actor.sheet.render(true);
         }
+    }
+
+    async _onClickParticipant(event){
+        event.preventDefault();
+        let participantKey = $(event.currentTarget).parents(".item").attr ("data-item-key");
+        participantKey = Number(participantKey);
+
+        const participants = this.actor.system.participants;
+        const id = participants[participantKey].id; 
+        
+        const actor = Actor.get(id);
+        actor.sheet.render(true);   
     }
 
     _onToggleVisibility(event){
