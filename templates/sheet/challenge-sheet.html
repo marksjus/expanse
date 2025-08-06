@@ -279,13 +279,13 @@
               <div class="information">
                 <select class="attitude-selector" name="attitude" type="text" data-dtype="String" {{#ifCond isGM '!=' true}}disabled{{/ifCond}}>
                   {{#select attitude}}
-                  <option value="VeryHostile" selected>{{localize "EXPANSE.VeryHostile" }}</option>
-                  <option value="Hostile">{{localize "EXPANSE.Hostile" }}</option>
-                  <option value="Standoffish">{{localize "EXPANSE.Standoffish" }}</option>
+                  <option value="VeryHostile" selected>{{localize "EXPANSE.VeryHostile" }} (-3)</option>
+                  <option value="Hostile">{{localize "EXPANSE.Hostile" }} (-2)</option>
+                  <option value="Standoffish">{{localize "EXPANSE.Standoffish" }} (-1)</option>
                   <option value="Neutral">{{localize "EXPANSE.Neutral" }}</option>
-                  <option value="Open">{{localize "EXPANSE.Open" }}</option>
-                  <option value="Friendly">{{localize "EXPANSE.Friendly" }}</option>
-                  <option value="VeryFriendly">{{localize "EXPANSE.VeryFriendly" }}</option>
+                  <option value="Open">{{localize "EXPANSE.Open" }} (+1)</option>
+                  <option value="Friendly">{{localize "EXPANSE.Friendly" }} (+2)</option>
+                  <option value="VeryFriendly">{{localize "EXPANSE.VeryFriendly" }} (+3)</option>
                   {{/select}}
                 </select>
               </div>

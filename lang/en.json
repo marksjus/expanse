@@ -259,7 +259,7 @@
     "EXPANSE.Neutral" : "Neutral",
     "EXPANSE.Open" : "Open",
     "EXPANSE.Friendly" : "Friendly",
-    "EXPANSE.VeryFriendly" : "VeryFriendly",
+    "EXPANSE.VeryFriendly" : "Very Friendly",
     "EXPANSE.WARNING.CannotRemoveEffect": "You cannot remove {name} while character is {inhibitor}!",
     "EXPANSE.WARNING.alreadyOnboard": "{name} ({id}) is already attached!",
     "EXPANSE.WARNING.ThisIsNotValidParticipant": "This Is Not a Valid Participant!",
