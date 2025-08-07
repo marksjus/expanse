@@ -129,6 +129,11 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             sheetData.system.successThreshold = 1;
             await this.actor.update({ system: sheetData.system });
         }
+
+        if (sheetData.system.type == "chase" || sheetData.system.type == "vehicleChase")
+            sheetData.chase = true;
+        else
+            sheetData.chase = false;
         
         //remove unsupported items
         sheetData.unsupported = sheetData.items.filter(i => i.type !== "focus" && i.type !== "consequence");
@@ -185,39 +190,47 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 }
             }
 
+            
+
             for (let pi = 0; pi < participants.length; pi++) {
                 const p = participants[pi];
                 const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
 
                 p.name = pData.name;
                 p.picture = pData.prototypeToken.texture.src;
-                p.speed = pData.system.attributes.speed.modified;
-                p.successThreshold = sheetData.system.successThreshold;
-                p.selected = (p == selectedParticipant) ? "selected" : "unselected";
                 p.isGM = sheetData.isGM;
-                p.chaseType = sheetData.system.chaseType;
+                p.successThreshold = sheetData.system.successThreshold;
                 p.reveal = (p.visibility == "visible" || sheetData.isGM);
-                const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
-                p.slider = `left: ${sliderPosition}%; background-image: url("${p.picture}");`;
-                console.log(p.attitude);
-                //p.attitude = "hostile";
-                p.chaseTotal = {};
-                const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
-                p.chaseTotal.value = chaseTotal;
-                if (p != selectedParticipant) {
-                    if (chaseTotal <= sheetData.system.closeRange) {                     
-                        p.chaseTotal.indicator = "fa-wifi-weak";
-                        p.chaseTotal.title = game.i18n.localize("EXPANSE.CloseRange");
-                    };
-                    if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) {
-                        p.chaseTotal.indicator = "fa-wifi-fair";
-                        p.chaseTotal.title = game.i18n.localize("EXPANSE.MediumRange");
-                    };
-                    if (chaseTotal > sheetData.system.mediumRange) {
-                        p.chaseTotal.indicator = "fa-wifi";
-                        p.chaseTotal.title = game.i18n.localize("EXPANSE.LongRange");
-                    }
-                } else p.chaseTotal = "self";
+                
+                if (sheetData.chase) {
+                    if (sheetData.system.type == "chase")
+                        p.speed = pData.system.attributes.speed.modified;
+                    else
+                        p.speed = this.shipSpeed(pData.system.type);
+
+                    p.selected = (p == selectedParticipant) ? "selected" : "unselected";                
+                    p.chaseType = sheetData.system.chaseType;
+                    const sliderPosition = (p.chasePosition / sheetData.system.successThreshold) * 100;
+                    p.slider = `left: ${sliderPosition}%; background-image: url("${p.picture}");`;
+
+                    p.chaseTotal = {};
+                    const chaseTotal = Math.abs(p.chasePosition - selectedParticipant.chasePosition);
+                    p.chaseTotal.value = chaseTotal;
+                    if (p != selectedParticipant) {
+                        if (chaseTotal <= sheetData.system.closeRange) {                     
+                            p.chaseTotal.indicator = "fa-wifi-weak";
+                            p.chaseTotal.title = game.i18n.localize("EXPANSE.CloseRange");
+                        };
+                        if (chaseTotal > sheetData.system.closeRange && chaseTotal <= sheetData.system.mediumRange) {
+                            p.chaseTotal.indicator = "fa-wifi-fair";
+                            p.chaseTotal.title = game.i18n.localize("EXPANSE.MediumRange");
+                        };
+                        if (chaseTotal > sheetData.system.mediumRange) {
+                            p.chaseTotal.indicator = "fa-wifi";
+                            p.chaseTotal.title = game.i18n.localize("EXPANSE.LongRange");
+                        }
+                    } else p.chaseTotal = "self";
+                }
 
                 //Effects
                 p.effects = [];
@@ -269,25 +282,35 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             //sort participants by speed
             //participants.sort((a, b) => parseFloat(b.speed) - parseFloat(a.speed));
             //this.actor.update({ system: { participants: participants } });
-
-            const last = participants[participants.length-1];
-            participants.map(p => {                
-                p.speedModifier = Math.floor((p.speed - last.speed)/2);
-            });
-
-            //Progress bar
-            if (sheetData.system.type != "chase") {
-                sheetData.progress = [];
-                for (let i = 0; i < sheetData.system.successThreshold; i++) {
-                    if (i < sheetData.system.progress)
-                        sheetData.progress[i]=1;
+            if (sheetData.chase) {
+                const slowestSpeed = this.getSlowestParticipant(participants).speed;
+                participants.map(p => {   
+                    if (sheetData.system.type == "chase")            
+                        p.speedModifier = Math.floor((p.speed - slowestSpeed)/2);
                     else
-                        sheetData.progress[i]=0;
-                }
+                        p.speedModifier = p.speed - slowestSpeed;
+                });
+            }
+        }
+
+        //Progress bar
+        if (sheetData.system.type != "chase") {
+            sheetData.progress = [];
+            for (let i = 0; i < sheetData.system.successThreshold; i++) {
+                if (i < sheetData.system.progress)
+                    sheetData.progress[i] = 1;
+                else
+                    sheetData.progress[i] = 0;
             }
         }
         
         return sheetData;
+    }
+
+    getSlowestParticipant(participants){
+        return participants.reduce(function(prev, curr) {
+            return prev.speed < curr.speed ? prev : curr;
+        });
     }
 
     async _enrichment() {
@@ -323,6 +346,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         html.find(".chase-mod").click(this._onClickChase.bind(this));
         html.find(".progress-mod").click(this._onClickProgress.bind(this));
         html.find('.attitude-selector').change(this._onChangeAttitude.bind(this));
+        html.find('.challenge-type-selector').change(this._onChangeType.bind(this));
         html.find(".chase-reset").click(this._onResetChase.bind(this));
         html.find(".slider-thumb").click(this._onSelectParticipant.bind(this));
         html.find(".picture").click(this._onClickParticipant.bind(this));
@@ -410,8 +434,18 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 });
 
                 if (!alreadyOnboard) {
-                    passengerList.push(passengerData);
-                    vehicle.update({"system.participants" : passengerList});
+                    const cType = this.actor.system.type;
+
+                    if ((data.type === "character" && cType == "chase") ||
+                        (data.type === "ship" && cType == "vehicleChase") ) {
+
+                        passengerList.push(passengerData);
+                        vehicle.update({"system.participants" : passengerList});
+                    }
+                    else {
+                        const warning = game.i18n.localize("EXPANSE.WARNING.ThisIsNotValidParticipant");
+                        ui.notifications.warn(warning);
+                    }    
                 }
             } else {
                 const warning = game.i18n.localize("EXPANSE.WARNING.ThisIsNotValidParticipant");
@@ -481,11 +515,19 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         await this.actor.update({ system: { participants: participants } });
     }
 
+    async _onChangeType(event){
+        const systemData = foundry.utils.duplicate(this.actor.system);
+        systemData.type = event.currentTarget.value;
+        systemData.participants = this.validateParticipants(systemData);   
+        
+        await this.actor.update({ system: systemData });
+    }
+
     async _onResetChase(event){
         event.preventDefault();
         const systemData = foundry.utils.duplicate(this.actor.system);
 
-        if (systemData.type == "chase") {
+        if (systemData.type == "chase" || systemData.type == "vehicleChase") {
             if(systemData.chaseType == "chaseTotal")
                 systemData.successThreshold = systemData.chaseTotal;
 
@@ -577,5 +619,80 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         }
 
         return false;
+    }
+
+    validateParticipants(data) {
+        const participants = data.participants;
+        let invalidParticipants = [];
+        for (let pi = 0; pi < participants.length; pi++) {
+            const p = participants[pi];
+            if (!game.actors) {
+                game.postReadyPrepare.push(this);
+            } else {
+                const pData = p.isToken ? game.actors.tokens[p.id] : game.actors.get(p.id);
+                if (!pData) {
+                    invalidParticipants.push(pi);
+                }
+                if (data.type != "vehicleChase"){
+                    if (pData.type != "character")
+                       invalidParticipants.push(pi);
+                } else {
+                    if (pData.type != "spaceship")
+                       invalidParticipants.push(pi); 
+                }           
+            }
+        }
+        // Remove passengers whose sheets/tokens are not valid anymore
+        for (let i = invalidParticipants.length -1; i >= 0; i--)
+            participants.splice(invalidParticipants[i],1);
+
+        return participants;
+
+    };
+
+    shipSpeed(size){
+        let speed = 0;
+        switch (size) {
+            case "Torpedo":
+                speed = 9;
+                break;
+
+            case "Tiny":
+                speed = 7;
+                break;
+
+            case "Small":
+                speed = 6;
+                break;
+
+            case "Medium":
+                speed = 5;
+                break;
+
+            case "Large":
+                speed = 4;
+                break;
+
+            case "Huge":
+                speed = 3;
+                break;
+
+            case "Gigantic":
+                speed = 2;
+                break;
+
+            case "Colossal":
+                speed = 1;
+                break;
+
+            case "Titanic":
+                speed = 0;
+                break;
+        
+            default:
+                speed = 0;
+                break;
+        }
+        return speed;
     }
 }

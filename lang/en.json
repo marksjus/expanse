@@ -247,6 +247,7 @@
     "EXPANSE.TurnsLessFive" : "{value} Turns",
     "EXPANSE.Turns" : "{value} Turns",
     "EXPANSE.Challenge.chase": "Chase",
+    "EXPANSE.Challenge.vehicleChase": "Vehicle Chase",
     "EXPANSE.Challenge.exploration": "Exploration",
     "EXPANSE.Challenge.social": "Social",
     "EXPANSE.Challenge.minor": "Minor",
