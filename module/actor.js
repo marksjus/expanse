@@ -16,6 +16,10 @@ export class ExpanseActor extends Actor {
       this.updateSource({ img: `${path}actor-ship.png` })
     }
 
+    if (data.type === "challenge") {
+      this.updateSource({ img: `${path}chase.png` })
+    }
+
     let createData = {};
 
     if (!data.token) {

@@ -130,6 +130,32 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
             await this.actor.update({ system: sheetData.system });
         }
 
+        const path = "systems/expanse/ui/item-img/";
+        console.log(this.actor.img);
+        if( (this.actor.img == `${path}chase.png`) || 
+            (this.actor.img == `${path}exploration.png`) ||
+            (this.actor.img == `${path}social.png`) ||
+            (this.actor.img == `${path}vehicleChase.png`)){
+
+            switch (sheetData.system.type) {
+                case "chase":
+                    this.actor.img = `${path}chase.png`
+                    break;
+                case "exploration":
+                    this.actor.img = `${path}exploration.png`
+                    break;
+                case "social":
+                    this.actor.img = `${path}social.png`
+                    break;
+                case "vehicleChase":
+                    this.actor.img = `${path}vehicleChase.png`
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
         if (sheetData.system.type == "chase" || sheetData.system.type == "vehicleChase")
             sheetData.chase = true;
         else
