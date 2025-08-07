@@ -57,7 +57,7 @@ export class ExpanseActor extends Actor {
   }
 
   _onDelete(){
-    if (this.type === "character" || this.type === "ship") {
+    if (this.type !== "challenge") {
       const challenges = game.actors.filter(i => i.type === "challenge");
       challenges.map(x => {
         const participants = x.system.participants;
@@ -73,7 +73,7 @@ export class ExpanseActor extends Actor {
   }
 
   _onUpdate(changed, options, userId){
-    if (this.type === "character" || this.type === "ship") {
+    if (this.type !== "challenge") {
       const challenges = game.actors.filter(i => i.type === "challenge");
       challenges.map(x => {
         const participants = x.system.participants;

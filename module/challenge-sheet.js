@@ -229,7 +229,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 p.reveal = (p.visibility == "visible" || sheetData.isGM);
                 
                 if (sheetData.chase) {
-                    if (sheetData.system.type == "chase")
+                    if (sheetData.system.type === "chase")
                         p.speed = pData.system.attributes.speed.modified;
                     else
                         p.speed = this.shipSpeed(pData.system.type);
@@ -439,7 +439,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         const dragData = JSON.parse(event.dataTransfer.getData("text/plain"))
         const data = fromUuidSync(dragData.uuid);
         if (data.documentName === "Actor") {
-            if (data.type === "character" || data.type === "ship") {
+            if (data.type !== "challenge") {
                 const passengerData = {
                     id : data.id,
                     isToken : data.isToken,
@@ -462,8 +462,8 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 if (!alreadyOnboard) {
                     const cType = this.actor.system.type;
 
-                    if ((data.type === "character" && cType == "chase") ||
-                        (data.type === "ship" && cType == "vehicleChase") ) {
+                    if (((data.type === "character" || data.type === "npc") && cType !== "vehicleChase") ||
+                        (data.type === "ship" && cType === "vehicleChase") ) {
 
                         passengerList.push(passengerData);
                         vehicle.update({"system.participants" : passengerList});
@@ -648,6 +648,7 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     validateParticipants(data) {
+        console.log(data);
         const participants = data.participants;
         let invalidParticipants = [];
         for (let pi = 0; pi < participants.length; pi++) {
@@ -659,12 +660,13 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
                 if (!pData) {
                     invalidParticipants.push(pi);
                 }
-                if (data.type != "vehicleChase"){
-                    if (pData.type != "character")
-                       invalidParticipants.push(pi);
-                } else {
-                    if (pData.type != "spaceship")
+                if (data.type === "vehicleChase"){
+                    if (pData.type !== "ship")
                        invalidParticipants.push(pi); 
+                } else {
+
+                    if (pData.type === "ship")
+                        invalidParticipants.push(pi);                   
                 }           
             }
         }
