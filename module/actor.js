@@ -68,6 +68,23 @@ export class ExpanseActor extends Actor {
     }
   }
 
+  _onUpdate(changed, options, userId){
+    if (this.type === "character" || this.type === "ship") {
+      const challenges = game.actors.filter(i => i.type === "challenge");
+      challenges.map(x => {
+        const participants = x.system.participants;
+        for (let pi = 0; pi < participants.length; pi++) {
+          if (participants[pi].id == this.id) {
+            participants[pi].toggleForceUpdate = !participants[pi].toggleForceUpdate;
+            break;
+          };
+        };
+        x.update({ system: { participants: participants } });
+      });
+    }
+    super._onUpdate(changed, options, userId);
+  }
+
   prepareEmbeddedEntities() {
   }
 
