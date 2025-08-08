@@ -131,7 +131,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
         }
 
         const path = "systems/expanse/ui/item-img/";
-        console.log(this.actor.img);
         if( (this.actor.img == `${path}chase.png`) || 
             (this.actor.img == `${path}exploration.png`) ||
             (this.actor.img == `${path}social.png`) ||
@@ -648,7 +647,6 @@ export class ExpanseChallengeSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     validateParticipants(data) {
-        console.log(data);
         const participants = data.participants;
         let invalidParticipants = [];
         for (let pi = 0; pi < participants.length; pi++) {

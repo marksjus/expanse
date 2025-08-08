@@ -250,13 +250,22 @@ export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
             const actorData = data.actor;
             let conditionName = e.currentTarget.getAttribute("name");
             const conditionData = actorData.system.conditions;
-
-            for (let [k, v] of Object.entries(conditionData)) {
-                if (k === conditionName) {
-                    actorData.system.conditions[conditionName].active = !v.active;
+            
+            
+            if (game.modules.get("dfreds-convenient-effects") && game.modules.get("dfreds-convenient-effects").active) {
+                const value = e.currentTarget.checked
+                if (value)
+                    await game.modules.get("dfreds-convenient-effects").api.addEffect({ effectId: "ce-" + conditionName, uuid: this.actor.uuid });
+                else
+                    await game.modules.get("dfreds-convenient-effects").api.removeEffect({ effectId: "ce-" + conditionName, uuid: this.actor.uuid });
+            } else {
+                for (let [k, v] of Object.entries(conditionData)) {
+                    if (k === conditionName) {
+                        actorData.system.conditions[conditionName].active = !v.active;
+                    }
                 }
+                await this.actor.update({ system: { conditions: this.actor.system.conditions }});
             }
-            await this.actor.update({ system: { conditions: this.actor.system.conditions } });
         })
 
         html.find(".shield-equip").click(async e => {
