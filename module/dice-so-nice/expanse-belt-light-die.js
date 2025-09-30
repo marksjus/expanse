@@ -1,4 +1,4 @@
-export class TheExpanseBeltLight extends foundry.dice.terms.Die {
+export class TheExpanseBeltLight extends Die {
     constructor(termData) {
         termData.faces = 6;
         super(termData);
