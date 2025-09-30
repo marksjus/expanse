@@ -247,7 +247,7 @@ blockquote {
 /* New CSS */
 
 .sheet-header {
-    --overflow: hidden;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -421,7 +421,7 @@ blockquote {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 55px;
+    height: 50px;
     width: calc(48% - 2px);
     margin: 0px 5px 10px 5px;
     padding: 0;
@@ -457,17 +457,13 @@ blockquote {
     width: 15px;
 }
 
-.ability-modifiers{
-    display: flex;
-    flex-direction: row;
-}
-
 .ability-penalty-box {
     display: flex;
     flex-direction: row;
     width: 100%;
     align-items: center;
     justify-content: flex-end;
+    padding: 0px 0px 0px 50px;
 }
 
 .ability-penalty-box > span {
@@ -479,9 +475,9 @@ blockquote {
 .ability-focus-box {
     display: flex;
     flex-direction: row;
+    width: 50%;
     align-items: center;
     justify-content: flex-end;
-    margin-left: 5px;
 }
 
 .ability-focus-box>span {
@@ -1265,7 +1261,7 @@ input[type=checkbox] {
 .notes-box {
     display: flex;
     flex-direction: column;
-    text-align: left;
+    text-align: center;
     width: 100%;
     min-height: 100px;
     margin: 0px 5px 10px 5px;
@@ -1708,72 +1704,4 @@ a.content-link, a.inline-roll {
     display: flex;
     align-items: baseline;
     justify-content: space-around;
-}
-
-:root {
-    --color-shadow-primary: #088afc;
-    --color-border-highlight-alt: #088afc;
-    --color-border-highlight: #3a9bee;
-    --color-shadow-highlight: #3a9bee;
-    --color-text-hyperlink: #3a9bee;   
-}
-
-body {
-    --color-scrollbar: #153e61;
-}
-
-#logo {
-    content:url('../ui/logo-scifi.png');
-}
-
-table.stunt_table {
-    border-style:none;
-}
-
-table.stunt_table h3 {
-    font-size:2em;
-    color:#f3f3f3;
-    margin:0;
-}
-
-table.stunt_table thead tr {
-    height:25px;
-    text-align:center;
-    background-color:#005971;
-}
-
-table.stunt_table thead tr td {
-    background-color:#005971;
-}
-
-table.stunt_table tr td:first-child {
-    width:10%;
-    text-align:center;
-}
-
-table.stunt_table tbody tr:first-child td {
-    background-color:#000000;
-    text-align:center;
-    color:#f3f3f3;
-    vertical-align:middle;
-}
-
-table.stunt_table tbody tr:first-child td {
-    background-color:#000000;
-    text-align:center;
-    color:#f3f3f3;
-    vertical-align:middle;
-}
-
-table.stunt_table tbody tr td {
-    padding-right:10px;
-    padding-left:10px;
-}
-
-table.stunt_table tbody tr:nth-child(odd) {
-    background-color:#ffffff;
-}
-
-table.stunt_table tbody tr:nth-child(even) {
-    background-color:#b3d1dc;
 }

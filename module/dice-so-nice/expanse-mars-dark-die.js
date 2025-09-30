@@ -1,4 +1,4 @@
-export class TheExpanseMarsDark extends foundry.dice.terms.Die {
+export class TheExpanseMarsDark extends Die {
     constructor(termData) {
         termData.faces = 6;
         super(termData);

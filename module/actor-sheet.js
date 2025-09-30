@@ -403,7 +403,6 @@ export class ExpanseActorSheet extends ActorSheet {
                 chatFocus = `<b>Focus:</b> 2</br>`;
             } else (chatFocus = ``);
 
-            let unmodRoll = `<b>Unmodified Roll</b>: ${die1 + die2 + die3}</br>`;
             let chatMod = `<b>Ability Rating</b>: ${abilityMod}</br>`;
 
             resultsSum = die1 + die2 + die3 + useFocus + useFocusPlus + abilityMod + condMod;
@@ -424,8 +423,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     resultsSum += testData;
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
-                        <div class="chat-dice-box">${dieImage}</div><br>
-                        ${unmodRoll}
+                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
                         ${chatMod}
                         ${chatAddMod}
                         ${chatFocus}
@@ -435,7 +433,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     `;
 
                     ChatMessage.create({
-                        rolls: [toHitRoll],
+                        roll: toHitRoll,
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
@@ -445,8 +443,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
             } else {
                 rollCard = `
-                <div class="chat-dice-box">${dieImage}</div><br>
-                ${unmodRoll}
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
                 ${chatMod}
                 ${chatFocus}
                 ${condModWarning}
@@ -454,7 +451,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 ${chatStunts}`;
 
                 ChatMessage.create({
-                    rolls: [toHitRoll],
+                    roll: toHitRoll,
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                     flavor: label,
                     content: rollCard,
@@ -510,14 +507,14 @@ export class ExpanseActorSheet extends ActorSheet {
             let chatDamageTotal = `You do <b>${totalDamage}</b> points of damage.</br></br>
             Subtract the enemies Toughness and Armor for total damage received`;
 
-            let rollCard = `<div class="chat-dice-box">${diceImageArray}</div></br>
+            let rollCard = `<div style="display: flex; flex-direction: row; justify-content: space-around;">${diceImageArray}</div></br>
                 ${chatDamage}
                 ${chatBonusDamage}
                 ${chatDamageTotal}
             `
 
             ChatMessage.create({
-                rolls: [damageRoll],
+                roll: damageRoll,
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label,
                 content: rollCard,
@@ -528,44 +525,39 @@ export class ExpanseActorSheet extends ActorSheet {
             RollDamageModifier().then(r => {
                 let testData = r;
                 diceFormula += testData[0];
-                let extraDamage = testData[1];
-                let damageRoll = new Roll(`${diceFormula}d${d2}`);
-                damageRoll.evaluate().then(r =>{
-                    const reducer = (previousValue, currentValue) => previousValue + currentValue;
-                    let damageOutput = damageD3 ? r.terms[0].results.map(i => Math.ceil(i.result / 2)) : r.terms[0].results.map(i => (i.result));
-                    let cDmg = damageOutput.reduce(reducer);
-                    let totalDamage = cDmg + bonusDamage + extraDamage;
-                    let resultRoll = r.terms[0].results.map(i => i.result);
-                    for (let i = 0; i < resultRoll.length; i++) {
-                        diceImageArray += `<img height="75px" width="75px" style="margin-top: 5px;" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${resultRoll[i]}-${diceData.style}.png" /> `
-                    }
+                const reducer = (previousValue, currentValue) => previousValue + currentValue;
+                let damageRoll = new Roll(`${diceFormula}d${d2}`).roll({ async: false });
+                let damageOutput = damageD3 ? damageRoll.terms[0].results.map(i => Math.ceil(i.result / 2)) : damageRoll.terms[0].results.map(i => (i.result));
+                let cDmg = damageOutput.reduce(reducer);
+                let totalDamage = cDmg + bonusDamage + testData[1];
+                let resultRoll = damageRoll.terms[0].results.map(i => i.result);
+                for (let i = 0; i < resultRoll.length; i++) {
+                    diceImageArray += `<img height="75px" width="75px" style="margin-top: 5px;" src="systems/expanse/ui/dice/${diceData.faction}/chat/${diceData.faction}-${resultRoll[i]}-${diceData.style}.png" /> `
+                }
 
-                    let label = `<b>Attacking with ${itemUsed.name}</b></br>`;
+                let label = `<b>Attacking with ${itemUsed.name}</b></br>`;
 
-                    let chatDamage = `<b>Weapon Damage (D${itemUsed.system.dieFaces})</b>: ${cDmg}</br>`;
-                    let chatBonusDamage = `<b>Damage Modifier (${weaponMod})</b>: ${bonusDamage}</br>`
-                    let chatExtraDamage = `<b>Extra Damage</b>: ${extraDamage}</br>`
-                    let chatDamageTotal = `You do <b>${totalDamage}</b> points of damage.</br></br>
-                        Subtract the enemies Toughness and Armor for total damage received`;
+                let chatDamage = `<b>Weapon Damage (D${itemUsed.system.dieFaces})</b>: ${cDmg}</br>`;
+                let chatBonusDamage = `<b>Damage Modifier (${weaponMod})</b>: ${bonusDamage}</br>`
+                let chatExtraDamage = `<b>Extra Damage</b>: ${testData[1]}</br>`
+                let chatDamageTotal = `You do <b>${totalDamage}</b> points of damage.</br></br>
+                    Subtract the enemies Toughness and Armor for total damage received`;
 
-                    let rollCard = `<div class="chat-dice-box">${diceImageArray}</div></br>
-                        ${chatDamage}
-                        ${chatBonusDamage}
-                        ${chatExtraDamage}
-                        ${chatDamageTotal}
-                `
+                let rollCard = `<div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">${diceImageArray}</div></br>
+                    ${chatDamage}
+                    ${chatBonusDamage}
+                    ${chatExtraDamage}
+                    ${chatDamageTotal}
+            `
 
-                    ChatMessage.create({
-                        rolls: [r],
-                        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                        flavor: label,
-                        content: rollCard,
-                        sound: CONFIG.sounds.dice
-                    });
-
+                ChatMessage.create({
+                    roll: damageRoll,
+                    speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                    flavor: label,
+                    content: rollCard,
+                    sound: CONFIG.sounds.dice
                 });
-            });
-                                          
+            })
         }
 
     }
@@ -602,7 +594,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
         let rollCard;
 
-        const chatDice = `<div class="chat-dice-box">${diceImageArray}</div></br>`
+        const chatDice = `<div style="display: flex; flex-direction: row; justify-content: space-around; flex-wrap: wrap;">${diceImageArray}</div></br>`
         const chatIncome = `<b>Income:</b> ${income}</br>`
         const chatResult = `<b>Result:</b> ${incomeResult}</br>`
         const incomeSuccess = `</br><i>You are able to successfully secure the item or service.</i>`;
@@ -624,7 +616,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        rolls: [incomeRoll],
+                        roll: incomeRoll,
                         content: rollCard,
                         sound: CONFIG.sounds.dice
                     });
@@ -634,7 +626,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ChatMessage.create({
                             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                             flavor: label,
-                            rolls: [incomeRoll],
+                            roll: incomeRoll,
                             content: rollCard,
                             sound: CONFIG.sounds.dice
                         });
@@ -643,7 +635,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ChatMessage.create({
                             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                             flavor: label,
-                            rolls: [incomeRoll],
+                            roll: incomeRoll,
                             content: rollCard,
                             sound: CONFIG.sounds.dice
                         });
@@ -653,7 +645,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        rolls: [incomeRoll],
+                        roll: incomeRoll,
                         content: rollCard,
                         sound: CONFIG.sounds.dice
                     });
@@ -662,7 +654,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     ChatMessage.create({
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
-                        rolls: [incomeRoll],
+                        roll: incomeRoll,
                         content: diceRollDialogue,
                         sound: CONFIG.sounds.dice
                     });
@@ -673,7 +665,7 @@ export class ExpanseActorSheet extends ActorSheet {
             ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label,
-                rolls: [incomeRoll],
+                roll: incomeRoll,
                 content: rollCard,
                 sound: CONFIG.sounds.dice
             });
@@ -767,8 +759,6 @@ export class ExpanseActorSheet extends ActorSheet {
                 chatFocus = `<b>Focus:</b> 2</br>`;
             } else (chatFocus = ``);
 
-            let unmodRoll = `<b>Unmodified Roll</b>: ${die1 + die2 + die3}</br>`;
-
             let chatMod = `<b>Ability Rating</b>: ${abilityMod}</br>`;
 
             resultsSum = die1 + die2 + die3 + useFocus + useFocusPlus + abilityMod + condMod - armorPenalty;
@@ -790,8 +780,7 @@ export class ExpanseActorSheet extends ActorSheet {
                     resultsSum += testData;
                     let chatAddMod = `<b>Additional Modifier</b>: ${testData}</br>`
                     rollCard = `
-                        <div class="chat-dice-box">${dieImage}</div><br>
-                        ${unmodRoll}
+                        <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
                         ${chatMod}
                         ${chatAddMod}
                         ${chatFocus}
@@ -801,7 +790,7 @@ export class ExpanseActorSheet extends ActorSheet {
                         ${chatStunts}
                     `
                     ChatMessage.create({
-                        rolls: [roll],
+                        roll: roll,
                         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                         flavor: label,
                         content: rollCard,
@@ -811,8 +800,7 @@ export class ExpanseActorSheet extends ActorSheet {
 
             } else {
                 rollCard = `
-                <div class="chat-dice-box">${dieImage}</div><br>
-                ${unmodRoll}
+                <div style="display: flex; flex-direction: row; justify-content: space-around;">${dieImage}</div><br>
                 ${chatMod}
                 ${chatFocus}
                 ${condModWarning}
@@ -821,7 +809,7 @@ export class ExpanseActorSheet extends ActorSheet {
                 ${chatStunts}`
 
                 ChatMessage.create({
-                    rolls: [roll],
+                    roll: roll,
                     speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                     flavor: label,
                     content: rollCard,
