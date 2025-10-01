@@ -283,6 +283,11 @@
     width: 16%;
 }
 
+.ship-weapon-damage .info-input::placeholder,
+.ship-hull .info-input::placeholder {
+    opacity: 0.6;
+}
+
 .ship-weapon-damage-roll {
     width: 6%;
 }
