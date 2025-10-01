@@ -10,8 +10,8 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    width: 650px;
-    margin: 0px 5px 0px 5px;
+    margin: 3px;
+    height: calc(100% - 6px);
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .6);
     border-bottom-right-radius: 10px;
     border-top-left-radius: 10px;
@@ -77,6 +77,10 @@
     justify-content: center; 
     align-items: center;
     width: 23%;
+}
+
+.weapons .weapons-attribute select {
+    width: 100%;
 }
 
 .weapons .weapons-attribute-input {

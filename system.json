@@ -73,7 +73,7 @@
   "download": "https://github.com/Foxfyre/expanse/releases/download/2.0.0/expanse.zip",
   "license": "LICENSE.txt",
   "compatibility": {
-    "minimum": "10",
-    "verified": "12.328"
+    "minimum": "13",
+    "verified": "13.345"
   }
 }

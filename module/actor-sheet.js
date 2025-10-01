@@ -2,7 +2,7 @@ import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier, RollDamageModifier } from "./rolling/modifiers.js";
 import { migrateFocus } from "./focusMigration.js";
 
-export class ExpanseActorSheet extends ActorSheet {
+export class ExpanseActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -61,20 +61,22 @@ export class ExpanseActorSheet extends ActorSheet {
         });
 
         for (let [f, v] of Object.entries(sheetData.focuses)) {
-            v.system.name = v.name;
-            this.actor.updateEmbeddedDocuments("Item", [v])
+            const focus = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", v.id));
+            focus.system.name = v.name;
+            this.actor.updateEmbeddedDocuments("Item", [focus])
         }
 
         for (let [k, v] of Object.entries(sheetData.weapon)) {
             if (v.type === "weapon") {
-                let modifierStat = v.system.modifier
+                const weapon = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", v.id));
+                let modifierStat = weapon.system.modifier
                 let bonusDamage = 0; // get stat from actorData
-                let useFocus = v.system.usefocus;
-                let useFocusPlus = v.system.usefocusplus;
+                let useFocus = weapon.system.usefocus;
+                let useFocusPlus = weapon.system.usefocusplus;
                 let focusBonus = useFocus ? 2 : 0;
                 let focusPlusBonus = useFocusPlus ? 1 : 0;
                 const totalFocusBonus = focusBonus + focusPlusBonus;
-                let toHitMod = v.system.type;
+                let toHitMod = weapon.system.type;
                 let modType = "";
 
                 switch (modifierStat) {
@@ -90,12 +92,12 @@ export class ExpanseActorSheet extends ActorSheet {
                 }
 
                 if (bonusDamage !== 0) {
-                    v.system.hasBonusDamage = true;
+                    weapon.system.hasBonusDamage = true;
                 } else {
-                    v.system.hasBonusDamage = false;
+                    weapon.system.hasBonusDamage = false;
                 }
 
-                v.system.bonusDamage = bonusDamage;
+                weapon.system.bonusDamage = bonusDamage;
 
                 switch (toHitMod) {
                     case "unarmed":
@@ -103,21 +105,21 @@ export class ExpanseActorSheet extends ActorSheet {
                     case "light_melee":
                     case "heavy_melee":
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                     case "pistol":
                     case "rifle":
                         modType = "accuracy";
-                        v.system.attack = actorData.system.abilities.accuracy.rating;
+                        weapon.system.attack = actorData.system.abilities.accuracy.rating;
                         break;
                     default:
                         modType = "fighting";
-                        v.system.attack = actorData.system.abilities.fighting.rating;
+                        weapon.system.attack = actorData.system.abilities.fighting.rating;
                         break;
                 }
-                v.system.tohitabil = modType;
-                v.system.attack += totalFocusBonus;
-                this.actor.updateEmbeddedDocuments("Item", [v])
+                weapon.system.tohitabil = modType;
+                weapon.system.attack += totalFocusBonus;
+                this.actor.updateEmbeddedDocuments("Item", [weapon])
             }
         }
 
@@ -139,15 +141,81 @@ export class ExpanseActorSheet extends ActorSheet {
             talent.system.highest = highest;
             this.actor.updateEmbeddedDocuments("Item", [talent]);
         }
+
+        // Handle external overrides of attributes and conditions.
+        let overrides = null;
+        if (typeof this?.object?.overrides?.system !== 'undefined') {
+            overrides = this.object.overrides.system;
+            
+            // defense
+            if (typeof overrides?.attributes?.defense?.modified !== 'undefined') {
+                sheetData.attributes.defense.modified = Number(overrides.attributes.defense.modified);
+            }
+
+            // injured
+            if (typeof overrides?.conditions?.injured?.active !== 'undefined') {
+                if (overrides.conditions.injured.active) {                   
+                    sheetData.conditions.fatigued.active = true;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // hindered
+            if (typeof overrides?.conditions?.hindered?.active !== 'undefined') {
+                if (overrides.conditions.hindered.active) {                   
+                    sheetData.attributes.move.modified = sheetData.attributes.move.modified / 2;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // exhausted
+            if (typeof overrides?.conditions?.exhausted?.active !== 'undefined') {
+                if (overrides.conditions.exhausted.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // prone
+            if (typeof overrides?.conditions?.prone?.active !== 'undefined') {
+                if (overrides.conditions.prone.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // fatigued
+            if (typeof overrides?.conditions?.fatigued?.active !== 'undefined') {
+                if (overrides.conditions.fatigued.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                }
+            }
+            // helpless
+            if (typeof overrides?.conditions?.helpless?.active !== 'undefined') {
+                if (overrides.conditions.helpless.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                    sheetData.attributes.move.modified = 0;
+                }
+            }  
+            // restrained
+            if (typeof overrides?.conditions?.restrained?.active !== 'undefined') {
+                if (overrides.conditions.restrained.active) {                   
+                    sheetData.attributes.run.modified = 0;
+                    sheetData.attributes.move.modified = 0;
+                }
+            }
+            // unconscious
+            if (typeof overrides?.conditions?.unconscious?.active !== 'undefined') {
+                if (overrides.conditions.unconscious.active) {                   
+                    sheetData.conditions.prone.active = true;
+                    sheetData.attributes.move.modified = 0;
+                    sheetData.attributes.run.modified = 0;
+                }
+            }                                   
+        }
         return sheetData;
     }
 
     async _enrichBio() {
         let enrichment = {};
-        enrichment[`system.bio.notes`] = await TextEditor.enrichHTML(this.actor.system.bio.notes, { relativeTo: this.actor });
-        enrichment[`system.bio.appearance`] = await TextEditor.enrichHTML(this.actor.system.bio.appearance, { relativeTo: this.actor });
-        enrichment[`system.bio.relationships`] = await TextEditor.enrichHTML(this.actor.system.bio.relationships, { relativeTo: this.actor });
-        enrichment[`system.bio.goals`] = await TextEditor.enrichHTML(this.actor.system.bio.goals, { relativeTo: this.actor });
+        enrichment[`system.bio.notes`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.notes, { relativeTo: this.actor });
+        enrichment[`system.bio.appearance`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.appearance, { relativeTo: this.actor });
+        enrichment[`system.bio.relationships`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.relationships, { relativeTo: this.actor });
+        enrichment[`system.bio.goals`] = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.bio.goals, { relativeTo: this.actor });
         return foundry.utils.expandObject(enrichment);
     }
 
@@ -155,7 +223,7 @@ export class ExpanseActorSheet extends ActorSheet {
         super.activateListeners(html);
         let tabs = html.find('tabs');
         let initial = this._sheetTab;
-        new Tabs(tabs, {
+        new foundry.applications.ux.Tabs(tabs, {
             initial: initial,
             callback: clicked => this._sheetTab = clicked.data("tab")
         });
@@ -308,12 +376,13 @@ export class ExpanseActorSheet extends ActorSheet {
 
     }
 
+    
     _itemCreate(event) {
         event.preventDefault();
         const header = event.currentTarget;
         const type = header.dataset.type;
         const itemData = {
-            name: game.i18n.format("ITEM.ItemNew", { type: game.i18n.localize(`ITEM.ItemType${type.capitalize()}`) }),
+            name: game.i18n.localize(`TYPES.Item.${type}`),
             type: type,
             data: foundry.utils.deepClone(header.dataset)
         };

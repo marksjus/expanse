@@ -36,21 +36,24 @@ Hooks.once("init", async function () {
   CONFIG.Dice.terms["g"] = TheExpanseProtogenDark;
   CONFIG.Dice.terms["h"] = TheExpanseProtogenLight;
 
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("expanse", ExpanseActorSheet, {
+  const actors = foundry.documents.collections.Actors
+  actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+  actors.registerSheet("expanse", ExpanseActorSheet, {
     types: ["character"],
     makeDefault: true
   });
-  Actors.registerSheet("expanse", ExpanseNPCSheet, {
+  actors.registerSheet("expanse", ExpanseNPCSheet, {
     types: ["npc"],
     makeDefault: true
   });
-  Actors.registerSheet("expanse", ExpanseShipSheet, {
+  actors.registerSheet("expanse", ExpanseShipSheet, {
     types: ["ship"],
     makeDefault: true
   })
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("expanse", ExpanseItemSheet, {
+
+  const items = foundry.documents.collections.Items
+  items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+  items.registerSheet("expanse", ExpanseItemSheet, {
     makeDefault: true
   });
 

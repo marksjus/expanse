@@ -1,4 +1,4 @@
-export class ExpanseItemSheet extends ItemSheet {
+export class ExpanseItemSheet extends foundry.appv1.sheets.ItemSheet {
 
     constructor(...args) {
         super(...args);
@@ -9,28 +9,28 @@ export class ExpanseItemSheet extends ItemSheet {
                 // this.options.width = this.position.width = "350";
                 break;
             case "talent":
-                this.options.width = this.position.width = "600";
+                this.options.width = this.position.width = "650";
                 this.options.height = this.position.height = "660";
                 break;
             case "stunt":
-                // this.options.width = this.position.width = "400";
+                this.options.width = this.position.width = "670";
                 this.options.height = this.position.height = "265";
                 break;
             case "weapon":
-                this.options.width = this.position.width = "680";
+                this.options.width = this.position.width = "670";
                 this.options.height = this.position.height = "360";
                 break;
             case "armor":
-                this.options.width = this.position.width = "470";
-                this.options.height = this.position.height = "305";
+                this.options.width = this.position.width = "580";
+                this.options.height = this.position.height = "320";
                 break;
             case "shield":
-                this.options.width = this.position.width = "480";
+                this.options.width = this.position.width = "580";
                 this.options.height = this.position.height = "305";
                 break;
             case "focus":
                 this.options.width = this.position.width = "400";
-                this.options.height = this.position.height = "200";
+                this.options.height = this.position.height = "140";
             default:
                 break;
         };
@@ -84,12 +84,12 @@ export class ExpanseItemSheet extends ItemSheet {
 
     async _enrichItem() {
         let enrichment = {};
-        enrichment[`system.description`] = await TextEditor.enrichHTML(this.item.system.description, { relativeTo: this.actor });
+        enrichment[`system.description`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.description, { relativeTo: this.actor });
         if (this.item.type === "talent") {
-            enrichment[`system.requirements`] = await TextEditor.enrichHTML(this.item.system.requirements, { relativeTo: this.actor });
-            enrichment[`system.ranks.novice.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.novice.effect, { relativeTo: this.actor });
-            enrichment[`system.ranks.expert.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.expert.effect, { relativeTo: this.actor });
-            enrichment[`system.ranks.master.effect`] = await TextEditor.enrichHTML(this.item.system.ranks.master.effect, { relativeTo: this.actor });
+            enrichment[`system.requirements`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.requirements, { relativeTo: this.actor });
+            enrichment[`system.ranks.novice.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.novice.effect, { relativeTo: this.actor });
+            enrichment[`system.ranks.expert.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.expert.effect, { relativeTo: this.actor });
+            enrichment[`system.ranks.master.effect`] = await foundry.applications.ux.TextEditor.enrichHTML(this.item.system.ranks.master.effect, { relativeTo: this.actor });
         }
 
         return foundry.utils.expandObject(enrichment);
@@ -99,14 +99,14 @@ export class ExpanseItemSheet extends ItemSheet {
         super.activateListeners(html);
         let tabs = html.find('tabs');
         let initial = this._sheetTab;
-        new Tabs(tabs, {
+        new foundry.applications.ux.Tabs(tabs, {
             initial: initial,
             callback: clicked => this._sheetTab = clicked.data("tab")
         });
 
         html.find(".learn-specialization").click(async e => {
             const data = super.getData()
-            const item = data.item;
+            const item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", data.item.id));
             item.system.specialization = !item.system.specialization;
             if (this.item.isOwned) {
                 await this.actor.updateEmbeddedDocuments("Item", [item])
@@ -117,7 +117,7 @@ export class ExpanseItemSheet extends ItemSheet {
 
         html.find(".learn-talent").click(async e => {
             const data = super.getData()
-            const item = data.item;
+            const item = foundry.utils.duplicate(this.actor.getEmbeddedDocument("Item", data.item.id));
             let talentRank = e.currentTarget.getAttribute("data-rank");
             let learnedRank = talentRank === "novice" ?
                 item.system.ranks.novice.active : talentRank === "expert" ?

@@ -70,6 +70,10 @@
     height: 15px;
 }
 
+.npc .npc-weapon-list .box-header {
+    padding: 0 10px;
+}
+
 .npc .box-header>span {
     display: flex;
     justify-content: center;

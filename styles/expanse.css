@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-.sheet .window-content {
+.sheet.item .window-content,
+.sheet.actor .window-content {
     padding: 5px;
     /*overflow-y: hidden;*/
 }
@@ -40,7 +41,8 @@
     float: left;
 }
 
-.sheet .tabs {
+.sheet.item .tabs,
+.sheet.actor .tabs {
     flex: 1 1 30px;
     margin: 5px;
 }
@@ -56,11 +58,6 @@
 .sheet .tabs .item.active {
     text-decoration: underline;
     text-shadow: #00c9e8 1px 0 10px;
-}
-
-.sheet .sheet-body {
-    height: calc(100% - 60px);
-    margin: 5px
 }
 
 .sheet .sheet-body .tab {
@@ -127,7 +124,9 @@
 
 /* global css changes */
 
-.sheet {
+.sheet.item,
+.sheet.actor,
+.window-content .sheet {
     display: flex;
     flex-direction: column;
     background-color: rgba(116, 189, 220, 0.5);
@@ -181,27 +180,28 @@ img {
     font-family: 'Anton', sans-serif;
 }
 
-.sheet header.sheet-header img {
+.sheet.item header.sheet-header img,
+.sheet.actor header.sheet-header img {
     height: 100%;
 }
 
-.sheet header.sheet-header {
+.sheet.actor header.sheet-header,
+.sheet.item header.sheet-header {
     flex-direction: column;
 }
 
-.sheet header.sheet-header>* {
+.sheet.actor header.sheet-header>*,
+.sheet.item header.sheet-header>* {
     flex: none;
 }
 
-.sheet>* {
-    flex: unset;
-}
-
-.sheet {
+.sheet.item,
+.sheet.actor {
     font-family: 'Anton', sans-serif;
 }
 
-.sheet .tab[data-tab].active {
+.sheet.item .tab[data-tab].active,
+.sheet.actor .tab[data-tab].active {
     display: flex;
     flex-wrap: wrap;
 }
@@ -225,7 +225,8 @@ ul {
     width: 50px !important;
 }
 
-.sheet nav.sheet-tabs {
+.sheet.item nav.sheet-tabs,
+.sheet.actor nav.sheet-tabs {
     border-top: none;
     border-bottom: none;
 }
@@ -246,7 +247,9 @@ blockquote {
 
 /* New CSS */
 
-.sheet-header {
+
+.sheet.item .sheet-header,
+.sheet.actor .sheet-header {
     --overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -634,25 +637,17 @@ input[type=checkbox] {
 
 /* Focus */
 
+.sheet .stunts-box,
 .sheet .focuses-box {
     display: flex;
     flex-direction: column;
     text-align: center;
-    min-height: 100px;
-    width: 80%;
-    margin: 0px 5px 10px 5px;
+    margin: 3px;
+    height: calc(100% - 6px);
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .6);
     border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
     background-color: #f3f3f3;
-}
-
-.focuses {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    padding: 0 5px 0 5px;
 }
 
 .focus-header {
@@ -679,7 +674,6 @@ input[type=checkbox] {
     justify-content: space-evenly;
     flex-wrap: wrap;
     min-height: 50px;
-    margin: 5px 5px 0px 5px;
     border-bottom-right-radius: 10px;
     border-top-left-radius: 10px;
     background-color: #D6E7ED;
@@ -722,8 +716,7 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    min-height: 100%;
-    margin: 0px 5px 10px 5px;
+    height: 100%;
     border-bottom-right-radius: 10px;
     background-color: #D6E7ED;
 }
@@ -735,6 +728,10 @@ input[type=checkbox] {
     align-items: center;
     width: 100%;
     text-align: center;
+}
+
+.sheet .focuses-section-name input[type=text], select {
+    width: 50%;
 }
 
 /* stunts */
@@ -843,7 +840,6 @@ input[type=checkbox] {
     justify-content: space-evenly;
     flex-wrap: wrap;
     min-height: 50px;
-    margin: 5px 5px 0px 5px;
     border-bottom-right-radius: 10px;
     border-top-left-radius: 10px;
     background-color: #D6E7ED;
@@ -865,7 +861,7 @@ input[type=checkbox] {
 .sheet .stunts-header-block>span {
     font-size: 100%;
     line-height: 100%;
-
+    width: 100%;
 }
 
 .sheet .stunts-header-block input[type=text] {
@@ -894,8 +890,7 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    min-height: 100%;
-    margin: 0px 5px 10px 5px;
+    height: 100%;
     border-bottom-right-radius: 10px;
     background-color: #D6E7ED;
 }
@@ -950,6 +945,7 @@ input[type=checkbox] {
 
 .sheet .stunts-section .editor {
     height: 100%;
+    width: 100%;
     background-color: transparent;
     font-family: inherit;
 }
@@ -1051,7 +1047,6 @@ input[type=checkbox] {
 
 .sheet .weapon-list-item {
     display: flex;
-    width: 100%;
     justify-content: center;
 }
 
@@ -1061,8 +1056,18 @@ input[type=checkbox] {
     justify-content: center;
 }
 
-.sheet .weapon-row a:first-child {
-    margin-right: 5px;
+.sheet .weapon-list .box-header>span,
+.sheet .weapon .weapon-list-item {
+    width: 10%;
+}
+
+.sheet .weapon-list .box-header>span.weapon-name,
+.sheet .weapon .weapon-name {
+    width: 20%;
+}
+
+.sheet .weapon-list .box-header {
+    padding: 0 10px;
 }
 
 
@@ -1125,10 +1130,48 @@ input[type=checkbox] {
     flex-direction: row;
     justify-content: center;
 }
-
+.sheet .weapon-row a:first-child,
 .sheet .armor-row a:first-child {
     margin-right: 5px;
 }
+
+.sheet .armor-list .box-header>span,
+.sheet .armor .armor-list-item {
+    width: 15%;
+}
+
+.sheet .armor-list .box-header>span.armor-name,
+.sheet .armor .armor-name,
+.sheet .armor-list .box-header>span.armor-type,
+.sheet .armor .armor-type {
+    width: 20%;
+}
+
+.sheet .weapon-list .box-header,
+.sheet .armor-list .box-header,
+.sheet .shield-list .box-header {
+    padding: 0 10px;
+}
+
+/* SHIELD */
+
+.sheet .shield-list-item {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.sheet .shield-list .box-header>span,
+.sheet .armor .shield-list-item {
+    width: 20%;
+}
+
+.sheet .shield-list .box-header>span.armor-name,
+.sheet .shield-list .box-header>span.armor-type {
+    width: 20%;
+}
+
+
 
 /* INCOME / ITEMS*/
 
@@ -1230,6 +1273,7 @@ input[type=checkbox] {
 * BIOGRAPHY
 ****************/
 
+.notes-box,
 .biography-box {
     display: flex;
     flex-direction: column;
@@ -1242,6 +1286,7 @@ input[type=checkbox] {
     border-bottom-right-radius: 10px;
 }
 
+.notes-container,
 .biography-container {
     display: flex;
     flex-direction: row;
@@ -1253,6 +1298,7 @@ input[type=checkbox] {
     padding: 5px;
 }
 
+.sheet .notes-container .editor,
 .sheet .biography-container .editor {
     display: flex;
     flex-direction: column;
@@ -1260,27 +1306,6 @@ input[type=checkbox] {
     background-color: transparent;
     font-family: inherit;
     text-align: left;
-}
-
-.notes-box {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    width: 100%;
-    min-height: 100px;
-    margin: 0px 5px 10px 5px;
-    background-color: #f3f3f3;
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .6);
-    border-bottom-right-radius: 10px;
-}
-
-.notes-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    flex-wrap: wrap;
-    justify-content: space-between;
 }
 
 /***********
@@ -1411,15 +1436,6 @@ input[type=checkbox] {
     padding: 0px;
     margin: 0px;
     text-align: justify;
-}
-
-.journal-entry-content {
-    box-shadow: inset 0px 0px 20px 5px
-}
-
-.sheet.journal-entry .journal-entry-content, .editor {
-    background: none;
-    background-color: rgba(116, 189, 220, 0.3);
 }
 
 .journal-entry-page .image {
@@ -1710,16 +1726,30 @@ a.content-link, a.inline-roll {
     justify-content: space-around;
 }
 
-:root {
+body {
+    --color-warm-1: #088afc;
+    --color-warm-2: #3f86c9;
+    --color-warm-3: #14455d;
+    --color-cool-3: #4a6675;
+    --color-cool-4: #282e31;
+    --color-cool-5: #0a1013;
+    --color-light-1: #bdeafd;
+    --color-light-2: #b2deee;
+    --color-light-3: #87cbe6;
+    --color-light-4: #78bcd3;
+    --color-light-5: #5289a4;
+    --color-light-6: #416977;
+    --color-scrollbar: #153e61;
     --color-shadow-primary: #088afc;
     --color-border-highlight-alt: #088afc;
     --color-border-highlight: #3a9bee;
     --color-shadow-highlight: #3a9bee;
-    --color-text-hyperlink: #3a9bee;   
+    --color-text-hyperlink: #3a9bee; 
 }
 
-body {
-    --color-scrollbar: #153e61;
+.themed.theme-dark .ui-control {
+    --control-active-border-color: #088afc;
+    --control-hover-border-color: #5b9cd5;
 }
 
 #logo {
@@ -1776,4 +1806,17 @@ table.stunt_table tbody tr:nth-child(odd) {
 
 table.stunt_table tbody tr:nth-child(even) {
     background-color:#b3d1dc;
+}
+
+.prosemirror menu, prose-mirror menu{
+    padding: 1px;
+    gap: 1px;
+}
+
+.prosemirror menu.editor-menu li {
+    padding: 2px 2px !important;
+}
+
+.prosemirror .fa-fw {
+    width: 1em;
 }

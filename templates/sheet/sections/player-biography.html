@@ -4,7 +4,7 @@
         <span>{{localize "EXPANSE.Description" }}</span>
     </div>
     <div class="biography-container">
-        {{editor enrichment.system.bio.appearance target="system.bio.appearance" button=true owner=owner
+        {{editor enrichment.system.bio.appearance target="system.bio.appearance" engine="prosemirror" button=true owner=owner
         editable=true}}
     </div>
 </div>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="biography-container">
-        {{editor enrichment.system.bio.relationships target="system.bio.relationships" button=true
+        {{editor enrichment.system.bio.relationships target="system.bio.relationships" engine="prosemirror" button=true
         owner=owner
         editable=true}}
     </div>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="biography-container">
-        {{editor enrichment.system.bio.goals target="system.bio.goals" button=true owner=owner
+        {{editor enrichment.system.bio.goals target="system.bio.goals" engine="prosemirror"button=true owner=owner
         editable=true}}
     </div>
 </div>

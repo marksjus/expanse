@@ -47,7 +47,7 @@
             <div class="npc-attributes-box">
                 {{#each attributes as |attribute key|}}
                 <div class="npc-attribute-value">
-                    <input type="text" name="system.attributes.{{key}}.value" value="{{value}}" data-dtype="Number" />
+                    <input type="text" name="system.attributes.{{key}}.modified" value="{{modified}}" data-dtype="Number" />
                 </div>
                 {{#ifCond key '==' 'fortune'}}
                 <div class="npc-attribute-value">
@@ -100,13 +100,13 @@
                                 weapon.system.usefocus}}>
                         </div>
 
-                        <div class="weapon-list-item">
+                        <div class="npc-weapon-list-item">
                             <div class="roll-button npc-attack" data-roll="weapon-attack"
                                 data-item-id="{{weapon.id}}" data-item-abil="{{weapon.system.tohitabil}}">
                             </div>
                         </div>
 
-                        <div class="weapon-list-item">
+                        <div class="npc-weapon-list-item">
                             <div class="roll-button npc-damage" data-roll="weapon-damage"
                                 data-item-id="{{weapon.id}}" data-item-abil="{{weapon.system.tohitabil}}">
                             </div>
@@ -245,7 +245,7 @@
             </div>
 
             <div class="npc-notes-container">
-                {{editor enrichment.system.notes target="system.notes" button=true owner=owner editable=true}}
+                {{editor enrichment.system.notes target="system.notes" engine="prosemirror" button=true owner=owner editable=true}}
             </div>
         </div>
 

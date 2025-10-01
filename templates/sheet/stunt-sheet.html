@@ -1,12 +1,5 @@
 <form class="{{cssClass}} item" autocomplete="off">
 
-    <header class="sheet-header">
-    </header>
-
-    <section class="sheet-body">
-
-        <div class="stunts" data-group="primary" data-tab="stunts">
-
             <div class="stunts-box">
                 <div class="stunts-header-box">
                     <div class="stunts-header-block">
@@ -31,13 +24,10 @@
                         <input type="text" name="system.type" value="{{system.type}}" data-dtype="String" />
                     </div>
                     <div class="stunts-section-desc">
-                        {{editor enrichment.system.description target="system.description" button=true owner=owner editable=true}}
+                        {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner editable=true}}
                     </div>
                 </div>
 
             </div>
 
-        </div>
-
-    </section>
 </form> 
