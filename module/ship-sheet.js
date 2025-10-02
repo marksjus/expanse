@@ -47,10 +47,13 @@ Hooks.on('diceSoNiceRollComplete', (messageId) => {
         const actor = game.actors.get(message.speaker.actor);
         actor.update({ system: { combat:  actor.system.combat} });
     }
-    if (message.flags.losses) {
+    const flag = message.flags.losses ?? null
+    if (flag) {
         const actor = game.actors.get(message.speaker.actor);
-        actor.update({ system: { losses:  actor.system.losses} });
-        actor.update({ system: { seriouslosses:  actor.system.seriouslosses} });
+        if(flag.seriousFlag)
+            actor.update({ "system.seriouslosses": flag.data});
+        else
+            actor.update({ "system.losses": flag.data});
     }
     
 });
@@ -97,6 +100,20 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             conditions[key] = tmp;
         };        
         sheetData["conditions"] = conditions;
+
+        let seriousLosses = {};
+        for (const [key, loss] of Object.entries(actorData.system.seriouslosses)) {
+            let tmp = {};
+            for (let i = 0; i < 6;  i++) {
+                if (loss.value > i) {
+                    tmp[i] = {selected:"checked"};
+                } else {
+                    tmp[i] = {selected:""};
+                }
+            };
+            seriousLosses[key] = tmp;
+        };        
+        sheetData["seriousLosses"] = seriousLosses;
         
         return sheetData;
     }
@@ -267,16 +284,28 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     async _onConditionChange(event) {
         const data = super.getData();
-        const losses = data.actor.system.losses;
-        let type = event.currentTarget.attributes.name.value;
-        let conditions = event.currentTarget.children;
+        let losses = null
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+
+        if(dataset.lossType == "seriousLoss")
+            losses = data.actor.system.seriouslosses;
+        else
+            losses = data.actor.system.losses;
+
+        let type = element.attributes.name.value;
+        let conditions = element.children;
 
         let counter = 0;
         for (const [k, v] of Object.entries(conditions)) {
             counter += Number(v.checked);
         }
         losses[type].value = counter;
-        this.actor.update({ system: { losses: losses } });
+
+        if(dataset.lossType == "seriousLoss")
+            this.actor.update({ "system.seriouslosses": losses});
+        else
+            this.actor.update({ "system.losses": losses});
     }
 
     async _onResetLoss(event){
@@ -290,7 +319,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         }
 
         for (const [key, loss] of Object.entries(seriousLosses)) {
-            loss.value = false;
+            loss.value = 0;
         }
 
         this.actor.update({ system: { losses: losses, seriouslosses: seriousLosses } });
@@ -325,7 +354,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         for (const [key, loss] of Object.entries(losses)) {
             lossesKeys.push(key);
             totalLosses += parseInt(Number(loss.value));
-            if (!seriousFlag) {maxLosses += loss.max};     
+            maxLosses += loss.max;     
         }
         
         if (dataset.roll) {
@@ -362,7 +391,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 flavor = "<b>"+game.i18n.localize("EXPANSE.Losses.SeriousLoss")+"</b>";
                 conditionsText = "<b>"+game.i18n.localize("EXPANSE.Losses.CannotSerious")+"</b>";
             }
-            if (seriousFlag && totalLosses<2){
+            if (seriousFlag && totalLosses<=(maxLosses-1)){
                 conditionsCount = 1;
                 conditionsText = "<b>"+game.i18n.localize("EXPANSE.Losses.SeriousApplied")+"</b></br>";
             }
@@ -376,7 +405,10 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     const dsnFormat = "d"+diceData.nice[0];
                     roll = roll.replace("d6",dsnFormat);
                     dns = true;
-                    flags["losses"] = true;
+                    flags["losses"] = {
+                        seriousFlag: seriousFlag,
+                        data: null
+                    };
                 }
 
                 reductionRoll = new Roll(roll);
@@ -397,25 +429,21 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         while(conditionApplied == false) {
                             let conditionId = Math.floor(Math.random() * lossesKeys.length);
                             let value = losses[lossesKeys[conditionId]].value
-                            if ( !seriousFlag && value < losses[lossesKeys[conditionId]].max) {
+                            if ( value < losses[lossesKeys[conditionId]].max) {
                                 conditionApplied = true;
                                 if (lossesKeys[conditionId] == "collateral") {
                                     collateralDamageCount++;
                                 }
                                 losses[lossesKeys[conditionId]].value +=  1;
                                 if (!dns) {
-                                    this.actor.update({ system: { losses: losses } });
-                                }
+                                    if (seriousFlag) 
+                                        this.actor.update({ "system.seriouslosses": losses });
+                                    else
+                                        this.actor.update({ "system.losses": losses });
+                                } else
+                                    flags.losses.data = foundry.utils.duplicate(losses)
                                 conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
-                            };
-                            if ( seriousFlag && !value) {
-                                conditionApplied = true;
-                                losses[lossesKeys[conditionId]].value = true;
-                                if (!dns) {
-                                    this.actor.update({ system: { seriouslosses: losses } });
-                                }
-                                conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
-                            };
+                            }
                         }
                     }
                     rollCard = `
@@ -443,7 +471,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     let conditions = {};
                     for (const [key, loss] of Object.entries(losses)) {
                         let tmp = {};
-                        let iterator = seriousFlag ? 1 : loss.max;
+                        let iterator = loss.max;
                         for (let i = 0; i < iterator;  i++) {
                             if (loss.value > i) {
                                 tmp[i] = {selected:"checked",active:"disabled"};
@@ -460,7 +488,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         let numerator = 1;
                         let tmp = JSON.parse(JSON.stringify(losses));
                         for (const [k, v] of Object.entries(tmp)) { 
-                            let iterator = seriousFlag ? 1 : v.max;
+                            let iterator = v.max;
                             for (let i = 1; i <= iterator;  i++) {
                                 if (conditions[k].children[i].checked && !conditions[k].children[i].disabled) {
                                     v.value++;
@@ -473,24 +501,14 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                             }; 
                         };
                         if (validate == conditionsCount) {
-                            if (seriousFlag) {
-                                if (!dns) {
-                                    this.actor.update({ system: { losses: tmp } });
-                                } else {
-                                    for (let [k, v] of Object.entries(losses)) {
-                                        v.value = tmp[k].value;
-                                    }
-                                }
-                            } else {
-                                if (!dns) {
-                                    this.actor.update({ system: { losses: tmp } });
-                                } else {
-                                    for (const [k, v] of Object.entries(losses)) {
-                                        v.value = tmp[k].value;
-                                    }
-                                }
-                                
-                            }
+                            if (!dns) {
+                                if (seriousFlag) 
+                                    this.actor.update({ "system.seriouslosses": tmp });
+                                else
+                                    this.actor.update({ "system.losses": tmp });
+                            } else 
+                                flags.losses.data = foundry.utils.duplicate(tmp) 
+                            
                             
 
                             rollCard = `

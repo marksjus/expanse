@@ -225,13 +225,16 @@
                         <div class="box-header losses-header">
                             <span>{{localize "EXPANSE.Losses.seriouslosses" }}</span>
                         </div>
-                        {{#each actor.system.seriouslosses as |loss key|}}
+                        {{#each seriousLosses as |condition key|}}
                         <div class="ship-row ship-input losses-checkbox">
                             <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label"
                                 title="{{localize (concat " EXPANSE.Losses.tooltip." key) }}">{{localize (concat
                                 "EXPANSE.Losses." key) }}</label>
-                            <input class="info-input" name="system.seriouslosses.{{key}}.value" type="checkbox"
-                                {{checked value}} />
+                            <div name="{{key}}" class="losses-checkbox-group" data-loss-type="seriousLoss">
+                                {{#each condition as |loss key|}}
+                                <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
+                                {{/each}}
+                            </div>
                         </div>
                         {{/each}}
                     </div>
