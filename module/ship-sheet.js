@@ -104,7 +104,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         let seriousLosses = {};
         for (const [key, loss] of Object.entries(actorData.system.seriouslosses)) {
             let tmp = {};
-            for (let i = 0; i < 6;  i++) {
+            for (let i = 0; i < loss.max;  i++) {
                 if (loss.value > i) {
                     tmp[i] = {selected:"checked"};
                 } else {
