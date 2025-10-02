@@ -153,6 +153,7 @@
     "EXPANSE.Losses.IncorrectNumber": "Select correct number of conditions!",     
     "EXPANSE.Losses.Reset": "Loss Reset",     
     "EXPANSE.Losses.ResetMessage": "All losses were reset.", 
+    "EXPANSE.LossConditions1": "Select One Loss Condition",
     "EXPANSE.LossConditions2": "Select Two Loss Conditions",
     "EXPANSE.LossConditions4": "Select Four Loss Conditions",
     "EXPANSE.Confirm": "Confirm",
