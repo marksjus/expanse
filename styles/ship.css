@@ -55,12 +55,13 @@
 
 .ship .ship-row > label {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     color: whitesmoke;
     background-color: black;
     white-space: nowrap;
     padding: 5px;
+    width: 140px;
 }
 
 .crew-box .box-header {
@@ -216,8 +217,28 @@
 .lossSelector {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     border: none;
+    width: 70%;
+}
+
+.lossSelector .flex-row {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.lossSelector .flex-row.conditions {
+    justify-content: flex-end;
+}
+
+.lossSelector .loss > label {
+    text-wrap-mode: nowrap;
+}
+
+.lossSelector .loss input[type=checkbox] {
+    margin: 3px
 }
 
 .ship .ship-senhulcre {

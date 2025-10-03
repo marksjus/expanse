@@ -482,15 +482,16 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         conditions[key] = tmp;
                     };
 
-                    this.ManualLossConditions(conditions, conditionsCount).then(r => {    
+                    this.ManualLossConditions(conditions, conditionsCount).then(r => {  
                         let conditions = r[0].children;
                         let validate = 0;
                         let numerator = 1;
                         let tmp = JSON.parse(JSON.stringify(losses));
                         for (const [k, v] of Object.entries(tmp)) { 
                             let iterator = v.max;
-                            for (let i = 1; i <= iterator;  i++) {
-                                if (conditions[k].children[i].checked && !conditions[k].children[i].disabled) {
+                            const values = conditions[k].querySelectorAll(".value")
+                            for (let i = 0; i < iterator;  i++) {
+                                if (values[i].checked && !values[i].disabled) {
                                     v.value++;
                                     validate++;
                                     conditionsText += (numerator++) + `. ` + game.i18n.localize("EXPANSE.Losses."+k) + `</br>`;
