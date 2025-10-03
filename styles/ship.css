@@ -263,6 +263,7 @@
     flex-wrap: nowrap;
     width: 100%;
     justify-content: space-around;
+    align-items: center;
 }
 
 .lossSelector .flex-row.conditions {

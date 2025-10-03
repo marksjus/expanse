@@ -1,0 +1,47 @@
+<form class="{{cssClass}} damage-modifier-sheet" autocomplete="off">
+
+  <div class="modifier-box">
+
+    <div class="modifier-header-box">
+      <div class="modifier-header-block">
+        <span>{{localize "EXPANSE.MaximumValueOfSeriousLosses"}}</span>
+      </div>
+    </div>
+
+    <div class="modifier-block">
+      <div class="modifier-sections LossConditions">
+        <div class="modifier-section">
+              <fieldset name="fieldset" class="lossSelector" style="width: 50%;">
+                {{#each seriousLosses as |loss key|}}
+                  <div name="{{key}}" class="loss flex-row" style="margin-bottom: .5rem;">
+                    <label for="condition">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                    <div class="flex-row conditions">
+                      <input class="info-input" type="number" name="{{key}}" value="{{max}}" data-dtype="Number" />
+                    </div>
+                  </div> 
+                {{/each}} 
+              </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<script>
+  textContainer = document.querySelectorAll('.app.window-app.dialog');
+  length = textContainer.length;
+
+  for (i = 0; i < length; i++) {
+    if (textContainer[i].children[1].children[0].children[0].className.includes("damage-modifier-sheet")) {
+      new_red = textContainer[i].id;
+
+      if (document.getElementById(new_red).className.includes("damage-modifier-sheet-dialog")) {
+        continue;
+      }
+      else {
+        document.getElementById(new_red).className += " damage-modifier-sheet-dialog";
+      }
+    } else { }
+  }
+</script>

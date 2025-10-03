@@ -194,15 +194,17 @@
                         </div>
                         
                         {{#each seriousLosses as |condition key|}}
+                        {{#if condition.max}}
                         <div class="ship-row ship-input losses-checkbox" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
                             <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label">
                                 {{localize (concat "EXPANSE.Losses." key) }}</label>
                             <div name="{{key}}" class="losses-checkbox-group" data-loss-type="seriousLoss">
-                                {{#each condition as |loss key|}}
+                                {{#each condition.value as |loss key|}}
                                 <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
                                 {{/each}}
                             </div>
                         </div>
+                        {{/if}}
                         {{/each}}
                         <div class="box-header losses-header buttons">
                             <div class="ship-losses-btn config-loss" data-tooltip="{{localize 'EXPANSE.Losses.ConfigureSeriousLoss'}}">

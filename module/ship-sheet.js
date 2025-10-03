@@ -111,10 +111,12 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     tmp[i] = {selected:""};
                 }
             };
-            seriousLosses[key] = tmp;
+            seriousLosses[key] = {
+                value: tmp,
+                max: loss.max
+            }
         };        
         sheetData["seriousLosses"] = seriousLosses;
-        
         return sheetData;
     }
 
@@ -576,6 +578,28 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         return ic;
     }
 
+    _seriousLossConfiguration() {
+        const seriousLosses = this.actor.system.seriouslosses
+        let ic = new Promise((resolve) => {
+            renderTemplate("/systems/expanse/templates/dialog/seriousLossConfiguration.html", {seriousLosses: seriousLosses}).then(dlg => {
+                new Dialog({
+                    title: game.i18n.localize("EXPANSE.SeriousLossConfiguration"),
+                    content: dlg,
+                    buttons: {
+                        confirm: {
+                            label: game.i18n.localize("EXPANSE.Confirm"),
+                            callback: html => {
+                                resolve(html.find(`[name="fieldset"]`));
+                            }
+                        }
+                    },
+                    default: "Confirm"
+                }).render(true);
+            });
+        })
+        return ic;
+    }
+
     async _onRoll (event) {
         event.preventDefault();
         const element = event.currentTarget;
@@ -976,7 +1000,23 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     _onConfigureSeriousLoss(event) {
         
-        console.log("configure")
+        this._seriousLossConfiguration().then(r => {
+            const fieldset = r[0]
+            const seriousLosses = foundry.utils.duplicate(this.actor.system.seriouslosses)
+            const newValues = fieldset.querySelectorAll(".info-input")
+            for (let i=0; i < newValues.length; i++) {
+                const loss = newValues[i]
+                const max = Number(loss.value)
+                if (max < 0 || max > 6) {
+                    const warning = game.i18n.localize("WARNING.ValueMustBeBetweenOneAndSix");
+                    ui.notifications.warn(warning);
+                    return false
+                }
+                seriousLosses[loss.name].value = 0
+                seriousLosses[loss.name].max = max
+            }
+            this.actor.update({"system.seriouslosses": seriousLosses})
+        });
     }
 
 
