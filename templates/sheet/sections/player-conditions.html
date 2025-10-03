@@ -12,7 +12,7 @@
 
     {{#each conditions as |conditions key|}}
 
-    <div class="condition" title="{{localize (concat "EXPANSE." key "Desc") }}">
+    <div class="condition" data-tooltip="{{localize (concat 'EXPANSE.' key 'Desc') }}">
 
         <input type="checkbox" class="expanse-checkbox active-condition" name="{{key}}" {{checked conditions.active}}>
 
