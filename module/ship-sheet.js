@@ -187,6 +187,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.npc-attack').click(this._onNPCAttack.bind(this));
 
         html.find('.losses-checkbox-group').click(this._onConditionChange.bind(this));
+        html.find('.config-loss').click(this._onConfigureSeriousLoss.bind(this));
     }
 
     _onNPCAttack(event) {
@@ -971,6 +972,11 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 });
             }
         }
+    }
+
+    _onConfigureSeriousLoss(event) {
+        
+        console.log("configure")
     }
 
 

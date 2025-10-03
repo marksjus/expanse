@@ -131,13 +131,20 @@
 }
 
 .losses-header {
+    display: flex;
+    align-items: center;
     margin: 5px 0px;
+    height: 35px;
 }
 
 .losses-checkbox input[type=checkbox]{
     cursor: pointer;
     height: 20px;
     width: 20px;
+}
+
+.losses-header.buttons {
+    padding-left: .4rem;
 }
 
 .test-failure {
@@ -147,7 +154,7 @@
 .losses-checkbox input[type=checkbox]:checked{
     accent-color: red;
 }
-.ship-losses input[type=number],  
+.ship-combat input[type=number],  
 .ship .ship-row input[type=text],
 .ship .ship-row input[type=number] {
     font-weight: bold;
@@ -159,7 +166,7 @@
     border-bottom-right-radius: 10px;
 }
 
-.ship-losses input[type=number] {
+.ship-combat input[type=number] {
     text-align: right;
     padding-right: 10px;
 }
@@ -176,10 +183,17 @@
 
 .ship-losses-button-column {
     width: 40%;
+    padding-left: 1rem;
+    margin-top: 5px;
 }
 
-.ship-combat-row{
+.ship-combat-column{
     margin-top: 5px;
+    width: 100%;
+}
+
+.ship-combat-column input[type=number] {
+    text-align: right !important;
 }
 
 .ship-combat-row input[type=number] {
@@ -196,14 +210,36 @@
     flex-direction: row-reverse !important;
 }
 
-.ship-defense-btn,
-.ship-losses-btn {
+
+.ship-defense-btn {
     padding: 2px 5px 2px 5px;
     background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
     border: 1px solid #afafaf;
     border-radius: 3px;
     margin-top: 2px;
     cursor: pointer;
+}
+
+.ship-losses-btn {
+    margin-right: .4rem;
+    width: 25px;
+    min-width: 25px;
+    height: 25px;
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: #f3f3f3;
+    background-size: cover;
+    background-repeat: none;
+    background-position: center;
+    cursor: pointer;
+}
+
+.ship-losses-btn.single-loss {
+    background-image: url(../ui/earth-1.png);    
+}
+
+.ship-losses-btn.double-loss {
+    background-image: url(../ui/earth-2.png);
 }
 
 .reset-loss {
@@ -255,6 +291,7 @@
 .ship-crew-roll-button,
 .ship-hull-roll-button {
     width: 30px;
+    min-width: 30px;
     height: 30px;
     margin-left: 5px;
     border-radius: 5px;
@@ -269,11 +306,16 @@
 .ship-crew-roll-button,
 .ship-weapon-damage-roll-button {
     width: 25px;
+    min-width: 25px;
     height: 25px;
 }
 
 .ship-crew-roll-button {
     margin: 0;
+}
+
+.ship-point-defense label {
+    width: 100% !important;
 }
 
 .ship .ship-weapons {
@@ -348,7 +390,7 @@
     padding: 5px;
 }
 
-.ship .crew-box .ship-losses{
+.ship .crew-box .ship-combat{
     display: flex;
     flex-direction: column;
     text-align: center;
