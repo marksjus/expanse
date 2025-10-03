@@ -117,12 +117,9 @@ export class ExpanseActor extends Actor {
       case "ship":        
         // 2.0.0 -> 3.0.0
         if (typeof(systemData?.crew) === "string") {
-          console.log(this.actor)
-          console.log(`Begin migration of ${source.name} (id: ${source._id}) data.`);
           // Move crew to crewCount
           systemData["crewCount"] = Number(systemData.crew);
           delete systemData.crew;
-
           // Move crewX to crew.crewX
           //Replace stat with ability string and add buttonTitle
           const ability = {
@@ -194,24 +191,40 @@ export class ExpanseActor extends Actor {
           } else {
             systemData.sensors = 0;
           }
-          console.log(`Finished migration of ${source.name} (id: ${source._id}) data.`);
-        }
-        // 3.0.0 -> 3.0.1
-        const reactoroffline = systemData?.seriouslosses?.reactoroffline
-        if(typeof(reactoroffline?.value) === "boolean"){
-          reactoroffline.value = reactoroffline.value ? 1 : 0
+          
         }
         
-        const weaponoffline = systemData?.seriouslosses?.weaponoffline
-        if(typeof(weaponoffline?.value) === "boolean"){
-          weaponoffline.value = weaponoffline.value ? 1 : 0
-        }
+        // 3.0.0 -> 3.0.1
+        const reactoroffline = systemData?.seriouslosses?.reactoroffline ?? null
+        if(reactoroffline)
+          if ("value" in reactoroffline) {
+            if(typeof(reactoroffline?.value) === "boolean"){
+              reactoroffline.value = reactoroffline.value ? 1 : 0
+            }
+          } else if(typeof reactoroffline === "boolean") {  
+            reactoroffline = {
+              value: reactoroffline ? 1 : 0,
+              max: 1
+            }
+          }
+
+        const weaponoffline = systemData?.seriouslosses?.weaponoffline ?? null
+        if(weaponoffline)
+          if ("value" in weaponoffline) {
+            if(typeof(weaponoffline?.value) === "boolean"){
+              weaponoffline.value = weaponoffline.value ? 1 : 0
+            }
+          } else if(typeof weaponoffline === "boolean"){ 
+            weaponoffline = {
+              value: weaponoffline ? 1 : 0,
+              max: 6
+            }
+          }
         break;
 
       default:
         break;
-    }
-
+    } 
     return super.migrateData(source);
   }
 }
