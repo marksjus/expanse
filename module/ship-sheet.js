@@ -711,6 +711,11 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     if (loss>0) {
                         chatLoss = `<b>${game.i18n.localize("EXPANSE.chatManeuverabilityLoss")}:</b> -${loss}</br>`;
                     }
+                    const reactoroffline = actorData.system.seriouslosses.reactoroffline
+                    if(reactoroffline.value == reactoroffline.max) {
+                        loss += 2
+                        chatLoss += `<b>${game.i18n.localize("EXPANSE.chatReactorOfflineLoss")}:</b> -2</br>`;
+                    }
                     break;
                 case "sensors":
                     label = game.i18n.localize("EXPANSE.CrewElectronicWarfareTest");

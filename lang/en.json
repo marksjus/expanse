@@ -18,6 +18,7 @@
     "EXPANSE.ChatStunts": "{SP} Stunt Points have been generated!",
     "EXPANSE.chatSensorsLoss": "Sensors Loss Conditions",
     "EXPANSE.chatManeuverabilityLoss": "Maneuverability Loss Conditions",
+    "EXPANSE.chatReactorOfflineLoss": "Reactor Offline",
     "EXPANSE.chatHullLoss": "Hull Loss Conditions",
     "EXPANSE.chatWeaponsLoss": "Weapons Loss Conditions",
     "EXPANSE.communication": "Communication",
