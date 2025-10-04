@@ -126,7 +126,7 @@ export class ExpanseActor extends Actor {
             "captain" : `${game.i18n.localize("EXPANSE.Communication")} (${game.i18n.localize("EXPANSE.Leadership")})`,
             "pilot" : `${game.i18n.localize("EXPANSE.Dexterity")} (${game.i18n.localize("EXPANSE.Piloting")})`,
             "sensors" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Technology")})`,
-            "gunnary" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
+            "gunnery" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
             "engineer" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Engineering")})`,
             "other" : ""
           };   
@@ -135,7 +135,7 @@ export class ExpanseActor extends Actor {
             "captain" : game.i18n.localize("EXPANSE.CrewCommandTest"),
             "pilot" : game.i18n.localize("EXPANSE.CrewPilotTest"),
             "sensors" : game.i18n.localize("EXPANSE.CrewElectronicWarfareTest"),
-            "gunnary" : game.i18n.localize("EXPANSE.CrewGunnaryTest"),
+            "gunnery" : game.i18n.localize("EXPANSE.CrewGunneryTest"),
             "engineer" : game.i18n.localize("EXPANSE.CrewDamageControlTest"),
             "other" : ""
           };     
@@ -219,6 +219,17 @@ export class ExpanseActor extends Actor {
               value: weaponoffline ? 1 : 0,
               max: 6
             }
+          }
+
+          const crew = foundry.utils.duplicate(systemData.crew)
+          if(typeof crew === "object") {
+            for (let [k, v] of Object.entries(crew)) {
+              if(v.role == "gunnary")
+                v.role = "gunnery"
+              if(v.stat == "Accuracy (Gunnary)")
+                v.stat = "Accuracy (Gunnery)"
+            }
+            systemData.crew = crew
           }
         break;
 

@@ -266,7 +266,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             "captain" : `${game.i18n.localize("EXPANSE.Communication")} (${game.i18n.localize("EXPANSE.Leadership")})`,
             "pilot" : `${game.i18n.localize("EXPANSE.Dexterity")} (${game.i18n.localize("EXPANSE.Piloting")})`,
             "sensors" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Technology")})`,
-            "gunnary" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
+            "gunnery" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
             "engineer" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Engineering")})`,
             "other" : ""
         }   
@@ -275,7 +275,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             "captain" : game.i18n.localize("EXPANSE.CrewCommandTest"),
             "pilot" : game.i18n.localize("EXPANSE.CrewPilotTest"),
             "sensors" : game.i18n.localize("EXPANSE.CrewElectronicWarfareTest"),
-            "gunnary" : game.i18n.localize("EXPANSE.CrewGunnaryTest"),
+            "gunnery" : game.i18n.localize("EXPANSE.CrewGunneryTest"),
             "engineer" : game.i18n.localize("EXPANSE.CrewDamageControlTest"),
             "other" : ""
         } 
@@ -748,8 +748,8 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         chatLoss = `<b>${game.i18n.localize("EXPANSE.chatSensorsLoss")}:</b> -${loss}</br>`;
                     }
                     break;
-                case "gunnary":
-                    label = game.i18n.localize("EXPANSE.CrewGunnaryTest");
+                case "gunnery":
+                    label = game.i18n.localize("EXPANSE.CrewGunneryTest");
                     TN=15;
                     break;
                 case "engineer":
@@ -785,7 +785,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 }
             }
 
-            if (crewData.role == "gunnary"){
+            if (crewData.role == "gunnery"){
                 sensors = die3-3; 
                 chatSensors = `<b>${game.i18n.localize("EXPANSE.SensorsGunnery")}:</b> ${sensors}</br>`; 
             }
