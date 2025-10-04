@@ -454,7 +454,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         </br></br>
                         ${conditionsText}                            
                     `;
-                    let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: <span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div></div>`
+                    let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: </span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div></div>`
 
                     if(collateralDamageCount > 0) {
                         rollCard += button;
