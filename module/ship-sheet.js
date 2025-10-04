@@ -454,8 +454,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         </br></br>
                         ${conditionsText}                            
                     `;
-
-                    let button = '</br><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="'+collateralDamageCount+'d6" data-label="collateralDamage" data-actor-id="'+ data.actor.id + '">'+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+'</div>';
+                    let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: <span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div></div>`
 
                     if(collateralDamageCount > 0) {
                         rollCard += button;
@@ -521,7 +520,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                             ${conditionsText}                         
                             `;
 
-                            let button = '</br><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="'+collateralDamageCount+'d6" data-label="collateralDamage" data-actor-id="'+ data.actor.id + '">'+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+'</div>';
+                            let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: </span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div><div>`
 
 
                             if(collateralDamageCount > 0) {
@@ -537,13 +536,9 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                                 sound: CONFIG.sounds.dice
                             }); 
                         } else {
-                            rollCard = "<b>"+game.i18n.localize("EXPANSE.Losses.IncorrectNumber")+"</b>"
-
-                            ChatMessage.create({
-                                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                                flavor: flavor,
-                                content: rollCard,
-                            }); 
+                            const warning = game.i18n.localize("WARNING.IncorrectNumberOfLosses");
+                            ui.notifications.warn(warning);
+                            return false
                         };
                     });
                 }

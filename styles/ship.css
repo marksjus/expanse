@@ -242,6 +242,14 @@
     background-image: url(../ui/earth-2.png);
 }
 
+.ship-losses-btn.collateralDamageButton {
+    background-image: url(../ui/earth-5.png);
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    margin: 0 .4rem;
+}
+
 .reset-loss {
     color: red;
 }
@@ -258,12 +266,18 @@
     width: 70%;
 }
 
+.chat-button-row,
 .lossSelector .flex-row {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
     justify-content: space-around;
     align-items: center;
+}
+
+.chat-button-row {
+    justify-content: flex-end;
+    margin-bottom: .4rem;
 }
 
 .lossSelector .flex-row.conditions {
