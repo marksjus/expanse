@@ -220,16 +220,17 @@ export class ExpanseActor extends Actor {
               max: 6
             }
           }
-
-          const crew = foundry.utils.duplicate(systemData.crew)
-          if(typeof crew === "object") {
-            for (let [k, v] of Object.entries(crew)) {
-              if(v.role == "gunnary")
-                v.role = "gunnery"
-              if(v.stat == "Accuracy (Gunnary)")
-                v.stat = "Accuracy (Gunnery)"
+          if(typeof systemData?.crew != "undefined") {
+            const crew = foundry.utils.duplicate(systemData.crew)
+            if(typeof crew === "object") {
+              for (let [k, v] of Object.entries(crew)) {
+                if(v.role == "gunnary")
+                  v.role = "gunnery"
+                if(v.stat == "Accuracy (Gunnary)")
+                  v.stat = "Accuracy (Gunnery)"
+              }
+              systemData.crew = crew
             }
-            systemData.crew = crew
           }
         break;
 
