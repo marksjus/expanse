@@ -179,8 +179,10 @@
                             <div class="ship-losses-btn simple-loss double-loss" data-roll="2d6" data-label="double-loss" data-tooltip="{{localize 'EXPANSE.Losses.ApplyDoubleLoss'}}"></div>
                         </div>
                         {{#each conditions as |condition key|}}
-                        <div class="ship-row ship-input losses-checkbox" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
-                            <label class="info-label" for="{{key}}">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                        <div class="ship-row ship-input losses-checkbox">
+                            <label class="info-label" for="{{key}}" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
+                                {{localize (concat "EXPANSE.Losses." key) }}
+                            </label>
                             <div name="{{key}}" class="losses-checkbox-group">
                                 {{#each condition as |loss key|}}
                                 <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
@@ -195,9 +197,10 @@
                         
                         {{#each seriousLosses as |condition key|}}
                         {{#if condition.max}}
-                        <div class="ship-row ship-input losses-checkbox" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
-                            <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label">
-                                {{localize (concat "EXPANSE.Losses." key) }}</label>
+                        <div class="ship-row ship-input losses-checkbox">
+                            <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
+                                {{localize (concat "EXPANSE.Losses." key) }}
+                            </label>
                             <div name="{{key}}" class="losses-checkbox-group" data-loss-type="seriousLoss">
                                 {{#each condition.value as |loss key|}}
                                 <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
