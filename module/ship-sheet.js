@@ -663,11 +663,9 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 sound: CONFIG.sounds.dice
             });  
         } else {
-            ChatMessage.create({
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                flavor: game.i18n.localize("EXPANSE.Error"),
-                content: `<b>${game.i18n.localize("EXPANSE.IncorrectRollDataValue")}<b>`
-            }); 
+            const warning = game.i18n.localize("WARNING.IncorrectRollDataValue");
+            ui.notifications.warn(warning);
+            return false 
         }
     }
 
