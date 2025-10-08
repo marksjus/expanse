@@ -1244,6 +1244,7 @@ input[type=checkbox] {
     background-repeat: none;
     background-position: center;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 

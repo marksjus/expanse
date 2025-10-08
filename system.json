@@ -2,7 +2,7 @@
   "id": "expanse",
   "title": "The Expanse RPG (AGE)",
   "description": "The official system for The Expanse RPG (AGE) from Green Ronin Publishing",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "authors": [
     {
       "name": "Foxfyre",
@@ -74,6 +74,6 @@
   "license": "LICENSE.txt",
   "compatibility": {
     "minimum": "13",
-    "verified": "13.345"
+    "verified": "13.346"
   }
 }
