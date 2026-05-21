@@ -3,7 +3,7 @@
     <div class="ship-box">
 
         <div class="ship-image">
-            <img class="ship-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+            <img class="ship-img" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" />
         </div>
 
         <div class="ship-block">
@@ -42,7 +42,7 @@
                     <input class="info-input" type="text" name="system.hull" value="{{actor.system.hull}}"
                         data-dtype="String" placeholder="#d6" />
                     <div class="ability-btn rollable ship-hull-roll-button" data-roll="{{actor.system.hull}}"
-                        data-label="hull-roll" title="{{localize " EXPANSE.ShipHullRoll" }}">
+                        data-label="hull-roll" data-tooltip="{{localize 'EXPANSE.ShipHullRoll' }}">
                     </div>
                 </div>
             </div>
@@ -94,17 +94,13 @@
                                 <span class="weapon-dmg-header-title"></span>
                             </div>
                             <div class="ability-btn rollable ship-weapon-damage-roll-button" data-weapon="weapon1"
-                                data-roll="{{actor.system.weapon1.damage}}" data-label="weapon-roll" title="{{localize "
-                                EXPANSE.DamageRoll" }}"></div>
+                                data-roll="{{actor.system.weapon1.damage}}" data-label="weapon-roll" data-tooltip="{{localize 'EXPANSE.DamageRoll' }}"></div>
                             <div class="ability-btn rollable ship-weapon-damage-roll-button" data-weapon="weapon2"
-                                data-roll="{{actor.system.weapon2.damage}}" data-label="weapon-roll" title="{{localize "
-                                EXPANSE.DamageRoll" }}"></div>
+                                data-roll="{{actor.system.weapon2.damage}}" data-label="weapon-roll" data-tooltip="{{localize 'EXPANSE.DamageRoll' }}"></div>
                             <div class="ability-btn rollable ship-weapon-damage-roll-button" data-weapon="weapon3"
-                                data-roll="{{actor.system.weapon3.damage}}" data-label="weapon-roll" title="{{localize "
-                                EXPANSE.DamageRoll" }}"></div>
+                                data-roll="{{actor.system.weapon3.damage}}" data-label="weapon-roll" data-tooltip="{{localize 'EXPANSE.DamageRoll' }}"></div>
                             <div class="ability-btn rollable ship-weapon-damage-roll-button" data-weapon="weapon4"
-                                data-roll="{{actor.system.weapon4.damage}}" data-label="weapon-roll" title="{{localize "
-                                EXPANSE.DamageRoll" }}"></div>
+                                data-roll="{{actor.system.weapon4.damage}}" data-label="weapon-roll" data-tooltip="{{localize 'EXPANSE.DamageRoll' }}"></div>
                         </div>
                     </div>
                 </div>
@@ -155,7 +151,7 @@
                             <option value="captain">{{localize "EXPANSE.ship.captain" }}</option>
                             <option value="pilot">{{localize "EXPANSE.ship.pilot" }}</option>
                             <option value="sensors">{{localize "EXPANSE.ship.sensors" }}</option>
-                            <option value="gunnary">{{localize "EXPANSE.ship.gunnary" }}</option>
+                            <option value="gunnery">{{localize "EXPANSE.ship.gunnery" }}</option>
                             <option value="engineer">{{localize "EXPANSE.ship.engineer" }}</option>
                             <option value="other">{{localize "EXPANSE.ship.other" }}</option>
                             {{/select}}
@@ -169,52 +165,24 @@
                     <input class="ship-crew-focus" type="checkbox" name="system.crew.{{key}}.focus" {{checked focus}}>
 
                     <div class="ability-btn crew-roll ship-crew-roll-button crew-header-roll" data-crew="{{key}}"
-                        data-roll="3d6" data-label="crew-roll" title="{{buttonTitle}}"></div>
+                        data-roll="3d6" data-label="crew-roll" data-tooltip="{{buttonTitle}}"></div>
                 </div>
                 {{/each}}
             </div>
 
-            <div class="combat-box">
-                <div class="box-header">
-                    <span>{{localize "EXPANSE.ShipCombat" }}</span>
-                </div>
-                <div class="ship-row ship-combat-row">
-                    <div class="ship-command ship-input">
-                        <label for="system.combat.commandPoints" class="info-label">{{localize "EXPANSE.CommandPoints"
-                            }}</label>
-                        <input class="info-input" type="number" name="system.combat.commandPoints"
-                            value="{{actor.system.combat.commandPoints}}" data-dtype="Number" />
-                    </div>
-                    <div class="ship-electronic ship-input">
-                        <label for="system.combat.electronicPoints" class="info-label">{{localize
-                            "EXPANSE.ElectronicPoints" }}</label>
-                        <input class="info-input" type="number" name="system.combat.electronicPoints"
-                            value="{{actor.system.combat.electronicPoints}}" data-dtype="Number" />
-                    </div>
-                    <div class="ship-engineer ship-input">
-                        <label for="system.combat.engineerPoints" class="info-label">{{localize "EXPANSE.EngineerPoints"
-                            }}</label>
-                        <input class="info-input" type="number" name="system.combat.engineerPoints"
-                            value="{{actor.system.combat.engineerPoints}}" data-dtype="Number" />
-                    </div>
-                    <div class="ship-defense-btn defense-roll" data-roll="3d6" data-label="defense-roll">{{localize
-                        "EXPANSE.ShipDefense"}}</div>
-                </div>
-            </div>
-
-            <div class="ship-losses">
-                <div class="box-header">
-                    <span>{{localize "EXPANSE.Losses.header" }}</span>
-                </div>
+            <div class="ship-combat">
                 <div class="ship-losses-row">
                     <div class="ship-column">
                         <div class="box-header losses-header">
                             <span>{{localize "EXPANSE.Losses.simplelosses" }}</span>
+                            <div class="ship-losses-btn simple-loss single-loss" data-roll="1d6" data-label="single-loss" data-tooltip="{{localize 'EXPANSE.Losses.ApplySingleLoss'}}"></div>
+                            <div class="ship-losses-btn simple-loss double-loss" data-roll="2d6" data-label="double-loss" data-tooltip="{{localize 'EXPANSE.Losses.ApplyDoubleLoss'}}"></div>
                         </div>
                         {{#each conditions as |condition key|}}
-                        <div class="ship-row ship-input losses-checkbox" title="{{localize (concat "
-                            EXPANSE.Losses.tooltip." key) }}">
-                            <label class="info-label" for="{{key}}">{{localize (concat "EXPANSE.Losses." key) }}</label>
+                        <div class="ship-row ship-input losses-checkbox">
+                            <label class="info-label" for="{{key}}" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
+                                {{localize (concat "EXPANSE.Losses." key) }}
+                            </label>
                             <div name="{{key}}" class="losses-checkbox-group">
                                 {{#each condition as |loss key|}}
                                 <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
@@ -224,34 +192,64 @@
                         {{/each}}
                         <div class="box-header losses-header">
                             <span>{{localize "EXPANSE.Losses.seriouslosses" }}</span>
+                            <div class="ship-losses-btn serious-loss single-loss" data-roll="2d6" data-label="serious-loss" data-tooltip="{{localize 'EXPANSE.Losses.ApplySeriousLoss'}}"></div>
                         </div>
-                        {{#each actor.system.seriouslosses as |loss key|}}
+                        
+                        {{#each seriousLosses as |condition key|}}
+                        {{#if condition.max}}
                         <div class="ship-row ship-input losses-checkbox">
-                            <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label"
-                                title="{{localize (concat " EXPANSE.Losses.tooltip." key) }}">{{localize (concat
-                                "EXPANSE.Losses." key) }}</label>
-                            <input class="info-input" name="system.seriouslosses.{{key}}.value" type="checkbox"
-                                {{checked value}} />
+                            <label class="info-label" for="system.seriouslosses.{{key}}" class="info-label" data-tooltip="{{localize (concat 'EXPANSE.Losses.tooltip.' key) }}">
+                                {{localize (concat "EXPANSE.Losses." key) }}
+                            </label>
+                            <div name="{{key}}" class="losses-checkbox-group" data-loss-type="seriousLoss">
+                                {{#each condition.value as |loss key|}}
+                                <input class="info-input" type="checkbox" id="condition" {{loss.selected}}>
+                                {{/each}}
+                            </div>
                         </div>
+                        {{/if}}
                         {{/each}}
+                        <div class="box-header losses-header buttons">
+                            <div class="ship-losses-btn config-loss" data-tooltip="{{localize 'EXPANSE.Losses.ConfigureSeriousLoss'}}">
+                                <i class="fas fa-gears"></i>
+                            </div>
+                            <div class="ship-losses-btn reset-loss" data-label="reset-loss" data-tooltip="{{localize 'EXPANSE.Losses.ResetLosses'}}">
+                                <i class="fas fa-rotate-left"></i>
+                            </div>
+                        </div>
                     </div>
                     <div class="ship-losses-button-column">
-                        <div class="ship-row rowReversed">
-                            <div class="ship-losses-btn simple-loss" data-roll="1d6" data-label="single-loss">{{localize
-                                "EXPANSE.Losses.ApplySingleLoss"}}</div>
+                        
+                        <div class="combat-box">
+                            <div class="box-header">
+                                <span>{{localize "EXPANSE.ShipCombat" }}</span>
+                            </div>
+                            <div class="ship-column ship-combat-column">
+                                <div class="ship-command ship-input ship-row">
+                                    <label for="system.combat.commandPoints" class="info-label">{{localize "EXPANSE.CommandPoints"
+                                        }}</label>
+                                    <input class="info-input" type="number" name="system.combat.commandPoints"
+                                        value="{{actor.system.combat.commandPoints}}" data-dtype="Number" />
+                                </div>
+                                <div class="ship-electronic ship-input ship-row">
+                                    <label for="system.combat.electronicPoints" class="info-label">{{localize
+                                        "EXPANSE.ElectronicPoints" }}</label>
+                                    <input class="info-input" type="number" name="system.combat.electronicPoints"
+                                        value="{{actor.system.combat.electronicPoints}}" data-dtype="Number" />
+                                </div>
+                                <div class="ship-engineer ship-input ship-row">
+                                    <label for="system.combat.engineerPoints" class="info-label">{{localize "EXPANSE.EngineerPoints"
+                                        }}</label>
+                                    <input class="info-input" type="number" name="system.combat.engineerPoints"
+                                        value="{{actor.system.combat.engineerPoints}}" data-dtype="Number" />
+                                </div>
+                                <div class="ship-point-defense ship-input ship-row">
+                                    <label class="info-label">{{localize "EXPANSE.ShipDefense"}}</label>
+                                    <div class="ship-hull-roll-button defense-roll ship-row" data-roll="3d6" data-label="defense-roll" data-tooltip="{{localize 'EXPANSE.ShipDefenseRoll'}}"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="ship-row rowReversed">
-                            <div class="ship-losses-btn simple-loss" data-roll="2d6" data-label="double-loss">{{localize
-                                "EXPANSE.Losses.ApplyDoubleLoss"}}</div>
-                        </div>
-                        <div class="ship-row rowReversed">
-                            <div class="ship-losses-btn serious-loss" data-roll="2d6" data-label="serious-loss">
-                                {{localize "EXPANSE.Losses.ApplySeriousLoss"}}</div>
-                        </div>
-                        <div class="ship-row rowReversed">
-                            <div class="ship-losses-btn reset-loss" data-label="reset-loss">{{localize
-                                "EXPANSE.Losses.ResetLosses"}}</div>
-                        </div>
+
                     </div>
                 </div>
             </div>

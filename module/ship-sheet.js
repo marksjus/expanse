@@ -1,6 +1,5 @@
 import { diceRollType } from "./rolling/dice-rolling.js";
 import { RollModifier} from "./rolling/modifiers.js";
-import { migrateShipData } from "./shipDataMigration.js";
 
 Hooks.on('ready', () => {
     $(document).on('click', '.collateralDamageButton', async function (event) {
@@ -48,10 +47,13 @@ Hooks.on('diceSoNiceRollComplete', (messageId) => {
         const actor = game.actors.get(message.speaker.actor);
         actor.update({ system: { combat:  actor.system.combat} });
     }
-    if (message.flags.losses) {
+    const flag = message.flags.losses ?? null
+    if (flag) {
         const actor = game.actors.get(message.speaker.actor);
-        actor.update({ system: { losses:  actor.system.losses} });
-        actor.update({ system: { seriouslosses:  actor.system.seriouslosses} });
+        if(flag.seriousFlag)
+            actor.update({ "system.seriouslosses": flag.data});
+        else
+            actor.update({ "system.losses": flag.data});
     }
     
 });
@@ -76,7 +78,6 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     async getData() {
         const sheetData = super.getData();
-        migrateShipData(this.actor);
 
         sheetData.dtypes = ["String", "Number", "Boolean"];
 
@@ -99,7 +100,23 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             conditions[key] = tmp;
         };        
         sheetData["conditions"] = conditions;
-        
+
+        let seriousLosses = {};
+        for (const [key, loss] of Object.entries(actorData.system.seriouslosses)) {
+            let tmp = {};
+            for (let i = 0; i < loss.max;  i++) {
+                if (loss.value > i) {
+                    tmp[i] = {selected:"checked"};
+                } else {
+                    tmp[i] = {selected:""};
+                }
+            };
+            seriousLosses[key] = {
+                value: tmp,
+                max: loss.max
+            }
+        };        
+        sheetData["seriousLosses"] = seriousLosses;
         return sheetData;
     }
 
@@ -172,6 +189,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         html.find('.npc-attack').click(this._onNPCAttack.bind(this));
 
         html.find('.losses-checkbox-group').click(this._onConditionChange.bind(this));
+        html.find('.config-loss').click(this._onConfigureSeriousLoss.bind(this));
     }
 
     _onNPCAttack(event) {
@@ -248,7 +266,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             "captain" : `${game.i18n.localize("EXPANSE.Communication")} (${game.i18n.localize("EXPANSE.Leadership")})`,
             "pilot" : `${game.i18n.localize("EXPANSE.Dexterity")} (${game.i18n.localize("EXPANSE.Piloting")})`,
             "sensors" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Technology")})`,
-            "gunnary" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
+            "gunnery" : `${game.i18n.localize("EXPANSE.Accuracy")} (${game.i18n.localize("EXPANSE.Gunnery")})`,
             "engineer" : `${game.i18n.localize("EXPANSE.Intelligence")} (${game.i18n.localize("EXPANSE.Engineering")})`,
             "other" : ""
         }   
@@ -257,7 +275,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             "captain" : game.i18n.localize("EXPANSE.CrewCommandTest"),
             "pilot" : game.i18n.localize("EXPANSE.CrewPilotTest"),
             "sensors" : game.i18n.localize("EXPANSE.CrewElectronicWarfareTest"),
-            "gunnary" : game.i18n.localize("EXPANSE.CrewGunnaryTest"),
+            "gunnery" : game.i18n.localize("EXPANSE.CrewGunneryTest"),
             "engineer" : game.i18n.localize("EXPANSE.CrewDamageControlTest"),
             "other" : ""
         } 
@@ -269,16 +287,28 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
 
     async _onConditionChange(event) {
         const data = super.getData();
-        const losses = data.actor.system.losses;
-        let type = event.currentTarget.attributes.name.value;
-        let conditions = event.currentTarget.children;
+        let losses = null
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+
+        if(dataset.lossType == "seriousLoss")
+            losses = data.actor.system.seriouslosses;
+        else
+            losses = data.actor.system.losses;
+
+        let type = element.attributes.name.value;
+        let conditions = element.children;
 
         let counter = 0;
         for (const [k, v] of Object.entries(conditions)) {
             counter += Number(v.checked);
         }
         losses[type].value = counter;
-        this.actor.update({ system: { losses: losses } });
+
+        if(dataset.lossType == "seriousLoss")
+            this.actor.update({ "system.seriouslosses": losses});
+        else
+            this.actor.update({ "system.losses": losses});
     }
 
     async _onResetLoss(event){
@@ -292,7 +322,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         }
 
         for (const [key, loss] of Object.entries(seriousLosses)) {
-            loss.value = false;
+            loss.value = 0;
         }
 
         this.actor.update({ system: { losses: losses, seriouslosses: seriousLosses } });
@@ -327,7 +357,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
         for (const [key, loss] of Object.entries(losses)) {
             lossesKeys.push(key);
             totalLosses += parseInt(Number(loss.value));
-            if (!seriousFlag) {maxLosses += loss.max};     
+            maxLosses += loss.max;     
         }
         
         if (dataset.roll) {
@@ -364,7 +394,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 flavor = "<b>"+game.i18n.localize("EXPANSE.Losses.SeriousLoss")+"</b>";
                 conditionsText = "<b>"+game.i18n.localize("EXPANSE.Losses.CannotSerious")+"</b>";
             }
-            if (seriousFlag && totalLosses<2){
+            if (seriousFlag && totalLosses<=(maxLosses-1)){
                 conditionsCount = 1;
                 conditionsText = "<b>"+game.i18n.localize("EXPANSE.Losses.SeriousApplied")+"</b></br>";
             }
@@ -378,7 +408,10 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     const dsnFormat = "d"+diceData.nice[0];
                     roll = roll.replace("d6",dsnFormat);
                     dns = true;
-                    flags["losses"] = true;
+                    flags["losses"] = {
+                        seriousFlag: seriousFlag,
+                        data: null
+                    };
                 }
 
                 reductionRoll = new Roll(roll);
@@ -399,25 +432,21 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         while(conditionApplied == false) {
                             let conditionId = Math.floor(Math.random() * lossesKeys.length);
                             let value = losses[lossesKeys[conditionId]].value
-                            if ( !seriousFlag && value < losses[lossesKeys[conditionId]].max) {
+                            if ( value < losses[lossesKeys[conditionId]].max) {
                                 conditionApplied = true;
                                 if (lossesKeys[conditionId] == "collateral") {
                                     collateralDamageCount++;
                                 }
                                 losses[lossesKeys[conditionId]].value +=  1;
                                 if (!dns) {
-                                    this.actor.update({ system: { losses: losses } });
-                                }
+                                    if (seriousFlag) 
+                                        this.actor.update({ "system.seriouslosses": losses });
+                                    else
+                                        this.actor.update({ "system.losses": losses });
+                                } else
+                                    flags.losses.data = foundry.utils.duplicate(losses)
                                 conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
-                            };
-                            if ( seriousFlag && !value) {
-                                conditionApplied = true;
-                                losses[lossesKeys[conditionId]].value = true;
-                                if (!dns) {
-                                    this.actor.update({ system: { seriouslosses: losses } });
-                                }
-                                conditionsText += (i+1) + `. ` + game.i18n.localize("EXPANSE.Losses."+lossesKeys[conditionId]) + `</br>`;
-                            };
+                            }
                         }
                     }
                     rollCard = `
@@ -425,8 +454,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         </br></br>
                         ${conditionsText}                            
                     `;
-
-                    let button = '</br><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="'+collateralDamageCount+'d6" data-label="collateralDamage" data-actor-id="'+ data.actor.id + '">'+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+'</div>';
+                    let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: </span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div></div>`
 
                     if(collateralDamageCount > 0) {
                         rollCard += button;
@@ -445,7 +473,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     let conditions = {};
                     for (const [key, loss] of Object.entries(losses)) {
                         let tmp = {};
-                        let iterator = seriousFlag ? 1 : loss.max;
+                        let iterator = loss.max;
                         for (let i = 0; i < iterator;  i++) {
                             if (loss.value > i) {
                                 tmp[i] = {selected:"checked",active:"disabled"};
@@ -456,15 +484,16 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         conditions[key] = tmp;
                     };
 
-                    this.ManualLossConditions(conditions, conditionsCount).then(r => {    
+                    this.ManualLossConditions(conditions, conditionsCount).then(r => {  
                         let conditions = r[0].children;
                         let validate = 0;
                         let numerator = 1;
                         let tmp = JSON.parse(JSON.stringify(losses));
                         for (const [k, v] of Object.entries(tmp)) { 
-                            let iterator = seriousFlag ? 1 : v.max;
-                            for (let i = 1; i <= iterator;  i++) {
-                                if (conditions[k].children[i].checked && !conditions[k].children[i].disabled) {
+                            let iterator = v.max;
+                            const values = conditions[k].querySelectorAll(".value")
+                            for (let i = 0; i < iterator;  i++) {
+                                if (values[i].checked && !values[i].disabled) {
                                     v.value++;
                                     validate++;
                                     conditionsText += (numerator++) + `. ` + game.i18n.localize("EXPANSE.Losses."+k) + `</br>`;
@@ -475,24 +504,14 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                             }; 
                         };
                         if (validate == conditionsCount) {
-                            if (seriousFlag) {
-                                if (!dns) {
-                                    this.actor.update({ system: { losses: tmp } });
-                                } else {
-                                    for (let [k, v] of Object.entries(losses)) {
-                                        v.value = tmp[k].value;
-                                    }
-                                }
-                            } else {
-                                if (!dns) {
-                                    this.actor.update({ system: { losses: tmp } });
-                                } else {
-                                    for (const [k, v] of Object.entries(losses)) {
-                                        v.value = tmp[k].value;
-                                    }
-                                }
-                                
-                            }
+                            if (!dns) {
+                                if (seriousFlag) 
+                                    this.actor.update({ "system.seriouslosses": tmp });
+                                else
+                                    this.actor.update({ "system.losses": tmp });
+                            } else 
+                                flags.losses.data = foundry.utils.duplicate(tmp) 
+                            
                             
 
                             rollCard = `
@@ -501,7 +520,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                             ${conditionsText}                         
                             `;
 
-                            let button = '</br><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="'+collateralDamageCount+'d6" data-label="collateralDamage" data-actor-id="'+ data.actor.id + '">'+game.i18n.localize("EXPANSE.Losses.ApplyCollateralDamage")+'</div>';
+                            let button = `</br><div class="chat-button-row"><span>${game.i18n.localize("EXPANSE.Losses.RollCollateralDamage")}: </span><div class="ship-losses-btn simple-loss collateralDamageButton" data-roll="${collateralDamageCount}d6" data-label="collateralDamage" data-actor-id="${data.actor.id}"></div><div>`
 
 
                             if(collateralDamageCount > 0) {
@@ -517,13 +536,9 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                                 sound: CONFIG.sounds.dice
                             }); 
                         } else {
-                            rollCard = "<b>"+game.i18n.localize("EXPANSE.Losses.IncorrectNumber")+"</b>"
-
-                            ChatMessage.create({
-                                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                                flavor: flavor,
-                                content: rollCard,
-                            }); 
+                            const warning = game.i18n.localize("WARNING.IncorrectNumberOfLosses");
+                            ui.notifications.warn(warning);
+                            return false
                         };
                     });
                 }
@@ -542,6 +557,28 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
             renderTemplate("/systems/expanse/templates/dialog/lossconditions.html", {conditions: conditions,count: conditionsCount}).then(dlg => {
                 new Dialog({
                     title: game.i18n.localize("EXPANSE.LossConditions"+conditionsCount),
+                    content: dlg,
+                    buttons: {
+                        confirm: {
+                            label: game.i18n.localize("EXPANSE.Confirm"),
+                            callback: html => {
+                                resolve(html.find(`[name="fieldset"]`));
+                            }
+                        }
+                    },
+                    default: "Confirm"
+                }).render(true);
+            });
+        })
+        return ic;
+    }
+
+    _seriousLossConfiguration() {
+        const seriousLosses = this.actor.system.seriouslosses
+        let ic = new Promise((resolve) => {
+            renderTemplate("/systems/expanse/templates/dialog/seriousLossConfiguration.html", {seriousLosses: seriousLosses}).then(dlg => {
+                new Dialog({
+                    title: game.i18n.localize("EXPANSE.SeriousLossConfiguration"),
                     content: dlg,
                     buttons: {
                         confirm: {
@@ -626,11 +663,9 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 sound: CONFIG.sounds.dice
             });  
         } else {
-            ChatMessage.create({
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                flavor: game.i18n.localize("EXPANSE.Error"),
-                content: `<b>${game.i18n.localize("EXPANSE.IncorrectRollDataValue")}<b>`
-            }); 
+            const warning = game.i18n.localize("WARNING.IncorrectRollDataValue");
+            ui.notifications.warn(warning);
+            return false 
         }
     }
 
@@ -695,6 +730,11 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                     if (loss>0) {
                         chatLoss = `<b>${game.i18n.localize("EXPANSE.chatManeuverabilityLoss")}:</b> -${loss}</br>`;
                     }
+                    const reactoroffline = actorData.system.seriouslosses.reactoroffline
+                    if(reactoroffline.value == reactoroffline.max) {
+                        loss += 2
+                        chatLoss += `<b>${game.i18n.localize("EXPANSE.chatReactorOfflineLoss")}:</b> -2</br>`;
+                    }
                     break;
                 case "sensors":
                     label = game.i18n.localize("EXPANSE.CrewElectronicWarfareTest");
@@ -706,8 +746,8 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                         chatLoss = `<b>${game.i18n.localize("EXPANSE.chatSensorsLoss")}:</b> -${loss}</br>`;
                     }
                     break;
-                case "gunnary":
-                    label = game.i18n.localize("EXPANSE.CrewGunnaryTest");
+                case "gunnery":
+                    label = game.i18n.localize("EXPANSE.CrewGunneryTest");
                     TN=15;
                     break;
                 case "engineer":
@@ -743,7 +783,7 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 }
             }
 
-            if (crewData.role == "gunnary"){
+            if (crewData.role == "gunnery"){
                 sensors = die3-3; 
                 chatSensors = `<b>${game.i18n.localize("EXPANSE.SensorsGunnery")}:</b> ${sensors}</br>`; 
             }
@@ -949,6 +989,27 @@ export class ExpanseShipSheet extends foundry.appv1.sheets.ActorSheet {
                 });
             }
         }
+    }
+
+    _onConfigureSeriousLoss(event) {
+        
+        this._seriousLossConfiguration().then(r => {
+            const fieldset = r[0]
+            const seriousLosses = foundry.utils.duplicate(this.actor.system.seriouslosses)
+            const newValues = fieldset.querySelectorAll(".info-input")
+            for (let i=0; i < newValues.length; i++) {
+                const loss = newValues[i]
+                const max = Number(loss.value)
+                if (max < 0 || max > 6) {
+                    const warning = game.i18n.localize("WARNING.ValueMustBeBetweenOneAndSix");
+                    ui.notifications.warn(warning);
+                    return false
+                }
+                seriousLosses[loss.name].value = 0
+                seriousLosses[loss.name].max = max
+            }
+            this.actor.update({"system.seriouslosses": seriousLosses})
+        });
     }
 
 
