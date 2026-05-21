@@ -3,7 +3,7 @@
     <header class="sheet-header">
 
         <div class="info-row">
-            <img class="profile-img" src="{{actor.img}}" date-edit="img" title="{{actor.name}}"/>
+            <img class="profile-img" src="{{actor.img}}" date-edit="img" data-tooltip="{{actor.name}}"/>
         </div>
         
         <div class="header-fields">
@@ -49,11 +49,11 @@
             <ol class="items-list">
             {{#each actor.items as |item id|}}
                 <li class="item flexrow" data-item-id="{{item.id}}">
-                    <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
+                    <img src="{{item.img}}" data-tooltip="{{item.name}}" width="24" height="24"/>
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">
-                        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                        <a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>
+                        <a class="item-control item-delete" data-tooltip="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
                 </li>
             {{/each}}
